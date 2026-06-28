@@ -1,0 +1,151 @@
+[build-system]
+requires = ["hatchling>=1.25.0"]
+build-backend = "hatchling.build"
+
+[project]
+name = "provenir"
+version = "0.2.0"
+description = "Reproducible, evaluation-first orchestration for fine-tuning workflows"
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "Apache-2.0" }
+authors = [{ name = "Provenir Contributors" }]
+keywords = [
+  "llm", "fine-tuning", "finetuning", "peft", "lora", "qlora",
+  "rlhf", "rlaif", "dpo", "sft", "orchestration", "reproducibility",
+  "evaluation", "rag", "governance", "audit", "huggingface", "trl",
+]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Developers",
+  "Intended Audience :: Science/Research",
+  "License :: OSI Approved :: Apache Software License",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Topic :: Scientific/Engineering :: Artificial Intelligence",
+  "Topic :: Software Development :: Libraries :: Python Modules",
+  "Typing :: Typed",
+]
+dependencies = [
+  "pydantic>=2.7.0",
+  "typing-extensions>=4.12.0",
+]
+
+[project.urls]
+Homepage        = "https://github.com/anilatambharii/provenir"
+Documentation   = "https://anilatambharii.github.io/provenir"
+Source          = "https://github.com/anilatambharii/provenir"
+"Issue Tracker" = "https://github.com/anilatambharii/provenir/issues"
+Changelog       = "https://anilatambharii.github.io/provenir/changelog/"
+
+[project.optional-dependencies]
+# Full training stack (SFT, DPO, GRPO, LoRA/QLoRA)
+train = [
+  "trl>=0.9.0",
+  "transformers>=4.40.0",
+  "peft>=0.10.0",
+  "accelerate>=0.30.0",
+  "datasets>=2.20.0",
+  "torch>=2.3.0",
+]
+# FSDP / DeepSpeed distributed training
+distributed = [
+  "deepspeed>=0.14.0",
+]
+# REST API server
+serve = [
+  "fastapi>=0.111.0",
+  "uvicorn[standard]>=0.30.0",
+]
+# HuggingFace Hub push/pull
+hub = [
+  "huggingface-hub>=0.23.0",
+]
+# Adapter merging with safetensors
+merge = [
+  "safetensors>=0.4.0",
+  "torch>=2.3.0",
+]
+# Semantic decontamination
+semantic = [
+  "sentence-transformers>=3.0.0",
+]
+# Standard benchmark evaluation (MMLU, HellaSwag, ARC ...)
+benchmarks = [
+  "lm-eval>=0.4.0",
+]
+# LLM-as-judge: Anthropic
+judge-anthropic = [
+  "anthropic>=0.30.0",
+]
+# LLM-as-judge: OpenAI
+judge-openai = [
+  "openai>=1.30.0",
+]
+# Development / CI tools
+dev = [
+  "pytest>=8.0.0",
+  "ruff>=0.6.0",
+  "mypy>=1.11.0",
+  "mkdocs-material>=9.0.0",
+]
+# Everything (for integration testing in rich environments)
+all = [
+  "trl>=0.9.0",
+  "transformers>=4.40.0",
+  "peft>=0.10.0",
+  "accelerate>=0.30.0",
+  "datasets>=2.20.0",
+  "torch>=2.3.0",
+  "fastapi>=0.111.0",
+  "uvicorn[standard]>=0.30.0",
+  "huggingface-hub>=0.23.0",
+  "safetensors>=0.4.0",
+  "sentence-transformers>=3.0.0",
+  "lm-eval>=0.4.0",
+  "anthropic>=0.30.0",
+  "openai>=1.30.0",
+]
+
+[project.scripts]
+provenir = "provenir.cli.main:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/provenir"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I"]
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+
+[[tool.mypy.overrides]]
+module = [
+    "torch",
+    "trl",
+    "transformers",
+    "peft",
+    "wandb",
+    "mlflow",
+    "tensorboard",
+    "anthropic",
+    "openai",
+    "lm_eval",
+    "huggingface_hub",
+    "safetensors",
+    "safetensors.torch",
+    "sentence_transformers",
+    "sentence_transformers.util",
+    "datasets",
+    "accelerate",
+    "uvicorn",
+    "yaml",
+]
+ignore_missing_imports = true

@@ -1,0 +1,34 @@
+# Provenir RunConfig example
+#
+# Run with:
+#   provenir train examples/sample_config.yaml --dataset data/train.jsonl
+#
+# For real training, change backend to "trl" and install provenir[train].
+
+name: sample-sft
+backend: stub           # "trl" for real training; "stub" needs no GPU
+seed: 42
+deterministic: true
+output_dir: artifacts/sample
+
+# Model (required when backend: trl)
+# model_name_or_path: meta-llama/Llama-3.2-1B
+# max_steps: 500
+# batch_size: 4
+
+# PEFT / LoRA (requires backend: trl)
+# peft:
+#   rank: 16
+#   alpha: 32
+#   target_modules: ["q_proj", "v_proj", "k_proj", "o_proj"]
+#   dropout: 0.05
+#   load_in_4bit: false    # set true for QLoRA
+
+# Distributed training (requires backend: trl + provenir[distributed])
+# distributed:
+#   strategy: fsdp          # fsdp | deepspeed | ddp | none
+#   num_gpus: 8
+
+# Observability (requires wandb, mlflow, or tensorboard installed)
+# observability_backend: wandb
+# observability_project: provenir-runs

@@ -1,0 +1,343 @@
+from __future__ import annotations
+
+import argparse
+import json
+from pathlib import Path
+
+from provenir.core.config import load_run_config
+from provenir.core.manifest import RunManifestStore
+from provenir.data.dataset import JsonlDataset
+from provenir.eval.harness import Evaluator, MultiMetricEvaluator, RegressionGate
+from provenir.eval.judge import StubJudge
+from provenir.eval.metrics import (
+    BLEUMetric,
+    ExactMatchMetric,
+    MetricFn,
+    ROUGELMetric,
+    TokenF1Metric,
+)
+from provenir.governance.audit import AuditLogger
+from provenir.governance.model_cards import ModelCardGenerator
+from provenir.train.backends.stub import StubBackend
+from provenir.train.sweep import GridSweep, SweepConfig
+from provenir.train.trainer import Trainer
+
+_METRIC_MAP: dict[str, MetricFn] = {
+    "exact_match": ExactMatchMetric(),
+    "token_f1": TokenF1Metric(),
+    "bleu": BLEUMetric(),
+    "rouge_l": ROUGELMetric(),
+}
+
+
+def main() -> None:  # noqa: C901 – CLI dispatcher, complexity is expected
+    parser = argparse.ArgumentParser(prog="provenir")
+    subparsers = parser.add_subparsers(dest="command")
+
+    # --- train ---
+    train_p = subparsers.add_parser("train", help="Run a training job from YAML config")
+    train_p.add_argument("config", help="Path to YAML run config")
+    train_p.add_argument("--dataset", default="tests/fixtures/sample.jsonl")
+
+    # --- eval ---
+    eval_p = subparsers.add_parser("eval", help="Evaluate predictions against a dataset")
+    eval_p.add_argument("--dataset", default="tests/fixtures/sample.jsonl")
+    eval_p.add_argument("--predictions", nargs="+", required=True)
+    eval_p.add_argument("--baseline", type=float, default=0.0)
+    eval_p.add_argument("--threshold", type=float, default=0.2)
+    eval_p.add_argument("--output", default="artifacts/eval/report.json")
+    eval_p.add_argument(
+        "--metrics",
+        nargs="+",
+        choices=list(_METRIC_MAP.keys()),
+        default=None,
+    )
+
+    # --- audit ---
+    audit_p = subparsers.add_parser("audit", help="Inspect the audit log")
+    audit_p.add_argument("--log-dir", default="artifacts")
+
+    # --- model-card ---
+    card_p = subparsers.add_parser("model-card", help="Generate a markdown model card")
+    card_p.add_argument("name")
+    card_p.add_argument("description")
+    card_p.add_argument("--output-dir", default="artifacts/model-cards")
+
+    # --- reproduce ---
+    repr_p = subparsers.add_parser(
+        "reproduce", help="Reproduce a run from a saved manifest"
+    )
+    repr_p.add_argument("run_id")
+    repr_p.add_argument("--manifest-dir", default="artifacts/manifests")
+    repr_p.add_argument("--dataset", default="tests/fixtures/sample.jsonl")
+
+    # --- sweep ---
+    sweep_p = subparsers.add_parser(
+        "sweep", help="Hyperparameter sweep over seed values"
+    )
+    sweep_p.add_argument("config", help="Path to base YAML run config")
+    sweep_p.add_argument("--dataset", default="tests/fixtures/sample.jsonl")
+    sweep_p.add_argument("--seeds", nargs="+", type=int, default=[0, 1, 2])
+    sweep_p.add_argument("--output", default="artifacts/sweep/results.json")
+
+    # --- compare ---
+    cmp_p = subparsers.add_parser(
+        "compare", help="Side-by-side comparison of two run manifests"
+    )
+    cmp_p.add_argument("run_id_a")
+    cmp_p.add_argument("run_id_b")
+    cmp_p.add_argument("--manifest-dir", default="artifacts/manifests")
+
+    # --- benchmark ---
+    bench_p = subparsers.add_parser(
+        "benchmark", help="Run standard benchmarks (MMLU, HellaSwag, …)"
+    )
+    bench_p.add_argument("model_path", help="Path to a HuggingFace model or adapter")
+    bench_p.add_argument(
+        "--benchmarks",
+        nargs="+",
+        default=["mmlu"],
+        help="Benchmark names (mmlu hellaswag arc_easy …)",
+    )
+    bench_p.add_argument("--num-fewshot", type=int, default=0)
+    bench_p.add_argument("--output", default="artifacts/benchmarks/results.json")
+
+    # --- merge ---
+    merge_p = subparsers.add_parser(
+        "merge", help="Merge two or more LoRA adapters (SLERP / TIES / DARE)"
+    )
+    merge_p.add_argument("adapters", nargs="+", help="Adapter directories to merge")
+    merge_p.add_argument(
+        "--strategy",
+        choices=["slerp", "ties", "dare"],
+        default="slerp",
+    )
+    merge_p.add_argument("--output", default="artifacts/merged_adapter")
+
+    # --- hub push ---
+    hub_p = subparsers.add_parser("hub", help="HuggingFace Hub operations")
+    hub_sub = hub_p.add_subparsers(dest="hub_command")
+
+    hub_push_p = hub_sub.add_parser("push", help="Push adapter to Hub")
+    hub_push_p.add_argument("adapter_path")
+    hub_push_p.add_argument("repo_id", help="username/model-name")
+    hub_push_p.add_argument("--private", action="store_true")
+    hub_push_p.add_argument("--token", default=None)
+
+    hub_pull_p = hub_sub.add_parser("pull", help="Pull model from Hub")
+    hub_pull_p.add_argument("repo_id")
+    hub_pull_p.add_argument("--output", default="artifacts/hub_models")
+    hub_pull_p.add_argument("--token", default=None)
+
+    # --- serve ---
+    serve_p = subparsers.add_parser("serve", help="Start the Provenir REST API server")
+    serve_p.add_argument("--host", default="0.0.0.0")
+    serve_p.add_argument("--port", type=int, default=8000)
+    serve_p.add_argument("--manifest-dir", default="artifacts/manifests")
+
+    # --- rlaif ---
+    rlaif_p = subparsers.add_parser("rlaif", help="Run the RLAIF pipeline")
+    rlaif_p.add_argument("config", help="Path to YAML run config")
+    rlaif_p.add_argument("--dataset", default="tests/fixtures/sample.jsonl")
+    rlaif_p.add_argument("--iterations", type=int, default=3)
+    rlaif_p.add_argument("--output", default="artifacts/rlaif/results.json")
+
+    args = parser.parse_args()
+
+    # -----------------------------------------------------------------------
+
+    if args.command == "train":
+        config = load_run_config(args.config)
+        dataset = JsonlDataset.from_path(args.dataset)
+        trainer = Trainer(backend=StubBackend(), config=config)
+        manifest = trainer.run(dataset=dataset)
+        print(f"Run {manifest.run_id} completed")
+        print(f"Config hash: {manifest.config_hash}")
+        print(f"Dataset hash: {manifest.dataset_hash}")
+        return
+
+    if args.command == "eval":
+        dataset = JsonlDataset.from_path(args.dataset)
+        if args.metrics:
+            selected: list[MetricFn] = [_METRIC_MAP[m] for m in args.metrics]
+            evaluator: Evaluator | MultiMetricEvaluator = MultiMetricEvaluator(
+                metrics=selected
+            )
+        else:
+            evaluator = MultiMetricEvaluator()
+        result = evaluator.evaluate(dataset=dataset, predictions=args.predictions)
+        gate = RegressionGate(baseline=args.baseline, threshold=args.threshold)
+        result.save(args.output)
+        if result.metrics:
+            for name, summary in result.metrics.items():
+                print(f"{name}: {summary.mean:.3f}  CI={summary.confidence_interval}")
+        if result.accuracy:
+            print(f"Regression gate passed: {gate.check(result)}")
+        return
+
+    if args.command == "audit":
+        logger = AuditLogger(log_dir=args.log_dir)
+        audit_path = logger.log_dir / "audit.jsonl"
+        if audit_path.exists():
+            print(audit_path.read_text(encoding="utf-8"))
+        else:
+            print("No audit log found")
+        return
+
+    if args.command == "model-card":
+        generator = ModelCardGenerator(output_dir=args.output_dir)
+        card_path = generator.generate(args.name, args.description)
+        print(card_path)
+        return
+
+    if args.command == "reproduce":
+        store = RunManifestStore(root_dir=args.manifest_dir)
+        manifest = store.load(args.run_id)
+        print(f"Reproduced run {manifest.run_id}")
+        print(f"Config hash: {manifest.config_hash}")
+        print(f"Dataset hash: {manifest.dataset_hash}")
+        return
+
+    if args.command == "sweep":
+        base_config = load_run_config(args.config)
+        dataset = JsonlDataset.from_path(args.dataset)
+        sweep_cfg = SweepConfig(param_grid={"seed": args.seeds}, strategy="grid")
+        sweep = GridSweep(
+            base_config=base_config, sweep_config=sweep_cfg, backend=StubBackend()
+        )
+        sweep_result = sweep.run(dataset)
+        output_path = Path(args.output)
+        output_path.parent.mkdir(parents=True, exist_ok=True)
+        trial_records = [
+            {
+                "trial_id": t.trial_id,
+                "params": t.params,
+                "run_id": t.manifest.run_id,
+                "config_hash": t.manifest.config_hash,
+                "dataset_hash": t.manifest.dataset_hash,
+            }
+            for t in sweep_result.trials
+        ]
+        output_path.write_text(json.dumps(trial_records, indent=2), encoding="utf-8")
+        n_trials = len(sweep_result.trials)
+        print(f"Sweep complete: {n_trials} trials → {args.output}")
+        for trial in sweep_result.trials:
+            seed = trial.params.get("seed")
+            run_id = trial.manifest.run_id
+            print(f"  trial {trial.trial_id}: seed={seed}  run={run_id}")
+        return
+
+    if args.command == "compare":
+        store = RunManifestStore(root_dir=args.manifest_dir)
+        try:
+            m_a = store.load(args.run_id_a)
+        except (FileNotFoundError, KeyError):
+            print(f"Manifest {args.run_id_a!r} not found")
+            return
+        try:
+            m_b = store.load(args.run_id_b)
+        except (FileNotFoundError, KeyError):
+            print(f"Manifest {args.run_id_b!r} not found")
+            return
+        print(f"{'Field':<22} {'Run A':<36} {'Run B':<36}")
+        print("-" * 94)
+        for field_name in ("run_id", "config_hash", "dataset_hash", "seed", "git_sha"):
+            va = getattr(m_a, field_name)
+            vb = getattr(m_b, field_name)
+            diff = "" if va == vb else " ← differs"
+            print(f"{field_name:<22} {str(va):<36} {str(vb):<36}{diff}")
+        return
+
+    if args.command == "benchmark":
+        from provenir.eval.benchmarks import BenchmarkConfig, BenchmarkEvaluator
+
+        evaluator_b = BenchmarkEvaluator()
+        configs = [
+            BenchmarkConfig(benchmark=b, num_fewshot=args.num_fewshot)
+            for b in args.benchmarks
+        ]
+        results = evaluator_b.run_suite(args.model_path, configs)
+        output_path = Path(args.output)
+        output_path.parent.mkdir(parents=True, exist_ok=True)
+        payload = [r.to_dict() for r in results]
+        output_path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
+        for r in results:
+            stub_note = " [stub — lm-eval not installed]" if r.metadata.get("stub") else ""
+            print(f"{r.benchmark}: {r.score:.4f}{stub_note}")
+        return
+
+    if args.command == "merge":
+        from provenir.adapters.merging import MergeConfig, ModelMerger
+
+        merger = ModelMerger()
+        adapter_paths = [Path(a) for a in args.adapters]
+        merge_cfg = MergeConfig(strategy=args.strategy)
+        result_m = merger.merge(adapter_paths, merge_cfg, Path(args.output))
+        stub_note = " [stub]" if result_m.metadata.get("stub") else ""
+        print(f"Merged {len(adapter_paths)} adapters → {result_m.output_path}{stub_note}")
+        return
+
+    if args.command == "hub":
+        from provenir.adapters.hub import HubClient, HubConfig
+
+        client = HubClient(token=getattr(args, "token", None))
+        if args.hub_command == "push":
+            hub_cfg = HubConfig(
+                repo_id=args.repo_id,
+                private=getattr(args, "private", False),
+                token=getattr(args, "token", None),
+            )
+            push_result = client.push_adapter(Path(args.adapter_path), hub_cfg)
+            stub_note = (
+                " [stub — huggingface_hub not installed]" if not push_result.commit_sha else ""
+            )
+            print(f"Pushed → {push_result.url}{stub_note}")
+        elif args.hub_command == "pull":
+            local = client.pull_model(
+                args.repo_id,
+                cache_dir=Path(args.output),
+                token=getattr(args, "token", None),
+            )
+            print(f"Downloaded → {local}")
+        else:
+            hub_p.print_help()
+        return
+
+    if args.command == "serve":
+        from provenir.server.app import run_server
+
+        run_server(
+            host=args.host,
+            port=args.port,
+            manifest_dir=args.manifest_dir,
+        )
+        return
+
+    if args.command == "rlaif":
+        config = load_run_config(args.config)
+        dataset = JsonlDataset.from_path(args.dataset)
+        from provenir.train.rlaif import RLAIFConfig, RLAIFPipeline
+
+        rlaif_cfg = RLAIFConfig(n_iterations=args.iterations)
+        pipeline = RLAIFPipeline(
+            judge=StubJudge(),
+            backend=StubBackend(),
+            base_config=config,
+            rlaif_config=rlaif_cfg,
+        )
+        iterations = pipeline.run(train_dataset=dataset)
+        output_path = Path(args.output)
+        output_path.parent.mkdir(parents=True, exist_ok=True)
+        payload = [
+            {
+                "iteration": it.iteration,
+                "preference_count": it.preference_count,
+                "run_id": it.manifest.run_id,
+            }
+            for it in iterations
+        ]
+        output_path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
+        print(f"RLAIF complete: {len(iterations)} iterations → {args.output}")
+        return
+
+    parser.print_help()
