@@ -45,6 +45,7 @@ from provenir.observability import (
     RLStepMetrics,
 )
 from provenir.train.algorithms import GRPOConfig
+from provenir.train.grpo_learner import PolicyUpdater
 from provenir.train.rl_eval_gate import RLEvalGate
 
 # ---------------------------------------------------------------------------
@@ -257,6 +258,7 @@ class RLOrchestrator:
         flight_recorder: FlightRecorder | None = None,
         hacking_detector: RewardHackingDetector | None = None,
         eval_gate: RLEvalGate | None = None,
+        updater: PolicyUpdater | None = None,
         seed: int = 0,
     ) -> None:
         self.algorithm = algorithm
@@ -265,6 +267,7 @@ class RLOrchestrator:
         self.flight_recorder = flight_recorder or FlightRecorder()
         self.hacking_detector = hacking_detector or RewardHackingDetector()
         self.eval_gate = eval_gate
+        self.updater = updater
         self.seed = seed
 
     # -- public API --------------------------------------------------------
@@ -388,11 +391,16 @@ class RLOrchestrator:
     def _apply_update(self, rewards: list[float]) -> dict[str, Any]:
         """Delegate the gradient update to a backend RL kernel.
 
-        This is the seam where verl / TRL / Unsloth plug in. Provenir does not
-        reimplement the policy-gradient step; the default implementation is a
-        no-op stub that reports the group it *would* have updated on. A real
-        backend adapter overrides or replaces this to run the actual update.
+        This is the seam where verl / TRL / Unsloth plug in. When a
+        :class:`~provenir.train.grpo_learner.PolicyUpdater` is supplied (e.g.
+        :class:`~provenir.train.grpo_learner.GRPOUpdater` or a TRL-backed
+        updater), the real GRPO advantage/gradient statistics are returned.
+        With no updater the default is an inert stub that reports the group it
+        *would* have updated on.
         """
+        if self.updater is not None:
+            stats = self.updater.apply(rewards)
+            return {"algorithm": _algorithm_name(self.algorithm), **stats.to_dict()}
         return {
             "algorithm": _algorithm_name(self.algorithm),
             "group_size": len(rewards),

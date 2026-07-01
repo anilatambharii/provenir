@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "provenir"
-version = "0.3.0"
+version = "0.3.1"
 description = "The trust layer for model post-training: reproducibility, contamination-safe eval, reward-hacking detection, and signed provenance for any fine-tuning or RL run"
 readme = "README.md"
 requires-python = ">=3.11"

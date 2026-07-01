@@ -4,6 +4,29 @@ All notable changes to Provenir are documented here.
 
 ---
 
+## v0.3.1 (2026)
+
+Follow-up to the Trust Layer release.
+
+- **Real GRPO reference learner** (`provenir.train.grpo_learner`): a
+  self-contained, dependency-free `TabularGRPOLearner` that implements the
+  actual GRPO update — group-relative advantages + softmax policy-gradient
+  ascent — and provably maximizes a verifiable reward (tested end to end). It is
+  the reference that proves the RL loop learns, and it streams metrics to the
+  flight recorder.
+- **Pluggable update seam**: `PolicyUpdater` protocol + `GRPOUpdater` /
+  `NoOpUpdater`. `RLOrchestrator` now accepts an optional `updater` so its
+  gradient seam reports genuine advantage/gradient statistics.
+- **TRL production path**: `TRLGRPOAdapter` wraps a Provenir `Verifier` as a
+  TRL-compatible reward function and delegates the real LLM policy-gradient step
+  to `trl.GRPOTrainer` (requires `pip install 'provenir[train]'`). The reward
+  function and availability check work without TRL installed.
+- **Docs accuracy pass**: the Trust Layer guide's code snippets are now
+  copy-paste accurate against the shipped v0.3 API.
+- Test suite: 943 tests, all passing.
+
+---
+
 ## v0.3.0 — The Trust Layer (2026)
 
 Major release — Provenir becomes **the trust layer for model post-training**.
