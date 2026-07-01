@@ -906,6 +906,17 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#v031-2026" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        v0.3.1 (2026)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#v030-the-trust-layer-2026" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1101,6 +1112,17 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#v031-2026" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        v0.3.1 (2026)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#v030-the-trust-layer-2026" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1283,6 +1305,27 @@
 
 <h1 id="changelog">Changelog</h1>
 <p>All notable changes to Provenir are documented here.</p>
+<hr />
+<h2 id="v031-2026">v0.3.1 (2026)</h2>
+<p>Follow-up to the Trust Layer release.</p>
+<ul>
+<li><strong>Real GRPO reference learner</strong> (<code>provenir.train.grpo_learner</code>): a
+  self-contained, dependency-free <code>TabularGRPOLearner</code> that implements the
+  actual GRPO update — group-relative advantages + softmax policy-gradient
+  ascent — and provably maximizes a verifiable reward (tested end to end). It is
+  the reference that proves the RL loop learns, and it streams metrics to the
+  flight recorder.</li>
+<li><strong>Pluggable update seam</strong>: <code>PolicyUpdater</code> protocol + <code>GRPOUpdater</code> /
+  <code>NoOpUpdater</code>. <code>RLOrchestrator</code> now accepts an optional <code>updater</code> so its
+  gradient seam reports genuine advantage/gradient statistics.</li>
+<li><strong>TRL production path</strong>: <code>TRLGRPOAdapter</code> wraps a Provenir <code>Verifier</code> as a
+  TRL-compatible reward function and delegates the real LLM policy-gradient step
+  to <code>trl.GRPOTrainer</code> (requires <code>pip install 'provenir[train]'</code>). The reward
+  function and availability check work without TRL installed.</li>
+<li><strong>Docs accuracy pass</strong>: the Trust Layer guide's code snippets are now
+  copy-paste accurate against the shipped v0.3 API.</li>
+<li>Test suite: 943 tests, all passing.</li>
+</ul>
 <hr />
 <h2 id="v030-the-trust-layer-2026">v0.3.0 — The Trust Layer (2026)</h2>
 <p>Major release — Provenir becomes <strong>the trust layer for model post-training</strong>.

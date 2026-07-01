@@ -784,10 +784,10 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#build-sign-save" class="md-nav__link">
+  <a href="#the-easy-way-via-the-wrapper" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Build, sign, save
+        The easy way — via the wrapper
       
     </span>
   </a>
@@ -795,10 +795,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#verify" class="md-nav__link">
+  <a href="#build-sign-verify" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Verify
+        Build, sign, verify
       
     </span>
   </a>
@@ -1048,10 +1048,10 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#build-sign-save" class="md-nav__link">
+  <a href="#the-easy-way-via-the-wrapper" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Build, sign, save
+        The easy way — via the wrapper
       
     </span>
   </a>
@@ -1059,10 +1059,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#verify" class="md-nav__link">
+  <a href="#build-sign-verify" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Verify
+        Build, sign, verify
       
     </span>
   </a>
@@ -1501,10 +1501,10 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#build-sign-save" class="md-nav__link">
+  <a href="#the-easy-way-via-the-wrapper" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Build, sign, save
+        The easy way — via the wrapper
       
     </span>
   </a>
@@ -1512,10 +1512,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#verify" class="md-nav__link">
+  <a href="#build-sign-verify" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Verify
+        Build, sign, verify
       
     </span>
   </a>
@@ -1595,108 +1595,138 @@ verifiable rewards, deterministic replay, and a signed Model Passport.</p>
 <li>The contamination firewall + canary vaults</li>
 <li>The Model Passport (sign, verify, risk flags)</li>
 </ol>
+<p>All examples are copy-paste accurate against the v0.3.0 API.</p>
 <hr />
 <h2 id="1-the-import-provenir-wrapper">1. The <code>import provenir</code> wrapper</h2>
 <p>The fastest way to adopt the trust layer is the 3-line substrate. Wrap <strong>any</strong>
 existing training loop — verl, TRL, Unsloth, or your own — in a
 <code>provenir.track(...)</code> context. Provenir attaches provenance, an RL Flight
-Recorder, a reward-hacking report, and a signed Model Passport without you
-changing your trainer.</p>
+Recorder, a reward-hacking report, and (optionally) a signed Model Passport
+without you changing your trainer.</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">provenir</span>
 <a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>
 <a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="k">with</span> <span class="n">provenir</span><span class="o">.</span><span class="n">track</span><span class="p">(</span><span class="s2">&quot;my-run&quot;</span><span class="p">,</span> <span class="n">dataset</span><span class="o">=</span><span class="n">train_ds</span><span class="p">)</span> <span class="k">as</span> <span class="n">run</span><span class="p">:</span>
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>    <span class="k">for</span> <span class="n">step</span><span class="p">,</span> <span class="n">metrics</span> <span class="ow">in</span> <span class="n">training_loop</span><span class="p">():</span>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>    <span class="k">for</span> <span class="n">step</span><span class="p">,</span> <span class="n">metrics</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">training_loop</span><span class="p">()):</span>
 <a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>        <span class="n">run</span><span class="o">.</span><span class="n">log_step</span><span class="p">(</span><span class="n">metrics</span><span class="p">)</span>          <span class="c1"># feeds the flight recorder</span>
 <a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>    <span class="n">run</span><span class="o">.</span><span class="n">record_eval</span><span class="p">(</span><span class="s2">&quot;mmlu&quot;</span><span class="p">,</span> <span class="n">score</span><span class="o">=</span><span class="mf">0.71</span><span class="p">)</span>
 <a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>
-<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="c1"># Everything the trust layer produced is available on `run`:</span>
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="c1"># Everything the trust layer produced is available on `run` after exit:</span>
 <a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="n">manifest</span>        <span class="o">=</span> <span class="n">run</span><span class="o">.</span><span class="n">manifest</span>          <span class="c1"># content-addressed RunManifest</span>
-<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="n">flight_recorder</span> <span class="o">=</span> <span class="n">run</span><span class="o">.</span><span class="n">flight_recorder</span>   <span class="c1"># per-step RL anomalies</span>
-<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="n">hacking_report</span>  <span class="o">=</span> <span class="n">run</span><span class="o">.</span><span class="n">hacking_report</span>    <span class="c1"># reward-hacking findings</span>
-<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="n">passport</span>        <span class="o">=</span> <span class="n">run</span><span class="o">.</span><span class="n">passport</span>          <span class="c1"># signed Model Passport / BOM</span>
+<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="n">flight_recorder</span> <span class="o">=</span> <span class="n">run</span><span class="o">.</span><span class="n">flight_recorder</span>   <span class="c1"># FlightRecorder with per-step anomalies</span>
+<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="n">hacking_report</span>  <span class="o">=</span> <span class="n">run</span><span class="o">.</span><span class="n">hacking_report</span>    <span class="c1"># HackingReport over buffered trajectories</span>
+<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="n">lineage</span>         <span class="o">=</span> <span class="n">run</span><span class="o">.</span><span class="n">lineage</span>           <span class="c1"># LineageGraph (dataset -&gt; run -&gt; eval)</span>
+<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="n">bom</span>             <span class="o">=</span> <span class="n">run</span><span class="o">.</span><span class="n">bom</span>               <span class="c1"># ModelBOM (bill of materials)</span>
+<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="n">passport</span>        <span class="o">=</span> <span class="n">run</span><span class="o">.</span><span class="n">passport</span>          <span class="c1"># signed ModelPassport, or None if unsigned</span>
+<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="n">anomalies</span>       <span class="o">=</span> <span class="n">run</span><span class="o">.</span><span class="n">anomalies</span>         <span class="c1"># list[Anomaly] the flight recorder caught</span>
 </code></pre></div>
-<p><code>metrics</code> can be any dict of training/RL signals (loss, KL, entropy, reward,
-reward std, advantages, response length, gradient norm, …). The more you log,
-the more the flight recorder and hacking detector can see.</p>
+<p>To also emit a <strong>signed</strong> Model Passport, pass a signing key:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="k">with</span> <span class="n">provenir</span><span class="o">.</span><span class="n">track</span><span class="p">(</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>    <span class="s2">&quot;my-run&quot;</span><span class="p">,</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>    <span class="n">dataset</span><span class="o">=</span><span class="n">train_ds</span><span class="p">,</span>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>    <span class="n">base_model</span><span class="o">=</span><span class="s2">&quot;Qwen2.5-7B&quot;</span><span class="p">,</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>    <span class="n">sign_passport</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>    <span class="n">signing_key</span><span class="o">=</span><span class="sa">b</span><span class="s2">&quot;team-signing-key&quot;</span><span class="p">,</span>
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>    <span class="n">output_dir</span><span class="o">=</span><span class="s2">&quot;artifacts/my-run&quot;</span><span class="p">,</span>
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="p">)</span> <span class="k">as</span> <span class="n">run</span><span class="p">:</span>
+<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>    <span class="k">for</span> <span class="n">step</span><span class="p">,</span> <span class="n">metrics</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">training_loop</span><span class="p">()):</span>
+<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>        <span class="n">run</span><span class="o">.</span><span class="n">log_step</span><span class="p">(</span><span class="n">metrics</span><span class="p">)</span>
+<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>        <span class="n">run</span><span class="o">.</span><span class="n">log_trajectory</span><span class="p">({</span><span class="s2">&quot;prediction&quot;</span><span class="p">:</span> <span class="n">last_response</span><span class="p">,</span> <span class="s2">&quot;reward&quot;</span><span class="p">:</span> <span class="n">reward</span><span class="p">})</span>
+<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a>    <span class="n">run</span><span class="o">.</span><span class="n">record_eval</span><span class="p">(</span><span class="s2">&quot;gsm8k&quot;</span><span class="p">,</span> <span class="n">score</span><span class="o">=</span><span class="mf">0.71</span><span class="p">)</span>
+<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a>
+<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="k">assert</span> <span class="n">run</span><span class="o">.</span><span class="n">passport</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+<a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a><span class="k">assert</span> <span class="n">run</span><span class="o">.</span><span class="n">passport</span><span class="o">.</span><span class="n">verify</span><span class="p">(</span><span class="sa">b</span><span class="s2">&quot;team-signing-key&quot;</span><span class="p">)</span>
+</code></pre></div>
+<p><code>metrics</code> can be any dict of training/RL signals — recognised keys are <code>step</code>,
+<code>kl</code>, <code>entropy</code>, <code>reward_mean</code>, <code>reward_std</code>, <code>response_length_mean</code>,
+<code>advantage_std</code>, <code>grad_norm</code>, <code>learning_rate</code> (unknown keys are ignored). On
+exit, every artifact is written under <code>output_dir</code>
+(<code>manifests/&lt;run_id&gt;.json</code>, <code>lineage.json</code>, <code>flight_recorder.json</code>,
+<code>hacking_report.json</code>, <code>bom.json</code>, and <code>passport.md</code> / <code>passport.json</code> when
+signed).</p>
 <hr />
 <h2 id="2-the-rl-flight-recorder">2. The RL Flight Recorder</h2>
 <p>The Flight Recorder (<code>provenir.observability</code>) is a <strong>black box for RL runs</strong>.
 It watches every step and flags the pathologies that quietly wreck RL training
 long before the final reward curve looks wrong:</p>
 <ul>
-<li>KL blowup / KL collapse</li>
-<li>Entropy collapse</li>
-<li>Response-length explosion</li>
-<li>GRPO advantage collapse</li>
-<li>Reward-std collapse</li>
-<li>Reward spikes</li>
-<li>Gradient explosion</li>
+<li><code>kl_blowup</code> / <code>kl_collapse</code></li>
+<li><code>entropy_collapse</code></li>
+<li><code>length_explosion</code></li>
+<li><code>advantage_collapse</code> (GRPO group degeneracy)</li>
+<li><code>reward_std_collapse</code></li>
+<li><code>reward_spike</code></li>
+<li><code>grad_explosion</code></li>
 </ul>
 <h3 id="logging-step-metrics-and-reading-anomalies">Logging step metrics and reading anomalies</h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">provenir.observability</span><span class="w"> </span><span class="kn">import</span> <span class="n">FlightRecorder</span>
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="n">recorder</span> <span class="o">=</span> <span class="n">FlightRecorder</span><span class="p">()</span>
-<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>
-<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="k">for</span> <span class="n">step</span><span class="p">,</span> <span class="n">batch</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">rl_loop</span><span class="p">()):</span>
-<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>    <span class="n">recorder</span><span class="o">.</span><span class="n">log_step</span><span class="p">({</span>
-<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>        <span class="s2">&quot;step&quot;</span><span class="p">:</span> <span class="n">step</span><span class="p">,</span>
-<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>        <span class="s2">&quot;kl&quot;</span><span class="p">:</span> <span class="n">batch</span><span class="o">.</span><span class="n">kl</span><span class="p">,</span>
-<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>        <span class="s2">&quot;entropy&quot;</span><span class="p">:</span> <span class="n">batch</span><span class="o">.</span><span class="n">entropy</span><span class="p">,</span>
-<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>        <span class="s2">&quot;reward_mean&quot;</span><span class="p">:</span> <span class="n">batch</span><span class="o">.</span><span class="n">reward_mean</span><span class="p">,</span>
-<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>        <span class="s2">&quot;reward_std&quot;</span><span class="p">:</span> <span class="n">batch</span><span class="o">.</span><span class="n">reward_std</span><span class="p">,</span>
-<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a>        <span class="s2">&quot;advantage_std&quot;</span><span class="p">:</span> <span class="n">batch</span><span class="o">.</span><span class="n">advantage_std</span><span class="p">,</span>
-<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a>        <span class="s2">&quot;response_length&quot;</span><span class="p">:</span> <span class="n">batch</span><span class="o">.</span><span class="n">mean_response_length</span><span class="p">,</span>
-<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a>        <span class="s2">&quot;grad_norm&quot;</span><span class="p">:</span> <span class="n">batch</span><span class="o">.</span><span class="n">grad_norm</span><span class="p">,</span>
-<a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a>    <span class="p">})</span>
-<a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a>
-<a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a><span class="c1"># Inspect what the black box caught</span>
-<a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a><span class="k">for</span> <span class="n">anomaly</span> <span class="ow">in</span> <span class="n">recorder</span><span class="o">.</span><span class="n">anomalies</span><span class="p">():</span>
-<a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[step </span><span class="si">{</span><span class="n">anomaly</span><span class="o">.</span><span class="n">step</span><span class="si">}</span><span class="s2">] </span><span class="si">{</span><span class="n">anomaly</span><span class="o">.</span><span class="n">kind</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">anomaly</span><span class="o">.</span><span class="n">detail</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a>
-<a id="__codelineno-1-21" name="__codelineno-1-21" href="#__codelineno-1-21"></a><span class="c1"># e.g.</span>
-<a id="__codelineno-1-22" name="__codelineno-1-22" href="#__codelineno-1-22"></a><span class="c1"># [step 214] entropy_collapse: entropy fell to 0.02 (baseline 1.7)</span>
-<a id="__codelineno-1-23" name="__codelineno-1-23" href="#__codelineno-1-23"></a><span class="c1"># [step 217] kl_blowup: KL 48.3 exceeds threshold</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">provenir.observability</span><span class="w"> </span><span class="kn">import</span> <span class="n">FlightRecorder</span><span class="p">,</span> <span class="n">RLStepMetrics</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="n">recorder</span> <span class="o">=</span> <span class="n">FlightRecorder</span><span class="p">()</span>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="k">for</span> <span class="n">step</span><span class="p">,</span> <span class="n">batch</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">rl_loop</span><span class="p">()):</span>
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>    <span class="n">anomalies</span> <span class="o">=</span> <span class="n">recorder</span><span class="o">.</span><span class="n">log_step</span><span class="p">(</span><span class="n">RLStepMetrics</span><span class="p">(</span>
+<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>        <span class="n">step</span><span class="o">=</span><span class="n">step</span><span class="p">,</span>
+<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>        <span class="n">kl</span><span class="o">=</span><span class="n">batch</span><span class="o">.</span><span class="n">kl</span><span class="p">,</span>
+<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>        <span class="n">entropy</span><span class="o">=</span><span class="n">batch</span><span class="o">.</span><span class="n">entropy</span><span class="p">,</span>
+<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>        <span class="n">reward_mean</span><span class="o">=</span><span class="n">batch</span><span class="o">.</span><span class="n">reward_mean</span><span class="p">,</span>
+<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a>        <span class="n">reward_std</span><span class="o">=</span><span class="n">batch</span><span class="o">.</span><span class="n">reward_std</span><span class="p">,</span>
+<a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a>        <span class="n">advantage_std</span><span class="o">=</span><span class="n">batch</span><span class="o">.</span><span class="n">advantage_std</span><span class="p">,</span>
+<a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a>        <span class="n">response_length_mean</span><span class="o">=</span><span class="n">batch</span><span class="o">.</span><span class="n">mean_response_length</span><span class="p">,</span>
+<a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a>        <span class="n">grad_norm</span><span class="o">=</span><span class="n">batch</span><span class="o">.</span><span class="n">grad_norm</span><span class="p">,</span>
+<a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a>    <span class="p">))</span>
+<a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a>    <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">anomalies</span><span class="p">:</span>                 <span class="c1"># anomalies detected on THIS step</span>
+<a id="__codelineno-2-17" name="__codelineno-2-17" href="#__codelineno-2-17"></a>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[step </span><span class="si">{</span><span class="n">a</span><span class="o">.</span><span class="n">step</span><span class="si">}</span><span class="s2">] </span><span class="si">{</span><span class="n">a</span><span class="o">.</span><span class="n">severity</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">a</span><span class="o">.</span><span class="n">kind</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">a</span><span class="o">.</span><span class="n">detail</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<a id="__codelineno-2-18" name="__codelineno-2-18" href="#__codelineno-2-18"></a>
+<a id="__codelineno-2-19" name="__codelineno-2-19" href="#__codelineno-2-19"></a><span class="c1"># `anomalies` is also a property holding everything caught so far:</span>
+<a id="__codelineno-2-20" name="__codelineno-2-20" href="#__codelineno-2-20"></a><span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">recorder</span><span class="o">.</span><span class="n">anomalies</span><span class="p">:</span>
+<a id="__codelineno-2-21" name="__codelineno-2-21" href="#__codelineno-2-21"></a>    <span class="nb">print</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">kind</span><span class="p">,</span> <span class="n">a</span><span class="o">.</span><span class="n">detail</span><span class="p">)</span>
+<a id="__codelineno-2-22" name="__codelineno-2-22" href="#__codelineno-2-22"></a>
+<a id="__codelineno-2-23" name="__codelineno-2-23" href="#__codelineno-2-23"></a><span class="nb">print</span><span class="p">(</span><span class="n">recorder</span><span class="o">.</span><span class="n">health_report</span><span class="p">())</span>         <span class="c1"># HEALTHY / DEGRADED / CRITICAL summary</span>
+<a id="__codelineno-2-24" name="__codelineno-2-24" href="#__codelineno-2-24"></a><span class="n">summary</span> <span class="o">=</span> <span class="n">recorder</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span>            <span class="c1"># counts by kind/severity + final metrics</span>
 </code></pre></div>
-<p>Because the recorder only needs a dict of per-step signals, it works whether the
-gradient step runs on verl, TRL, Unsloth, or a custom loop. When you use the
-<code>import provenir</code> wrapper or the <code>RLOrchestrator</code> (below), the flight recorder
-is wired up for you.</p>
+<p><code>log_step</code> accepts an <code>RLStepMetrics</code>; the <code>import provenir</code> wrapper also lets
+you pass a plain dict. Because the recorder only needs per-step scalars, it
+works whether the gradient step runs on verl, TRL, Unsloth, or a custom loop.</p>
 <hr />
 <h2 id="3-the-reward-hacking-detector">3. The reward-hacking detector</h2>
 <p>Reward hacking is the <strong>#1 RL bottleneck</strong>: models learn to maximise the reward
 signal without doing the task — inflating response length, exploiting output
 format, or literally editing the tests to make them pass. The detector
-(<code>provenir.observability</code>) looks for:</p>
-<ul>
-<li>Length inflation</li>
-<li>Format exploits</li>
-<li>Test tampering (<code>unittest.skip</code>, <code>sys.exit(0)</code>, monkeypatching)</li>
-<li>Verifier gaming</li>
-<li>Proxy-reward divergence (reward up, real eval flat/down)</li>
-<li>Degenerate repetition</li>
-<li>Advantage collapse</li>
-</ul>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">provenir.observability</span><span class="w"> </span><span class="kn">import</span> <span class="n">RewardHackingDetector</span>
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="n">detector</span> <span class="o">=</span> <span class="n">RewardHackingDetector</span><span class="p">()</span>
-<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>
-<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="n">report</span> <span class="o">=</span> <span class="n">detector</span><span class="o">.</span><span class="n">analyze</span><span class="p">(</span><span class="n">rollouts</span><span class="p">)</span>   <span class="c1"># rollouts: prompts, responses, rewards, eval scores</span>
-<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>
-<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="k">if</span> <span class="n">report</span><span class="o">.</span><span class="n">is_hacking</span><span class="p">:</span>
-<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Reward hacking detected:&quot;</span><span class="p">)</span>
-<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>    <span class="k">for</span> <span class="n">finding</span> <span class="ow">in</span> <span class="n">report</span><span class="o">.</span><span class="n">findings</span><span class="p">:</span>
-<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  - </span><span class="si">{</span><span class="n">finding</span><span class="o">.</span><span class="n">kind</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">finding</span><span class="o">.</span><span class="n">detail</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a>    <span class="c1"># e.g.</span>
-<a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a>    <span class="c1">#   - test_tampering: response calls sys.exit(0) before assertions</span>
-<a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a>    <span class="c1">#   - proxy_divergence: reward +18% while held-out eval -3%</span>
+(<code>provenir.observability</code>) looks for <code>length_inflation</code>, <code>format_exploit</code>,
+<code>test_tampering</code> (<code>unittest.skip</code>, <code>sys.exit(0)</code>, monkeypatching),
+<code>verifier_gaming</code>, <code>proxy_divergence</code> (reward up, real eval flat/down),
+<code>degenerate_repetition</code>, and <code>advantage_collapse</code>.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">provenir.observability</span><span class="w"> </span><span class="kn">import</span> <span class="n">RewardHackingDetector</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="n">detector</span> <span class="o">=</span> <span class="n">RewardHackingDetector</span><span class="p">()</span>
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="c1"># One trajectory:</span>
+<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="n">signals</span> <span class="o">=</span> <span class="n">detector</span><span class="o">.</span><span class="n">detect</span><span class="p">({</span>
+<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>    <span class="s2">&quot;prediction&quot;</span><span class="p">:</span> <span class="s2">&quot;import sys; sys.exit(0)  # skip failing tests&quot;</span><span class="p">,</span>
+<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>    <span class="s2">&quot;proxy_reward&quot;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span>
+<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a>    <span class="s2">&quot;true_reward&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
+<a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="p">})</span>
+<a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a><span class="nb">print</span><span class="p">([</span><span class="n">s</span><span class="o">.</span><span class="n">kind</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">signals</span><span class="p">])</span>        <span class="c1"># [&#39;test_tampering&#39;, &#39;proxy_divergence&#39;]</span>
+<a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a>
+<a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a><span class="c1"># A batch of rollouts -&gt; a HackingReport:</span>
+<a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a><span class="n">report</span> <span class="o">=</span> <span class="n">detector</span><span class="o">.</span><span class="n">detect_batch</span><span class="p">(</span><span class="n">rollouts</span><span class="p">)</span>   <span class="c1"># rollouts: list[dict] with prediction/reward</span>
+<a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a><span class="k">if</span> <span class="ow">not</span> <span class="n">report</span><span class="o">.</span><span class="n">is_clean</span><span class="p">:</span>
+<a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a>    <span class="k">for</span> <span class="n">signal</span> <span class="ow">in</span> <span class="n">report</span><span class="o">.</span><span class="n">signals</span><span class="p">:</span>
+<a id="__codelineno-3-17" name="__codelineno-3-17" href="#__codelineno-3-17"></a>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  - </span><span class="si">{</span><span class="n">signal</span><span class="o">.</span><span class="n">kind</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">signal</span><span class="o">.</span><span class="n">detail</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<a id="__codelineno-3-18" name="__codelineno-3-18" href="#__codelineno-3-18"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;hacking rate: </span><span class="si">{</span><span class="n">report</span><span class="o">.</span><span class="n">hacking_rate</span><span class="si">:</span><span class="s2">.1%</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<a id="__codelineno-3-19" name="__codelineno-3-19" href="#__codelineno-3-19"></a>    <span class="nb">print</span><span class="p">(</span><span class="n">report</span><span class="o">.</span><span class="n">by_kind</span><span class="p">())</span>             <span class="c1"># {&#39;test_tampering&#39;: 3, &#39;proxy_divergence&#39;: 1}</span>
+<a id="__codelineno-3-20" name="__codelineno-3-20" href="#__codelineno-3-20"></a>
+<a id="__codelineno-3-21" name="__codelineno-3-21" href="#__codelineno-3-21"></a><span class="c1"># Group degeneracy (all rewards equal -&gt; zero advantage):</span>
+<a id="__codelineno-3-22" name="__codelineno-3-22" href="#__codelineno-3-22"></a><span class="n">group_signals</span> <span class="o">=</span> <span class="n">detector</span><span class="o">.</span><span class="n">detect_group</span><span class="p">([</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">])</span>   <span class="c1"># advantage_collapse</span>
 </code></pre></div>
 <p>Pair this with the <a href="#6-the-model-passport">Model Passport</a> so a run that shows
-reward hacking is flagged in its signed Bill-of-Materials.</p>
+reward hacking is surfaced in its <code>contaminated_eval</code> / risk-flag story.</p>
 <hr />
 <h2 id="4-verifiable-reward-environments-rlvr">4. Verifiable-reward environments (RLVR)</h2>
 <p>For RL with verifiable rewards, Provenir ships a library of <strong>sandboxed,
 hack-resistant reward functions</strong> (<code>provenir.environments</code>) behind an
-OpenEnv-compatible <code>Environment</code> protocol:</p>
+OpenEnv-compatible <code>Environment</code> protocol. Every verifier exposes
+<code>verify(response, reference) -&gt; VerificationResult</code> (with <code>.passed</code>, <code>.reward</code>,
+<code>.detail</code>, <code>.metadata</code>):</p>
 <table>
 <thead>
 <tr>
@@ -1707,11 +1737,11 @@ OpenEnv-compatible <code>Environment</code> protocol:</p>
 <tbody>
 <tr>
 <td><code>ExactAnswerVerifier</code></td>
-<td>Exact match against a gold answer</td>
+<td>Exact match against a gold answer (<code>\boxed{}</code>, <code>####</code>, or raw)</td>
 </tr>
 <tr>
 <td><code>MathVerifier</code></td>
-<td>Numeric / symbolic math equivalence</td>
+<td>Numeric equivalence with tolerance</td>
 </tr>
 <tr>
 <td><code>RegexFormatVerifier</code></td>
@@ -1719,112 +1749,137 @@ OpenEnv-compatible <code>Environment</code> protocol:</p>
 </tr>
 <tr>
 <td><code>JSONSchemaVerifier</code></td>
-<td>Output validates against a JSON schema</td>
+<td>Output parses as JSON with required keys/types</td>
 </tr>
 <tr>
 <td><code>ToolCallVerifier</code></td>
-<td>Correct tool call / arguments</td>
+<td>Valid tool call with an allowed tool + dict args</td>
 </tr>
 <tr>
 <td><code>ContainsVerifier</code></td>
-<td>Output contains required substrings</td>
+<td>Required substrings present, forbidden absent</td>
 </tr>
 <tr>
 <td><code>CompositeVerifier</code></td>
-<td>Combine multiple verifiers</td>
+<td>Weighted combination of verifiers</td>
 </tr>
 <tr>
 <td><code>CodeVerifier</code></td>
-<td>Runs code in a <code>PythonSandbox</code> (subprocess isolation + reward-hacking detection)</td>
+<td>Runs code in a <code>PythonSandbox</code> (subprocess isolation + hacking detection)</td>
 </tr>
 </tbody>
 </table>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">provenir.environments</span><span class="w"> </span><span class="kn">import</span> <span class="n">MathVerifier</span><span class="p">,</span> <span class="n">CompositeVerifier</span><span class="p">,</span> <span class="n">RegexFormatVerifier</span>
-<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>
-<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="n">verifier</span> <span class="o">=</span> <span class="n">CompositeVerifier</span><span class="p">([</span>
-<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>    <span class="n">MathVerifier</span><span class="p">(),</span>
-<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>    <span class="n">RegexFormatVerifier</span><span class="p">(</span><span class="n">pattern</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">boxed\{.*\}&quot;</span><span class="p">),</span>
-<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="p">])</span>
-<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>
-<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="n">reward</span> <span class="o">=</span> <span class="n">verifier</span><span class="o">.</span><span class="n">verify</span><span class="p">(</span><span class="n">prompt</span><span class="o">=</span><span class="n">problem</span><span class="p">,</span> <span class="n">response</span><span class="o">=</span><span class="n">model_output</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="n">gold</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">provenir.environments</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>    <span class="n">MathVerifier</span><span class="p">,</span>
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>    <span class="n">RegexFormatVerifier</span><span class="p">,</span>
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>    <span class="n">CompositeVerifier</span><span class="p">,</span>
+<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="p">)</span>
+<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>
+<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="n">verifier</span> <span class="o">=</span> <span class="n">CompositeVerifier</span><span class="p">([</span>
+<a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>    <span class="p">(</span><span class="n">MathVerifier</span><span class="p">(),</span> <span class="mf">0.7</span><span class="p">),</span>
+<a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a>    <span class="p">(</span><span class="n">RegexFormatVerifier</span><span class="p">(</span><span class="n">pattern</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">boxed\{.*\}&quot;</span><span class="p">,</span> <span class="n">full_match</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span> <span class="mf">0.3</span><span class="p">),</span>
+<a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a><span class="p">])</span>
+<a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a>
+<a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a><span class="n">result</span> <span class="o">=</span> <span class="n">verifier</span><span class="o">.</span><span class="n">verify</span><span class="p">(</span><span class="n">model_output</span><span class="p">,</span> <span class="n">gold_answer</span><span class="p">)</span>   <span class="c1"># (response, reference)</span>
+<a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a><span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">passed</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">reward</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">detail</span><span class="p">)</span>
 </code></pre></div>
 <p>The <code>CodeVerifier</code>'s <code>PythonSandbox</code> runs candidate solutions in an isolated
-subprocess and runs the reward-hacking detector over the generated code, so a
-model that tries to <code>unittest.skip</code> or <code>sys.exit(0)</code> its way to a passing test
-is caught rather than rewarded.</p>
+subprocess and inspects the generated code, so a model that tries to
+<code>unittest.skip</code> or <code>sys.exit(0)</code> its way to a passing test is flagged
+(<code>metadata["suspected_hacking"]</code>) rather than rewarded:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">provenir.environments</span><span class="w"> </span><span class="kn">import</span> <span class="n">CodeVerifier</span>
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="n">code_verifier</span> <span class="o">=</span> <span class="n">CodeVerifier</span><span class="p">()</span>
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="n">result</span> <span class="o">=</span> <span class="n">code_verifier</span><span class="o">.</span><span class="n">verify</span><span class="p">(</span><span class="n">candidate_solution</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;test_code&quot;</span><span class="p">:</span> <span class="n">unit_tests</span><span class="p">})</span>
+</code></pre></div>
 <h3 id="orchestrating-grpo-dapo-gspo">Orchestrating GRPO / DAPO / GSPO</h3>
 <p>The <code>RLOrchestrator</code> (<code>provenir.train.rl</code>) fuses everything into one loop —
-rollout → verify → reward → flight recorder → hacking detector → eval gate —
-and delegates the gradient step to a backend adapter. It supports GRPO, DAPO
-(decoupled clip + dynamic sampling), and GSPO (sequence-level, stabilises MoE):</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">provenir.train.rl</span><span class="w"> </span><span class="kn">import</span> <span class="n">RLOrchestrator</span><span class="p">,</span> <span class="n">RLConfig</span>
-<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">provenir.environments</span><span class="w"> </span><span class="kn">import</span> <span class="n">MathVerifier</span>
-<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>
-<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="n">orchestrator</span> <span class="o">=</span> <span class="n">RLOrchestrator</span><span class="p">(</span>
-<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>    <span class="n">config</span><span class="o">=</span><span class="n">RLConfig</span><span class="p">(</span><span class="n">algorithm</span><span class="o">=</span><span class="s2">&quot;grpo&quot;</span><span class="p">),</span>   <span class="c1"># grpo | dapo | gspo</span>
-<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>    <span class="n">verifier</span><span class="o">=</span><span class="n">MathVerifier</span><span class="p">(),</span>
-<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="p">)</span>
-<a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>
-<a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="n">report</span> <span class="o">=</span> <span class="n">orchestrator</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">train_ds</span><span class="p">,</span> <span class="n">eval_ds</span><span class="p">)</span>
-<a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a><span class="nb">print</span><span class="p">(</span><span class="n">report</span><span class="o">.</span><span class="n">flight_recorder</span><span class="o">.</span><span class="n">anomalies</span><span class="p">())</span>
-<a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a><span class="nb">print</span><span class="p">(</span><span class="n">report</span><span class="o">.</span><span class="n">hacking_report</span><span class="o">.</span><span class="n">findings</span><span class="p">)</span>
+rollout -&gt; verify -&gt; reward -&gt; flight recorder -&gt; hacking detector -&gt; eval
+gate — and delegates the gradient step to a backend adapter. Pass a <code>GRPOConfig</code>,
+<code>DAPOConfig</code> (decoupled clip + dynamic sampling), or <code>GSPOConfig</code> (sequence-level,
+stabilises MoE):</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">provenir.train.rl</span><span class="w"> </span><span class="kn">import</span> <span class="n">RLOrchestrator</span>
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">provenir.train.algorithms</span><span class="w"> </span><span class="kn">import</span> <span class="n">GRPOConfig</span>
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="kn">from</span><span class="w"> </span><span class="nn">provenir.environments</span><span class="w"> </span><span class="kn">import</span> <span class="n">MathVerifier</span>
+<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="kn">from</span><span class="w"> </span><span class="nn">provenir.observability</span><span class="w"> </span><span class="kn">import</span> <span class="n">FlightRecorder</span><span class="p">,</span> <span class="n">RewardHackingDetector</span>
+<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>
+<a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a><span class="n">orchestrator</span> <span class="o">=</span> <span class="n">RLOrchestrator</span><span class="p">(</span>
+<a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a>    <span class="n">algorithm</span><span class="o">=</span><span class="n">GRPOConfig</span><span class="p">(</span><span class="n">group_size</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">max_steps</span><span class="o">=</span><span class="mi">100</span><span class="p">),</span>   <span class="c1"># or DAPOConfig / GSPOConfig</span>
+<a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a>    <span class="n">verifier</span><span class="o">=</span><span class="n">MathVerifier</span><span class="p">(),</span>
+<a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a>    <span class="n">flight_recorder</span><span class="o">=</span><span class="n">FlightRecorder</span><span class="p">(),</span>
+<a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a>    <span class="n">hacking_detector</span><span class="o">=</span><span class="n">RewardHackingDetector</span><span class="p">(),</span>
+<a id="__codelineno-6-11" name="__codelineno-6-11" href="#__codelineno-6-11"></a><span class="p">)</span>
+<a id="__codelineno-6-12" name="__codelineno-6-12" href="#__codelineno-6-12"></a>
+<a id="__codelineno-6-13" name="__codelineno-6-13" href="#__codelineno-6-13"></a><span class="n">result</span> <span class="o">=</span> <span class="n">orchestrator</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">train_ds</span><span class="p">,</span> <span class="n">eval_ds</span><span class="p">)</span>
+<a id="__codelineno-6-14" name="__codelineno-6-14" href="#__codelineno-6-14"></a><span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">steps_completed</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">mean_reward</span><span class="p">)</span>
+<a id="__codelineno-6-15" name="__codelineno-6-15" href="#__codelineno-6-15"></a><span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">anomaly_count</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">hacking_rate</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">halted</span><span class="p">)</span>
+<a id="__codelineno-6-16" name="__codelineno-6-16" href="#__codelineno-6-16"></a><span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">flight_summary</span><span class="p">)</span>            <span class="c1"># serialised flight-recorder state</span>
 </code></pre></div>
 <p>Backend selection is automatic: <code>provenir.train.backends.adapters</code> wraps
 verl / TRL / Unsloth with capability detection and a <code>BackendSelector</code> that
-routes by scale tier. The <code>provenir.train.rl_eval_gate</code> fuses
+routes by scale tier. The <code>provenir.train.rl_eval_gate.RLEvalGate</code> fuses
 contamination-safety + regression + reward-hacking into one loop guard that
 halts a run before it wastes GPU budget.</p>
 <p>On the CLI:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>provenir<span class="w"> </span>rl<span class="w"> </span>config.yaml<span class="w"> </span>--dataset<span class="w"> </span>data/train.jsonl<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="w">  </span>--algorithm<span class="w"> </span>grpo<span class="w"> </span>--verifier<span class="w"> </span>math
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>provenir<span class="w"> </span>rl<span class="w"> </span>--dataset<span class="w"> </span>data/train.jsonl<span class="w"> </span>--algorithm<span class="w"> </span>grpo<span class="w"> </span>--verifier<span class="w"> </span>math
 </code></pre></div>
 <hr />
 <h2 id="5-the-contamination-firewall-canary-vaults">5. The contamination firewall + canary vaults</h2>
 <p>Train/eval contamination is the #1 eval-reliability pain: if eval examples leak
 into training, your benchmark numbers are inflated and untrustworthy. The
 contamination firewall (<code>provenir.eval.contamination</code>) detects overlap via
-13-gram, embedding, and exact matching, with MinHash for scale.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">provenir.eval.contamination</span><span class="w"> </span><span class="kn">import</span> <span class="n">ContaminationChecker</span>
-<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>
-<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="n">checker</span> <span class="o">=</span> <span class="n">ContaminationChecker</span><span class="p">()</span>
-<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="n">report</span>  <span class="o">=</span> <span class="n">checker</span><span class="o">.</span><span class="n">check</span><span class="p">(</span><span class="n">train_dataset</span><span class="p">,</span> <span class="n">eval_dataset</span><span class="p">)</span>
-<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>
-<a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Overlap: </span><span class="si">{</span><span class="n">report</span><span class="o">.</span><span class="n">overlap_ratio</span><span class="si">:</span><span class="s2">.1%</span><span class="si">}</span><span class="s2"> across </span><span class="si">{</span><span class="n">report</span><span class="o">.</span><span class="n">n_hits</span><span class="si">}</span><span class="s2"> records&quot;</span><span class="p">)</span>
-<a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="k">if</span> <span class="n">report</span><span class="o">.</span><span class="n">overlap_ratio</span> <span class="o">&gt;</span> <span class="mf">0.0</span><span class="p">:</span>
-<a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a>    <span class="k">for</span> <span class="n">hit</span> <span class="ow">in</span> <span class="n">report</span><span class="o">.</span><span class="n">hits</span><span class="p">:</span>
-<a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  train#</span><span class="si">{</span><span class="n">hit</span><span class="o">.</span><span class="n">train_index</span><span class="si">}</span><span class="s2"> ↔ eval#</span><span class="si">{</span><span class="n">hit</span><span class="o">.</span><span class="n">eval_index</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">hit</span><span class="o">.</span><span class="n">method</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+13-gram, embedding, or exact matching, with MinHash for scale.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">provenir.eval.contamination</span><span class="w"> </span><span class="kn">import</span> <span class="n">ContaminationChecker</span><span class="p">,</span> <span class="n">ContaminationConfig</span>
+<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>
+<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="n">checker</span> <span class="o">=</span> <span class="n">ContaminationChecker</span><span class="p">(</span><span class="n">ContaminationConfig</span><span class="p">(</span><span class="n">method</span><span class="o">=</span><span class="s2">&quot;ngram&quot;</span><span class="p">))</span>
+<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="n">report</span>  <span class="o">=</span> <span class="n">checker</span><span class="o">.</span><span class="n">check_datasets</span><span class="p">(</span><span class="n">train_dataset</span><span class="p">,</span> <span class="n">eval_dataset</span><span class="p">)</span>
+<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a>
+<a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">report</span><span class="o">.</span><span class="n">contamination_rate</span><span class="si">:</span><span class="s2">.1%</span><span class="si">}</span><span class="s2"> contaminated across </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">report</span><span class="o">.</span><span class="n">hits</span><span class="p">)</span><span class="si">}</span><span class="s2"> hits&quot;</span><span class="p">)</span>
+<a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a><span class="k">for</span> <span class="n">hit</span> <span class="ow">in</span> <span class="n">report</span><span class="o">.</span><span class="n">hits</span><span class="p">:</span>
+<a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  train#</span><span class="si">{</span><span class="n">hit</span><span class="o">.</span><span class="n">train_index</span><span class="si">}</span><span class="s2"> &lt;-&gt; eval#</span><span class="si">{</span><span class="n">hit</span><span class="o">.</span><span class="n">eval_index</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">hit</span><span class="o">.</span><span class="n">method</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+<a id="__codelineno-8-9" name="__codelineno-8-9" href="#__codelineno-8-9"></a>
+<a id="__codelineno-8-10" name="__codelineno-8-10" href="#__codelineno-8-10"></a><span class="n">clean_train</span> <span class="o">=</span> <span class="n">checker</span><span class="o">.</span><span class="n">filter_contaminated</span><span class="p">(</span><span class="n">train_dataset</span><span class="p">,</span> <span class="n">report</span><span class="p">)</span>
 </code></pre></div>
 <p>On the CLI:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>provenir<span class="w"> </span>contamination<span class="w"> </span>data/train.jsonl<span class="w"> </span>data/eval.jsonl
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>provenir<span class="w"> </span>contamination<span class="w"> </span>data/train.jsonl<span class="w"> </span>data/eval.jsonl
 </code></pre></div>
 <h3 id="canary-vaults">Canary vaults</h3>
-<p>A canary vault (<code>provenir.eval.canary</code>) is a <strong>private eval set tagged with
-canary strings</strong>. If those canaries later show up in training data, you know the
-held-out set has leaked — the strongest signal that a benchmark result cannot
-be trusted.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">provenir.eval.canary</span><span class="w"> </span><span class="kn">import</span> <span class="n">CanaryVault</span>
-<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>
-<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="c1"># Seal a private eval set with unique canary tags</span>
-<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="n">vault</span> <span class="o">=</span> <span class="n">CanaryVault</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">eval_dataset</span><span class="p">)</span>
-<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="n">vault</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">&quot;vaults/mmlu_private.vault&quot;</span><span class="p">)</span>
-<a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a>
-<a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a><span class="c1"># Later, check any training corpus for leaked canaries</span>
-<a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a><span class="n">leak</span> <span class="o">=</span> <span class="n">vault</span><span class="o">.</span><span class="n">scan</span><span class="p">(</span><span class="n">train_dataset</span><span class="p">)</span>
-<a id="__codelineno-8-9" name="__codelineno-8-9" href="#__codelineno-8-9"></a><span class="k">if</span> <span class="n">leak</span><span class="o">.</span><span class="n">detected</span><span class="p">:</span>
-<a id="__codelineno-8-10" name="__codelineno-8-10" href="#__codelineno-8-10"></a>    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Private eval leaked into training: </span><span class="si">{</span><span class="n">leak</span><span class="o">.</span><span class="n">canaries</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<p>A canary (<code>provenir.eval.canary</code>) is a unique token embedded into a <strong>private
+eval set</strong>. If that token later shows up in training data, you know the held-out
+set has leaked — the strongest signal that a benchmark result cannot be trusted.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">provenir.eval.canary</span><span class="w"> </span><span class="kn">import</span> <span class="n">CanaryGuard</span>
+<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>
+<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="n">guard</span>  <span class="o">=</span> <span class="n">CanaryGuard</span><span class="p">()</span>
+<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="n">canary</span> <span class="o">=</span> <span class="n">guard</span><span class="o">.</span><span class="n">mint</span><span class="p">(</span><span class="s2">&quot;mmlu-private&quot;</span><span class="p">)</span>            <span class="c1"># deterministic, reproducible token</span>
+<a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a>
+<a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a><span class="c1"># Embed the canary into each private-eval record before you distribute it:</span>
+<a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a><span class="n">tagged_eval</span> <span class="o">=</span> <span class="n">guard</span><span class="o">.</span><span class="n">tag</span><span class="p">(</span><span class="n">eval_dataset</span><span class="p">,</span> <span class="n">canary</span><span class="p">)</span>
+<a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a>
+<a id="__codelineno-10-9" name="__codelineno-10-9" href="#__codelineno-10-9"></a><span class="c1"># Later, scan any training corpus for the leaked canary:</span>
+<a id="__codelineno-10-10" name="__codelineno-10-10" href="#__codelineno-10-10"></a><span class="n">leaked_rows</span> <span class="o">=</span> <span class="n">guard</span><span class="o">.</span><span class="n">scan</span><span class="p">(</span><span class="n">train_dataset</span><span class="p">,</span> <span class="n">canary</span><span class="p">)</span>
+<a id="__codelineno-10-11" name="__codelineno-10-11" href="#__codelineno-10-11"></a><span class="k">if</span> <span class="n">leaked_rows</span><span class="p">:</span>
+<a id="__codelineno-10-12" name="__codelineno-10-12" href="#__codelineno-10-12"></a>    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Private eval leaked into training at rows </span><span class="si">{</span><span class="n">leaked_rows</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </code></pre></div>
 <h3 id="judge-calibration">Judge calibration</h3>
 <p>When you evaluate with an LLM judge, <code>provenir.eval.judge_calibration</code> measures
 position bias, self-consistency, and flip-rate, and gives you two debiased
 wrappers:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">provenir.eval.judge_calibration</span><span class="w"> </span><span class="kn">import</span> <span class="n">DebiasedJudge</span><span class="p">,</span> <span class="n">EnsembleJudge</span>
-<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">provenir.eval.judge</span><span class="w"> </span><span class="kn">import</span> <span class="n">AnthropicJudge</span><span class="p">,</span> <span class="n">OpenAIJudge</span><span class="p">,</span> <span class="n">StubJudge</span>
-<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>
-<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="c1"># Evaluate both orderings to remove position bias</span>
-<a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="n">debiased</span> <span class="o">=</span> <span class="n">DebiasedJudge</span><span class="p">(</span><span class="n">AnthropicJudge</span><span class="p">())</span>
-<a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a>
-<a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a><span class="c1"># Majority vote across multiple judges</span>
-<a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a><span class="n">ensemble</span> <span class="o">=</span> <span class="n">EnsembleJudge</span><span class="p">([</span><span class="n">AnthropicJudge</span><span class="p">(),</span> <span class="n">OpenAIJudge</span><span class="p">(),</span> <span class="n">StubJudge</span><span class="p">()])</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">provenir.eval.judge_calibration</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>    <span class="n">JudgeCalibrator</span><span class="p">,</span>
+<a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a>    <span class="n">DebiasedJudge</span><span class="p">,</span>
+<a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a>    <span class="n">EnsembleJudge</span><span class="p">,</span>
+<a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a><span class="p">)</span>
+<a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a><span class="kn">from</span><span class="w"> </span><span class="nn">provenir.eval.judge</span><span class="w"> </span><span class="kn">import</span> <span class="n">AnthropicJudge</span><span class="p">,</span> <span class="n">OpenAIJudge</span><span class="p">,</span> <span class="n">StubJudge</span>
+<a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a>
+<a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a><span class="c1"># Measure how reliable a judge is:</span>
+<a id="__codelineno-11-9" name="__codelineno-11-9" href="#__codelineno-11-9"></a><span class="n">report</span> <span class="o">=</span> <span class="n">JudgeCalibrator</span><span class="p">(</span><span class="n">AnthropicJudge</span><span class="p">())</span><span class="o">.</span><span class="n">measure_position_bias</span><span class="p">(</span><span class="n">cases</span><span class="p">)</span>
+<a id="__codelineno-11-10" name="__codelineno-11-10" href="#__codelineno-11-10"></a><span class="nb">print</span><span class="p">(</span><span class="n">report</span><span class="o">.</span><span class="n">position_bias</span><span class="p">,</span> <span class="n">report</span><span class="o">.</span><span class="n">flip_rate</span><span class="p">,</span> <span class="n">report</span><span class="o">.</span><span class="n">is_reliable</span><span class="p">)</span>
+<a id="__codelineno-11-11" name="__codelineno-11-11" href="#__codelineno-11-11"></a>
+<a id="__codelineno-11-12" name="__codelineno-11-12" href="#__codelineno-11-12"></a><span class="c1"># Evaluate both orderings to remove position bias:</span>
+<a id="__codelineno-11-13" name="__codelineno-11-13" href="#__codelineno-11-13"></a><span class="n">debiased</span> <span class="o">=</span> <span class="n">DebiasedJudge</span><span class="p">(</span><span class="n">AnthropicJudge</span><span class="p">())</span>
+<a id="__codelineno-11-14" name="__codelineno-11-14" href="#__codelineno-11-14"></a>
+<a id="__codelineno-11-15" name="__codelineno-11-15" href="#__codelineno-11-15"></a><span class="c1"># Majority vote across multiple judges:</span>
+<a id="__codelineno-11-16" name="__codelineno-11-16" href="#__codelineno-11-16"></a><span class="n">ensemble</span> <span class="o">=</span> <span class="n">EnsembleJudge</span><span class="p">([</span><span class="n">AnthropicJudge</span><span class="p">(),</span> <span class="n">OpenAIJudge</span><span class="p">(),</span> <span class="n">StubJudge</span><span class="p">()])</span>
 </code></pre></div>
 <hr />
 <h2 id="6-the-model-passport">6. The Model Passport</h2>
@@ -1834,47 +1889,90 @@ exactly what data, code, evals, and config produced a model. It is signed with
 HMAC-SHA256 so it is tamper-evident, and it carries compliance risk flags. This
 is the enterprise/regulatory acquisition wedge and maps directly to <strong>EU AI Act
 Article 12</strong> (tamper-proof audit trails + model lineage, enforced Aug 2, 2026).</p>
-<h3 id="build-sign-save">Build, sign, save</h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">provenir.governance.passport</span><span class="w"> </span><span class="kn">import</span> <span class="n">ModelPassport</span>
-<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>
-<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="c1"># Build a signed passport from a run manifest (and its trust-layer artifacts)</span>
-<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="n">passport</span> <span class="o">=</span> <span class="n">ModelPassport</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="n">run</span><span class="o">.</span><span class="n">manifest</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="s2">&quot;team-signing-key&quot;</span><span class="p">)</span>
-<a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a><span class="n">passport</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">&quot;passport.json&quot;</span><span class="p">)</span>
-</code></pre></div>
-<h3 id="verify">Verify</h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">provenir.governance.passport</span><span class="w"> </span><span class="kn">import</span> <span class="n">ModelPassport</span>
-<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>
-<a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="n">loaded</span> <span class="o">=</span> <span class="n">ModelPassport</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;passport.json&quot;</span><span class="p">)</span>
-<a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a>
-<a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a><span class="c1"># Verify the HMAC-SHA256 signature — fails if the BOM was tampered with</span>
-<a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a><span class="k">assert</span> <span class="n">loaded</span><span class="o">.</span><span class="n">verify</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="s2">&quot;team-signing-key&quot;</span><span class="p">)</span>
+<h3 id="the-easy-way-via-the-wrapper">The easy way — via the wrapper</h3>
+<p>If you used <code>provenir.track(..., sign_passport=True, signing_key=...)</code>, the
+signed passport is already on <code>run.passport</code> and written to disk. Otherwise,
+build one explicitly.</p>
+<h3 id="build-sign-verify">Build, sign, verify</h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">provenir.governance.bom</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>    <span class="n">ModelBOM</span><span class="p">,</span>
+<a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>    <span class="n">DataComponent</span><span class="p">,</span>
+<a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a>    <span class="n">CodeComponent</span><span class="p">,</span>
+<a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a>    <span class="n">EvalComponent</span><span class="p">,</span>
+<a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a><span class="p">)</span>
+<a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a><span class="kn">from</span><span class="w"> </span><span class="nn">provenir.governance.passport</span><span class="w"> </span><span class="kn">import</span> <span class="n">PassportSigner</span><span class="p">,</span> <span class="n">PassportStore</span>
+<a id="__codelineno-12-8" name="__codelineno-12-8" href="#__codelineno-12-8"></a>
+<a id="__codelineno-12-9" name="__codelineno-12-9" href="#__codelineno-12-9"></a><span class="n">bom</span> <span class="o">=</span> <span class="n">ModelBOM</span><span class="p">(</span>
+<a id="__codelineno-12-10" name="__codelineno-12-10" href="#__codelineno-12-10"></a>    <span class="n">model_id</span><span class="o">=</span><span class="s2">&quot;my-model&quot;</span><span class="p">,</span>
+<a id="__codelineno-12-11" name="__codelineno-12-11" href="#__codelineno-12-11"></a>    <span class="n">base_model</span><span class="o">=</span><span class="s2">&quot;Qwen2.5-7B&quot;</span><span class="p">,</span>
+<a id="__codelineno-12-12" name="__codelineno-12-12" href="#__codelineno-12-12"></a>    <span class="n">run_id</span><span class="o">=</span><span class="n">run</span><span class="o">.</span><span class="n">manifest</span><span class="o">.</span><span class="n">run_id</span><span class="p">,</span>
+<a id="__codelineno-12-13" name="__codelineno-12-13" href="#__codelineno-12-13"></a>    <span class="n">data</span><span class="o">=</span><span class="p">[</span><span class="n">DataComponent</span><span class="p">(</span>
+<a id="__codelineno-12-14" name="__codelineno-12-14" href="#__codelineno-12-14"></a>        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;train&quot;</span><span class="p">,</span>
+<a id="__codelineno-12-15" name="__codelineno-12-15" href="#__codelineno-12-15"></a>        <span class="n">content_hash</span><span class="o">=</span><span class="n">run</span><span class="o">.</span><span class="n">manifest</span><span class="o">.</span><span class="n">dataset_hash</span><span class="p">,</span>
+<a id="__codelineno-12-16" name="__codelineno-12-16" href="#__codelineno-12-16"></a>        <span class="n">num_records</span><span class="o">=</span><span class="mi">1200</span><span class="p">,</span>
+<a id="__codelineno-12-17" name="__codelineno-12-17" href="#__codelineno-12-17"></a>        <span class="n">license</span><span class="o">=</span><span class="s2">&quot;apache-2.0&quot;</span><span class="p">,</span>
+<a id="__codelineno-12-18" name="__codelineno-12-18" href="#__codelineno-12-18"></a>        <span class="n">pii_scanned</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<a id="__codelineno-12-19" name="__codelineno-12-19" href="#__codelineno-12-19"></a>        <span class="n">contamination_checked</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<a id="__codelineno-12-20" name="__codelineno-12-20" href="#__codelineno-12-20"></a>    <span class="p">)],</span>
+<a id="__codelineno-12-21" name="__codelineno-12-21" href="#__codelineno-12-21"></a>    <span class="n">code</span><span class="o">=</span><span class="n">CodeComponent</span><span class="p">(</span>
+<a id="__codelineno-12-22" name="__codelineno-12-22" href="#__codelineno-12-22"></a>        <span class="n">git_sha</span><span class="o">=</span><span class="n">run</span><span class="o">.</span><span class="n">manifest</span><span class="o">.</span><span class="n">git_sha</span><span class="p">,</span>
+<a id="__codelineno-12-23" name="__codelineno-12-23" href="#__codelineno-12-23"></a>        <span class="n">dependencies_hash</span><span class="o">=</span><span class="n">run</span><span class="o">.</span><span class="n">manifest</span><span class="o">.</span><span class="n">dependencies_lockfile</span><span class="p">,</span>
+<a id="__codelineno-12-24" name="__codelineno-12-24" href="#__codelineno-12-24"></a>        <span class="n">framework</span><span class="o">=</span><span class="s2">&quot;trl&quot;</span><span class="p">,</span>
+<a id="__codelineno-12-25" name="__codelineno-12-25" href="#__codelineno-12-25"></a>    <span class="p">),</span>
+<a id="__codelineno-12-26" name="__codelineno-12-26" href="#__codelineno-12-26"></a>    <span class="n">evals</span><span class="o">=</span><span class="p">[</span><span class="n">EvalComponent</span><span class="p">(</span><span class="n">benchmark</span><span class="o">=</span><span class="s2">&quot;gsm8k&quot;</span><span class="p">,</span> <span class="n">score</span><span class="o">=</span><span class="mf">0.71</span><span class="p">)],</span>
+<a id="__codelineno-12-27" name="__codelineno-12-27" href="#__codelineno-12-27"></a>    <span class="n">hyperparameters</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;lr&quot;</span><span class="p">:</span> <span class="mf">1e-5</span><span class="p">},</span>
+<a id="__codelineno-12-28" name="__codelineno-12-28" href="#__codelineno-12-28"></a><span class="p">)</span>
+<a id="__codelineno-12-29" name="__codelineno-12-29" href="#__codelineno-12-29"></a>
+<a id="__codelineno-12-30" name="__codelineno-12-30" href="#__codelineno-12-30"></a><span class="n">signer</span>   <span class="o">=</span> <span class="n">PassportSigner</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="sa">b</span><span class="s2">&quot;team-signing-key&quot;</span><span class="p">,</span> <span class="n">key_id</span><span class="o">=</span><span class="s2">&quot;team&quot;</span><span class="p">)</span>
+<a id="__codelineno-12-31" name="__codelineno-12-31" href="#__codelineno-12-31"></a><span class="n">passport</span> <span class="o">=</span> <span class="n">signer</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">bom</span><span class="p">)</span>
+<a id="__codelineno-12-32" name="__codelineno-12-32" href="#__codelineno-12-32"></a>
+<a id="__codelineno-12-33" name="__codelineno-12-33" href="#__codelineno-12-33"></a><span class="c1"># Verify the HMAC-SHA256 signature — fails if the BOM was tampered with:</span>
+<a id="__codelineno-12-34" name="__codelineno-12-34" href="#__codelineno-12-34"></a><span class="k">assert</span> <span class="n">passport</span><span class="o">.</span><span class="n">verify</span><span class="p">(</span><span class="sa">b</span><span class="s2">&quot;team-signing-key&quot;</span><span class="p">)</span>
+<a id="__codelineno-12-35" name="__codelineno-12-35" href="#__codelineno-12-35"></a>
+<a id="__codelineno-12-36" name="__codelineno-12-36" href="#__codelineno-12-36"></a><span class="c1"># Persist (also appends an immutable audit-log line):</span>
+<a id="__codelineno-12-37" name="__codelineno-12-37" href="#__codelineno-12-37"></a><span class="n">PassportStore</span><span class="p">(</span><span class="s2">&quot;artifacts/passports&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">passport</span><span class="p">)</span>
 </code></pre></div>
 <p>On the CLI:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>provenir<span class="w"> </span>passport<span class="w"> </span>show<span class="w">   </span>passport.json<span class="w">    </span><span class="c1"># print the Bill-of-Materials</span>
-<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>provenir<span class="w"> </span>passport<span class="w"> </span>verify<span class="w"> </span>passport.json<span class="w">    </span><span class="c1"># verify the signature</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>provenir<span class="w"> </span>passport<span class="w"> </span>show<span class="w">   </span>passport.json<span class="w">                 </span><span class="c1"># print the passport markdown</span>
+<a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>provenir<span class="w"> </span>passport<span class="w"> </span>verify<span class="w"> </span>passport.json<span class="w"> </span>--key<span class="w"> </span>team-signing-key
 </code></pre></div>
 <h3 id="risk-flags">Risk flags</h3>
-<p>Every passport carries compliance risk flags derived from the trust layer, so a
-downstream consumer can gate on them:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="k">for</span> <span class="n">flag</span> <span class="ow">in</span> <span class="n">loaded</span><span class="o">.</span><span class="n">risk_flags</span><span class="p">:</span>
-<a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>    <span class="nb">print</span><span class="p">(</span><span class="n">flag</span><span class="p">)</span>
-<a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="c1"># unscanned_pii      → dataset was not PII-scanned</span>
-<a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a><span class="c1"># contaminated_eval  → contamination firewall found train/eval overlap</span>
-<a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a><span class="c1"># unknown_license    → a data or model dependency has no known license</span>
+<p>The BOM derives compliance risk flags from the trust layer, so a downstream
+consumer can gate on them:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="k">for</span> <span class="n">flag</span> <span class="ow">in</span> <span class="n">passport</span><span class="o">.</span><span class="n">bom</span><span class="o">.</span><span class="n">risk_flags</span><span class="p">():</span>
+<a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>    <span class="nb">print</span><span class="p">(</span><span class="n">flag</span><span class="p">)</span>
+<a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="c1"># unscanned_pii          -&gt; a data component was not PII-scanned</span>
+<a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a><span class="c1"># unchecked_contamination -&gt; a data component was not contamination-checked</span>
+<a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a><span class="c1"># contaminated_eval      -&gt; an eval was flagged as contaminated</span>
+<a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a><span class="c1"># unknown_license        -&gt; a data component has no known license</span>
 </code></pre></div>
-<p>A clean passport (no risk flags, valid signature, no reward hacking) is a
-portable proof that a model was produced by a trustworthy, reproducible process.</p>
+<p>A clean passport (no risk flags, valid signature) is a portable proof that a
+model was produced by a trustworthy, reproducible process.</p>
 <hr />
 <h2 id="deterministic-replay-lineage-dag">Deterministic replay + lineage DAG</h2>
 <p>Underpinning the passport is the deterministic replay subsystem
 (<code>provenir.provenance</code>): a content-addressed environment fingerprint,
-kernel-determinism flags, a lineage DAG (dataset → run → adapter → eval →
-merge), and a <code>ReplayEngine</code> that can re-execute a run from its fingerprint.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">provenir.provenance</span><span class="w"> </span><span class="kn">import</span> <span class="n">ReplayEngine</span>
-<a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>
-<a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="n">engine</span> <span class="o">=</span> <span class="n">ReplayEngine</span><span class="p">()</span>
-<a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a><span class="n">replay</span> <span class="o">=</span> <span class="n">engine</span><span class="o">.</span><span class="n">replay</span><span class="p">(</span><span class="n">run</span><span class="o">.</span><span class="n">manifest</span><span class="p">)</span>   <span class="c1"># re-runs from the captured fingerprint</span>
-<a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a><span class="nb">print</span><span class="p">(</span><span class="n">replay</span><span class="o">.</span><span class="n">matches_original</span><span class="p">)</span>          <span class="c1"># True if deterministic</span>
+kernel-determinism flags, a lineage DAG (dataset -&gt; run -&gt; adapter -&gt; eval -&gt;
+merge), and a <code>ReplayEngine</code> that verifies whether a run can be reproduced.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">provenir.provenance</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+<a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a>    <span class="n">ReplayEngine</span><span class="p">,</span>
+<a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a>    <span class="n">capture_fingerprint</span><span class="p">,</span>
+<a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a>    <span class="n">kernel_determinism_flags</span><span class="p">,</span>
+<a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a><span class="p">)</span>
+<a id="__codelineno-15-6" name="__codelineno-15-6" href="#__codelineno-15-6"></a><span class="kn">from</span><span class="w"> </span><span class="nn">provenir.core.manifest</span><span class="w"> </span><span class="kn">import</span> <span class="n">RunManifestStore</span>
+<a id="__codelineno-15-7" name="__codelineno-15-7" href="#__codelineno-15-7"></a>
+<a id="__codelineno-15-8" name="__codelineno-15-8" href="#__codelineno-15-8"></a><span class="n">engine</span>       <span class="o">=</span> <span class="n">ReplayEngine</span><span class="p">(</span><span class="n">RunManifestStore</span><span class="p">(</span><span class="s2">&quot;artifacts/manifests&quot;</span><span class="p">))</span>
+<a id="__codelineno-15-9" name="__codelineno-15-9" href="#__codelineno-15-9"></a><span class="n">verification</span> <span class="o">=</span> <span class="n">engine</span><span class="o">.</span><span class="n">verify</span><span class="p">(</span>
+<a id="__codelineno-15-10" name="__codelineno-15-10" href="#__codelineno-15-10"></a>    <span class="n">run</span><span class="o">.</span><span class="n">manifest</span><span class="o">.</span><span class="n">run_id</span><span class="p">,</span>
+<a id="__codelineno-15-11" name="__codelineno-15-11" href="#__codelineno-15-11"></a>    <span class="n">current_config_hash</span><span class="o">=</span><span class="n">run</span><span class="o">.</span><span class="n">manifest</span><span class="o">.</span><span class="n">config_hash</span><span class="p">,</span>
+<a id="__codelineno-15-12" name="__codelineno-15-12" href="#__codelineno-15-12"></a>    <span class="n">current_dataset_hash</span><span class="o">=</span><span class="n">run</span><span class="o">.</span><span class="n">manifest</span><span class="o">.</span><span class="n">dataset_hash</span><span class="p">,</span>
+<a id="__codelineno-15-13" name="__codelineno-15-13" href="#__codelineno-15-13"></a>    <span class="n">current_fingerprint</span><span class="o">=</span><span class="n">capture_fingerprint</span><span class="p">(),</span>
+<a id="__codelineno-15-14" name="__codelineno-15-14" href="#__codelineno-15-14"></a><span class="p">)</span>
+<a id="__codelineno-15-15" name="__codelineno-15-15" href="#__codelineno-15-15"></a><span class="nb">print</span><span class="p">(</span><span class="n">verification</span><span class="o">.</span><span class="n">reproducible</span><span class="p">,</span> <span class="n">verification</span><span class="o">.</span><span class="n">differences</span><span class="p">)</span>
+<a id="__codelineno-15-16" name="__codelineno-15-16" href="#__codelineno-15-16"></a>
+<a id="__codelineno-15-17" name="__codelineno-15-17" href="#__codelineno-15-17"></a><span class="c1"># A full reproducibility recipe (seed, hashes, env flags, git SHA):</span>
+<a id="__codelineno-15-18" name="__codelineno-15-18" href="#__codelineno-15-18"></a><span class="n">recipe</span> <span class="o">=</span> <span class="n">engine</span><span class="o">.</span><span class="n">replay_command</span><span class="p">(</span><span class="n">run</span><span class="o">.</span><span class="n">manifest</span><span class="o">.</span><span class="n">run_id</span><span class="p">)</span>
+<a id="__codelineno-15-19" name="__codelineno-15-19" href="#__codelineno-15-19"></a><span class="nb">print</span><span class="p">(</span><span class="n">kernel_determinism_flags</span><span class="p">())</span>        <span class="c1"># env vars for bitwise reproducibility</span>
 </code></pre></div>
 <p>The lineage DAG lets you trace any artifact back to the exact dataset, code,
 and config that produced it — the model-lineage requirement behind modern AI
