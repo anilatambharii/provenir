@@ -4,6 +4,37 @@ All notable changes to Provenir are documented here.
 
 ---
 
+## v0.5.0 — RH-Bench + research artifacts (2026)
+
+Research track. After an extensive literature survey (which found that both
+RL-stage contamination detection and reward-hacking detector benchmarks were
+already occupied by 2025–2026 work), this release ships an **honestly-framed,
+unifying** artifact plus the framework's own software-paper submission.
+
+- **RH-Bench** (`provenir.bench.rhbench`): a reproducible benchmark for
+  *evaluating* reward-hacking detectors. An 8-category taxonomy grounded in the
+  formal proxy-up/true-down definition; a deterministic labeled-trajectory corpus
+  generator; a detector-evaluation protocol reporting per-category and overall
+  precision/recall/F1/AUROC (Mann-Whitney U); and two deltas over prior
+  detector benchmarks — **held-out hack-TYPE generalization** (`evaluate_held_out`,
+  vs. held-out environments in prior work) and a **compute-saved-by-early-detection**
+  metric (`compute_savings`) wired to the training gate. Baseline detectors
+  included (`ProvenirDetector`, proxy-divergence, length, random). Framed as
+  unifying/standardizing, not first — cites TRACE (arXiv:2601.20103), Cheap
+  Reward Hacking Detection (arXiv:2606.08893), Shihab et al. (arXiv:2507.05619),
+  and EvalStop (arXiv:2606.04145).
+- **JOSS submission** (`paper/paper.md`, `paper.bib`): a software paper for the
+  framework itself (reviews software, not novelty — an achievable venue).
+- **Research skeleton** (`paper/rhbench_paper.md`): an honestly-positioned draft
+  targeting TMLR or the NeurIPS Evaluations & Datasets track.
+
+Known limitation: the released RH-Bench corpus is synthetic, so every hack
+carries a proxy-divergence signature and strong baselines score near-perfect
+AUROC — the benchmark is not yet discriminative. Adding subtler/adversarial
+hacks and human-verified real trajectories is the primary next step.
+
+---
+
 ## v0.4.0 — Loop Doctor + Agentic Environments (2026)
 
 Two features that make the loops *intelligent* and unlock agentic post-training.
