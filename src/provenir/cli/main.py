@@ -142,6 +142,52 @@ def main() -> None:  # noqa: C901 – CLI dispatcher, complexity is expected
     rlaif_p.add_argument("--iterations", type=int, default=3)
     rlaif_p.add_argument("--output", default="artifacts/rlaif/results.json")
 
+    # --- rl (verifiable-reward RL with flight recorder) ---
+    rl_p = subparsers.add_parser(
+        "rl", help="Run verifiable-reward RL (GRPO/DAPO/GSPO) with flight recorder"
+    )
+    rl_p.add_argument("--dataset", default="tests/fixtures/sample.jsonl")
+    rl_p.add_argument(
+        "--algorithm", choices=["grpo", "dapo", "gspo"], default="grpo"
+    )
+    rl_p.add_argument(
+        "--verifier",
+        choices=["exact_answer", "math", "contains"],
+        default="exact_answer",
+    )
+    rl_p.add_argument("--max-steps", type=int, default=2)
+    rl_p.add_argument("--group-size", type=int, default=8)
+    rl_p.add_argument("--output", default="artifacts/rl/result.json")
+
+    # --- contamination (train/eval overlap firewall) ---
+    contam_p = subparsers.add_parser(
+        "contamination", help="Detect train/eval contamination"
+    )
+    contam_p.add_argument("train", help="Path to training JSONL")
+    contam_p.add_argument("eval", help="Path to evaluation JSONL")
+    contam_p.add_argument(
+        "--method", choices=["ngram", "exact", "embedding"], default="ngram"
+    )
+    contam_p.add_argument("--text-key", default="prompt")
+    contam_p.add_argument("--output", default="artifacts/contamination/report.json")
+
+    # --- passport (Model Passport / BOM) ---
+    passport_p = subparsers.add_parser(
+        "passport", help="Inspect or verify a signed Model Passport"
+    )
+    passport_sub = passport_p.add_subparsers(dest="passport_command")
+
+    passport_show_p = passport_sub.add_parser("show", help="Print a passport as markdown")
+    passport_show_p.add_argument("path", help="Path to a passport JSON file")
+
+    passport_verify_p = passport_sub.add_parser(
+        "verify", help="Verify a passport's HMAC attestation"
+    )
+    passport_verify_p.add_argument("path", help="Path to a passport JSON file")
+    passport_verify_p.add_argument(
+        "--key", required=True, help="Signing key (utf-8 string)"
+    )
+
     args = parser.parse_args()
 
     # -----------------------------------------------------------------------
@@ -338,6 +384,81 @@ def main() -> None:  # noqa: C901 – CLI dispatcher, complexity is expected
         ]
         output_path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
         print(f"RLAIF complete: {len(iterations)} iterations → {args.output}")
+        return
+
+    if args.command == "rl":
+        from provenir.environments import (
+            ContainsVerifier,
+            ExactAnswerVerifier,
+            MathVerifier,
+        )
+        from provenir.environments.base import Verifier
+        from provenir.observability import FlightRecorder, RewardHackingDetector
+        from provenir.train.algorithms import GRPOConfig
+        from provenir.train.rl import DAPOConfig, GSPOConfig, RLOrchestrator
+
+        dataset = JsonlDataset.from_path(args.dataset)
+        verifier_map: dict[str, Verifier] = {
+            "exact_answer": ExactAnswerVerifier(),
+            "math": MathVerifier(),
+            "contains": ContainsVerifier(required=["the"]),
+        }
+        verifier = verifier_map[args.verifier]
+        algorithm: GRPOConfig | DAPOConfig | GSPOConfig
+        if args.algorithm == "dapo":
+            algorithm = DAPOConfig(group_size=args.group_size, max_steps=args.max_steps)
+        elif args.algorithm == "gspo":
+            algorithm = GSPOConfig(group_size=args.group_size, max_steps=args.max_steps)
+        else:
+            algorithm = GRPOConfig(group_size=args.group_size, max_steps=args.max_steps)
+        orchestrator = RLOrchestrator(
+            algorithm=algorithm,
+            verifier=verifier,
+            flight_recorder=FlightRecorder(),
+            hacking_detector=RewardHackingDetector(),
+        )
+        rl_result = orchestrator.run(train_dataset=dataset)
+        output_path = Path(args.output)
+        output_path.parent.mkdir(parents=True, exist_ok=True)
+        output_path.write_text(json.dumps(rl_result.to_dict(), indent=2), encoding="utf-8")
+        print(f"RL ({args.algorithm}) complete: {rl_result.steps_completed} steps")
+        print(f"  mean reward:   {rl_result.mean_reward:.3f}")
+        print(f"  anomalies:     {rl_result.anomaly_count}")
+        print(f"  hacking rate:  {rl_result.hacking_rate:.3f}")
+        print(f"  halted:        {rl_result.halted}  →  {args.output}")
+        return
+
+    if args.command == "contamination":
+        from provenir.eval.contamination import ContaminationChecker, ContaminationConfig
+
+        train_ds = JsonlDataset.from_path(args.train)
+        eval_ds = JsonlDataset.from_path(getattr(args, "eval"))
+        checker = ContaminationChecker(
+            ContaminationConfig(method=args.method, text_key=args.text_key)
+        )
+        report = checker.check_datasets(train_ds, eval_ds)
+        output_path = Path(args.output)
+        output_path.parent.mkdir(parents=True, exist_ok=True)
+        output_path.write_text(json.dumps(report.to_dict(), indent=2), encoding="utf-8")
+        verdict = "CLEAN" if report.is_clean else "CONTAMINATED"
+        print(f"Contamination check ({args.method}): {verdict}")
+        print(f"  hits:               {len(report.hits)}")
+        print(f"  contamination rate: {report.contamination_rate:.3f}  →  {args.output}")
+        return
+
+    if args.command == "passport":
+        from provenir.governance.passport import ModelPassport
+
+        if args.passport_command in (None, ""):
+            passport_p.print_help()
+            return
+        data = json.loads(Path(args.path).read_text(encoding="utf-8"))
+        passport = ModelPassport.from_dict(data)
+        if args.passport_command == "show":
+            print(passport.to_markdown())
+        elif args.passport_command == "verify":
+            valid = passport.verify(args.key.encode("utf-8"))
+            print(f"Attestation valid: {valid}")
         return
 
     parser.print_help()

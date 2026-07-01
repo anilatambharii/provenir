@@ -12,6 +12,8 @@ build/
 dist/
 artifacts/
 .judge_cache/
+.provenir_judge_cache/
+site/
 *.jsonl
 !examples/*.jsonl
 !tests/fixtures/*.jsonl

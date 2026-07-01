@@ -49,6 +49,8 @@ nav:
       - Installation: installation.md
   - Guides:
       - Core Concepts: concepts.md
+      - Trust Layer: guides/trust-layer.md
+      - Reward-Hacking & RL Observability: guides/trust-layer.md
       - RLAIF Pipeline: guides/rlaif.md
       - Data Flywheel: guides/flywheel.md
       - RAG Dataset Generation: guides/rag.md

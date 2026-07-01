@@ -4,6 +4,87 @@ All notable changes to Provenir are documented here.
 
 ---
 
+## v0.3.0 — The Trust Layer (2026)
+
+Major release — Provenir becomes **the trust layer for model post-training**.
+It orchestrates the best RL engines (verl, TRL, Unsloth) instead of
+reimplementing kernels, and wraps every run with RL observability, reward
+verification, contamination-safe evaluation, deterministic replay, and a
+signed Model Passport. Zero breaking changes.
+
+### Pillar A — RL Flight Recorder + reward-hacking detection
+
+- **`provenir.observability` — RL Flight Recorder**: a "black box" for RL runs.
+  Detects KL blowup/collapse, entropy collapse, response-length explosion, GRPO
+  advantage collapse, reward-std collapse, reward spikes, and gradient
+  explosion. RL-native observability that verl / TRL / OpenRLHF do not ship.
+- **`provenir.observability` — RewardHackingDetector**: catches the #1 RL
+  failure mode — length inflation, format exploits, test tampering
+  (`unittest.skip` / `sys.exit(0)` / monkeypatch), verifier gaming, proxy-reward
+  divergence, degenerate repetition, and advantage collapse.
+
+### Pillar B — Contamination-safe trustworthy eval + judge calibration
+
+- **`provenir.eval.contamination`**: contamination firewall with 13-gram,
+  embedding, and exact train/eval overlap detection, plus MinHash for scale.
+- **`provenir.eval.canary`**: canary-tagged private eval vaults that detect if
+  a held-out set leaks into training.
+- **`provenir.eval.judge_calibration`**: measures LLM-judge position bias,
+  self-consistency, and flip-rate. Adds `DebiasedJudge` (evaluates both
+  orderings) and `EnsembleJudge` (majority vote).
+
+### Pillar C — Verifiable-reward environments + GRPO/DAPO/GSPO orchestration
+
+- **`provenir.environments`**: sandboxed, hack-resistant reward functions for
+  RLVR behind an OpenEnv-compatible `Environment` protocol — `ExactAnswerVerifier`,
+  `MathVerifier`, `RegexFormatVerifier`, `JSONSchemaVerifier`, `ToolCallVerifier`,
+  `ContainsVerifier`, `CompositeVerifier`, and a `CodeVerifier` with a
+  `PythonSandbox` (subprocess isolation + reward-hacking detection).
+- **`provenir.train.rl`**: GRPO + DAPO (decoupled clip + dynamic sampling,
+  ByteDance) + GSPO (sequence-level, stabilizes MoE, Qwen) configs, plus a real
+  `RLOrchestrator` loop (rollout → verify → reward → flight recorder → hacking
+  detector → eval gate; gradient step delegates to a backend).
+- **`provenir.train.backends.adapters`**: backend-agnostic adapters wrapping
+  verl / TRL / Unsloth with capability detection + a `BackendSelector` that
+  auto-routes by scale tier.
+- **`provenir.train.rl_eval_gate`**: fuses contamination-safety + regression +
+  reward-hacking into one loop guard that halts a run before it wastes GPU
+  budget.
+
+### Pillar D — Deterministic replay + lineage DAG + signed Model Passport
+
+- **`provenir.provenance`**: content-addressed environment fingerprint,
+  kernel-determinism flags, a lineage DAG (dataset → run → adapter → eval →
+  merge), and a `ReplayEngine`. Maps to EU AI Act Article 12 (tamper-proof
+  audit trails + model lineage, enforced Aug 2, 2026).
+- **`provenir.governance.bom`**: a portable Bill-of-Materials of what data +
+  code + evals + config produced a model.
+- **`provenir.governance.passport`**: a signed (HMAC-SHA256) Model Passport
+  over the BOM with compliance risk flags (`unscanned_pii`,
+  `contaminated_eval`, `unknown_license`).
+
+### `import provenir` wrapper
+
+- **`provenir.integrations`**: the viral 3-line substrate — drop provenance +
+  trustworthy eval + reward-hacking detection + a signed passport into ANY
+  training run via `with provenir.track(...) as run:`. Exposes `run.manifest`,
+  `run.flight_recorder`, `run.hacking_report`, and `run.passport`.
+
+### New CLI commands
+
+- `provenir rl <config.yaml>` — verifiable-reward RL with the flight recorder
+  (`--algorithm grpo|dapo|gspo`, `--verifier exact_answer|math|contains`).
+- `provenir contamination <train.jsonl> <eval.jsonl>` — train/eval overlap check.
+- `provenir passport show|verify <passport.json>` — inspect / verify a signed
+  Model Passport.
+
+### Test Suite
+
+- 909 tests — all passing.
+- CI: ruff + mypy (strict) + pytest on Python 3.11 and 3.12.
+
+---
+
 ## v0.2.0 (2025)
 
 Major release — acquisition-grade feature set. Full parity with and significant

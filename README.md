@@ -1,18 +1,22 @@
-﻿# Provenir
+# Provenir
 
 [![CI](https://github.com/anilatambharii/provenir/actions/workflows/ci.yml/badge.svg)](https://github.com/anilatambharii/provenir/actions/workflows/ci.yml)
 [![PyPI](https://img.shields.io/pypi/v/provenir.svg)](https://pypi.org/project/provenir/)
 [![Python](https://img.shields.io/pypi/pyversions/provenir.svg)](https://pypi.org/project/provenir/)
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
-[![Tests](https://img.shields.io/badge/tests-456%20passing-brightgreen.svg)](https://github.com/anilatambharii/provenir/actions)
+[![Tests](https://img.shields.io/badge/tests-909%20passing-brightgreen.svg)](https://github.com/anilatambharii/provenir/actions)
 [![Docs](https://img.shields.io/badge/docs-online-blue.svg)](https://anilatambharii.github.io/provenir)
 
-**Reproducible, evaluation-first orchestration for LLM fine-tuning.**
+**The trust layer for model post-training — reproducible, evaluation-first orchestration for LLM fine-tuning and RL.**
 
-Provenir sits above training engines (TRL, Unsloth, TorchTune) and coordinates
-every layer of the fine-tuning lifecycle â€” from raw data through preference
-learning, RAG dataset generation, model merging, benchmark evaluation, and
-production serving â€” in a single, auditable, reproducible pipeline.
+Provenir sits above training engines (verl, TRL, Unsloth) and coordinates
+every layer of the fine-tuning and reinforcement-learning lifecycle — from raw
+data through preference learning, verifiable-reward RL, RAG dataset generation,
+model merging, benchmark evaluation, and production serving — in a single,
+auditable, reproducible pipeline. It adds the trust primitives that raw
+throughput engines leave out: RL observability, reward-hacking detection,
+contamination-safe evaluation, deterministic replay, and a signed Model
+Passport.
 
 ```
 pip install provenir
@@ -20,76 +24,170 @@ pip install "provenir[train]"          # SFT + DPO + LoRA / QLoRA via TRL
 pip install "provenir[all]"            # Everything
 ```
 
-> **v0.2.0** Â· Apache-2.0 Â· Python â‰¥ 3.11 Â· 456 tests Â· zero breaking changes
+> **v0.3.0** · Apache-2.0 · Python ≥ 3.11 · 909 tests · zero breaking changes
 
 ---
 
 ## Why Provenir?
 
 Every major fine-tuning framework optimises for raw throughput.
-Provenir optimises for **trust** â€” the ability to reproduce a run, audit every
-decision, catch regressions before they reach production, and iterate with
-AI-generated feedback instead of human labellers.
+Provenir optimises for **trust** — the ability to reproduce a run, audit every
+decision, catch regressions and reward-hacking before they reach production,
+verify rewards that cannot be gamed, and prove exactly what data and code
+produced a model.
 
-| | Axolotl | TRL | Unsloth | **Provenir** |
-|---|:---:|:---:|:---:|:---:|
-| SFT / DPO / GRPO | âœ“ | âœ“ | âœ“ | âœ“ |
-| LoRA / QLoRA | âœ“ | âœ“ | âœ“ | âœ“ |
-| Reproducible manifests | â€” | â€” | â€” | âœ“ |
-| Eval-in-the-loop | â€” | partial | â€” | âœ“ |
-| LLM-as-Judge pipeline | â€” | â€” | â€” | âœ“ |
-| **RLAIF (no human labels)** | â€” | â€” | â€” | âœ“ |
-| Data flywheel (auto-augment) | â€” | â€” | â€” | âœ“ |
-| RAG dataset generation | â€” | â€” | â€” | âœ“ |
-| Adapter merging (SLERP/TIES/DARE) | â€” | â€” | â€” | âœ“ |
-| Standard benchmark suite | â€” | â€” | â€” | âœ“ |
-| Semantic decontamination | â€” | â€” | â€” | âœ“ |
-| REST API server | â€” | â€” | â€” | âœ“ |
-| Full governance & audit log | â€” | â€” | â€” | âœ“ |
-| Plugin architecture | â€” | â€” | â€” | âœ“ |
+| | Axolotl | TRL | Unsloth | verl | **Provenir** |
+|---|:---:|:---:|:---:|:---:|:---:|
+| SFT / DPO / GRPO | ✓ | ✓ | ✓ | ✓ | ✓ |
+| LoRA / QLoRA | ✓ | ✓ | ✓ | ✓ | ✓ |
+| Reproducible manifests | — | — | — | — | ✓ |
+| Eval-in-the-loop | — | partial | — | — | ✓ |
+| LLM-as-Judge pipeline | — | — | — | — | ✓ |
+| **RLAIF (no human labels)** | — | — | — | — | ✓ |
+| Data flywheel (auto-augment) | — | — | — | — | ✓ |
+| RAG dataset generation | — | — | — | — | ✓ |
+| Adapter merging (SLERP/TIES/DARE) | — | — | — | — | ✓ |
+| Standard benchmark suite | — | — | — | — | ✓ |
+| Semantic decontamination | — | — | — | — | ✓ |
+| REST API server | — | — | — | — | ✓ |
+| Full governance & audit log | — | — | — | — | ✓ |
+| Plugin architecture | — | — | — | — | ✓ |
+| **RL Flight Recorder** | — | — | — | — | ✓ |
+| **Reward-hacking detection** | — | — | — | — | ✓ |
+| **Verifiable-reward environments (RLVR)** | — | — | — | — | ✓ |
+| **Contamination firewall** | — | — | — | — | ✓ |
+| **Judge calibration** | — | — | — | — | ✓ |
+| **Deterministic replay / lineage DAG** | — | — | — | — | ✓ |
+| **Signed Model Passport** | — | — | — | — | ✓ |
+
+---
+
+## New in v0.3 — The Trust Layer
+
+v0.3.0 turns Provenir into the **trust layer for model post-training**. It
+orchestrates the best RL engines (verl, TRL, Unsloth) rather than reimplementing
+kernels, and wraps every run with the observability, verification, and
+provenance that RL at scale actually needs. Four pillars:
+
+### A. RL Flight Recorder + reward-hacking detection
+
+A **black box for RL runs**. The Flight Recorder (`provenir.observability`)
+watches every step and flags KL blowup/collapse, entropy collapse,
+response-length explosion, GRPO advantage collapse, reward-std collapse, reward
+spikes, and gradient explosion. The **reward-hacking detector** catches the #1
+RL failure mode — length inflation, format exploits, test tampering
+(`unittest.skip` / `sys.exit(0)` / monkeypatch), verifier gaming, proxy-reward
+divergence, degenerate repetition, and advantage collapse. No other OSS RL
+framework ships RL-native observability.
+
+### B. Contamination-safe trustworthy eval + judge calibration
+
+A **contamination firewall** (`provenir.eval.contamination`,
+`provenir.eval.canary`) detects train/eval overlap via 13-gram, embedding, and
+exact matching (with MinHash for scale) and supports **canary-tagged private
+eval vaults** that fire if a held-out set leaks into training. **Judge
+calibration** (`provenir.eval.judge_calibration`) measures LLM-judge position
+bias, self-consistency, and flip-rate, with a `DebiasedJudge` (evaluates both
+orderings) and `EnsembleJudge` (majority vote).
+
+### C. Verifiable-reward environments + GRPO/DAPO/GSPO orchestration
+
+A library of **sandboxed, hack-resistant reward functions** for RLVR
+(`provenir.environments`): `ExactAnswerVerifier`, `MathVerifier`,
+`RegexFormatVerifier`, `JSONSchemaVerifier`, `ToolCallVerifier`,
+`ContainsVerifier`, `CompositeVerifier`, and a `CodeVerifier` backed by a
+`PythonSandbox` (subprocess isolation + reward-hacking detection) — all behind an
+OpenEnv-compatible `Environment` protocol. Provenir's `RLOrchestrator`
+(`provenir.train.rl`) runs a real rollout → verify → reward → flight recorder →
+hacking detector → eval-gate loop over **GRPO + DAPO + GSPO**, delegating the
+gradient step to **backend-agnostic adapters** (`provenir.train.backends.adapters`)
+that wrap verl / TRL / Unsloth with capability detection and a `BackendSelector`
+that auto-routes by scale tier.
+
+### D. Deterministic replay + lineage DAG + signed Model Passport
+
+**Deterministic replay** (`provenir.provenance`) captures a content-addressed
+environment fingerprint, kernel-determinism flags, a lineage DAG
+(dataset → run → adapter → eval → merge), and a `ReplayEngine`. The **Model
+Passport / BOM** (`provenir.governance.bom`, `provenir.governance.passport`) is
+a signed (HMAC-SHA256), portable Bill-of-Materials of exactly what data, code,
+evals, and config produced a model — with compliance risk flags
+(`unscanned_pii`, `contaminated_eval`, `unknown_license`). Maps directly to
+**EU AI Act Article 12** (tamper-proof audit trails + model lineage, enforced
+Aug 2, 2026).
+
+### The `import provenir` wrapper — the viral 3-line substrate
+
+Drop provenance, trustworthy eval, reward-hacking detection, and a signed
+passport into **any** training loop:
+
+```python
+import provenir
+
+with provenir.track("my-run", dataset=train_ds) as run:
+    for step, metrics in training_loop():
+        run.log_step(metrics)
+    run.record_eval("mmlu", score=0.71)
+
+# run.manifest, run.flight_recorder, run.hacking_report, run.passport
+```
+
+See the [Trust Layer guide](https://anilatambharii.github.io/provenir/guides/trust-layer/)
+for full examples.
 
 ---
 
 ## Architecture
 
 ```
-â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
-â”‚                      provenir CLI / REST API                      â”‚
-â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
-               â”‚                                   â”‚
-   â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â–¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”           â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â–¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
-   â”‚      Orchestration    â”‚           â”‚       Data Pipeline        â”‚
-   â”‚  â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â” â”‚           â”‚  â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”   â”‚
-   â”‚  â”‚  RunManifest     â”‚ â”‚           â”‚  â”‚  JsonlDataset      â”‚   â”‚
-   â”‚  â”‚  (content-addr.) â”‚ â”‚           â”‚  â”‚  QualityScorer     â”‚   â”‚
-   â”‚  â”œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¤ â”‚           â”‚  â”‚  CurriculumSampler â”‚   â”‚
-   â”‚  â”‚  RLAIFPipeline  â”‚ â”‚           â”‚  â”‚  RAGDataGenerator  â”‚   â”‚
-   â”‚  â”‚  DataFlywheel   â”‚ â”‚           â”‚  â”‚  DataFlywheel      â”‚   â”‚
-   â”‚  â”œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¤ â”‚           â”‚  â”‚  PromptTemplates   â”‚   â”‚
-   â”‚  â”‚  HyperparmSweep â”‚ â”‚           â”‚  â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜   â”‚
-   â”‚  â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜ â”‚           â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
-   â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
-               â”‚
-   â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â–¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
-   â”‚                       Training Backends                        â”‚
-   â”‚   TRLBackend (SFT Â· DPO Â· LoRA Â· QLoRA)   StubBackend        â”‚
-   â”‚   DistributedConfig (FSDP Â· DeepSpeed Â· DDP)                 â”‚
-   â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
-               â”‚
-   â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â–¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
-   â”‚                      Evaluation Layer                          â”‚
-   â”‚  ExactMatch Â· TokenF1 Â· BLEU-4 Â· ROUGE-L Â· Wilson CI         â”‚
-   â”‚  RAGEvaluator (faithfulness Â· precision Â· relevance)          â”‚
-   â”‚  BenchmarkEvaluator (MMLU Â· HellaSwag Â· ARC Â· GSM8K Â· â€¦)     â”‚
-   â”‚  LLM-as-Judge (StubJudge Â· CachedJudge Â· Anthropic Â· OpenAI) â”‚
-   â”‚  EvalCallback (early stopping Â· regression gate)              â”‚
-   â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
-               â”‚
-   â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â–¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
-   â”‚                      Governance Layer                          â”‚
-   â”‚  AuditLogger Â· PIIScanner Â· SecretScanner Â· ModelCardGen      â”‚
-   â”‚  SemanticDecontamination Â· AdapterRegistry Â· HubClient        â”‚
-   â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
+┌──────────────────────────────────────────────────────────────────┐
+│                      provenir CLI / REST API                      │
+└──────────────┬───────────────────────────────────┬───────────────┘
+               │                                   │
+   ┌───────────▼──────────┐           ┌────────────▼──────────────┐
+   │      Orchestration    │           │       Data Pipeline        │
+   │  ┌─────────────────┐ │           │  ┌──────────────────┐   │
+   │  │  RunManifest     │ │           │  │  JsonlDataset      │   │
+   │  │  (content-addr.) │ │           │  │  QualityScorer     │   │
+   │  ├─────────────────┤ │           │  │  CurriculumSampler │   │
+   │  │  RLAIFPipeline  │ │           │  │  RAGDataGenerator  │   │
+   │  │  RLOrchestrator │ │           │  │  DataFlywheel      │   │
+   │  │  DataFlywheel   │ │           │  │  PromptTemplates   │   │
+   │  ├─────────────────┤ │           │  └──────────────────┘   │
+   │  │  HyperparmSweep │ │           └───────────────────────────┘
+   │  └─────────────────┘ │
+   └───────────┬──────────┘
+               │
+   ┌───────────▼──────────────────────────────────────────────────┐
+   │                 Trust Layer (new in v0.3)                      │
+   │  RL Flight Recorder · Reward-hacking detector                 │
+   │  Verifiable-reward environments (RLVR) · Contamination firewall│
+   │  Canary vaults · Judge calibration · Deterministic replay      │
+   │  Lineage DAG · Signed Model Passport / BOM                     │
+   └───────────┬──────────────────────────────────────────────────┘
+               │
+   ┌───────────▼──────────────────────────────────────────────────┐
+   │                       Training Backends                        │
+   │   TRLBackend (SFT · DPO · LoRA · QLoRA)   StubBackend        │
+   │   BackendSelector → verl · TRL · Unsloth adapters            │
+   │   DistributedConfig (FSDP · DeepSpeed · DDP)                 │
+   └───────────┬──────────────────────────────────────────────────┘
+               │
+   ┌───────────▼──────────────────────────────────────────────────┐
+   │                      Evaluation Layer                          │
+   │  ExactMatch · TokenF1 · BLEU-4 · ROUGE-L · Wilson CI         │
+   │  RAGEvaluator (faithfulness · precision · relevance)          │
+   │  BenchmarkEvaluator (MMLU · HellaSwag · ARC · GSM8K · …)     │
+   │  LLM-as-Judge (StubJudge · CachedJudge · Anthropic · OpenAI) │
+   │  EvalCallback (early stopping · regression gate)              │
+   └───────────┬──────────────────────────────────────────────────┘
+               │
+   ┌───────────▼──────────────────────────────────────────────────┐
+   │                      Governance Layer                          │
+   │  AuditLogger · PIIScanner · SecretScanner · ModelCardGen      │
+   │  SemanticDecontamination · AdapterRegistry · HubClient        │
+   │  Model Passport / BOM (signed) · Lineage DAG                  │
+   └──────────────────────────────────────────────────────────────┘
 ```
 
 ---
@@ -97,7 +195,7 @@ AI-generated feedback instead of human labellers.
 ## Installation
 
 ```bash
-# Minimal â€” manifests, eval, governance, CLI
+# Minimal — manifests, eval, governance, CLI
 pip install provenir
 
 # Full training stack (SFT + DPO + LoRA/QLoRA via TRL)
@@ -108,7 +206,7 @@ pip install "provenir[serve]"            # REST API server
 pip install "provenir[hub]"             # HuggingFace Hub push / pull
 pip install "provenir[merge]"           # Adapter merging
 pip install "provenir[semantic]"        # Semantic decontamination
-pip install "provenir[benchmarks]"      # MMLU, HellaSwag, ARC, â€¦
+pip install "provenir[benchmarks]"      # MMLU, HellaSwag, ARC, …
 pip install "provenir[judge-anthropic]" # LLM-as-judge via Claude
 pip install "provenir[judge-openai]"    # LLM-as-judge via GPT-4o
 
@@ -120,7 +218,7 @@ pip install "provenir[all]"
 
 ## Quick Start
 
-### 1 â€” Train from a YAML config
+### 1 — Train from a YAML config
 
 ```yaml
 # config.yaml
@@ -143,10 +241,10 @@ observability_project: my-project
 provenir train config.yaml --dataset data/train.jsonl
 ```
 
-Every run produces a **content-addressed manifest** â€” a tamper-evident record
+Every run produces a **content-addressed manifest** — a tamper-evident record
 of the exact config hash, dataset hash, git SHA, and provenance chain.
 
-### 2 â€” Evaluate predictions
+### 2 — Evaluate predictions
 
 ```bash
 provenir eval predictions.jsonl --dataset data/eval.jsonl --metrics all
@@ -155,7 +253,32 @@ provenir eval predictions.jsonl --dataset data/eval.jsonl --metrics all
 Outputs `exact_match`, `token_f1`, `bleu4`, `rouge_l`, plus Wilson 95%
 confidence intervals and a regression gate vs. the baseline.
 
-### 3 â€” Run the RLAIF pipeline (no human labels needed)
+### 3 — Verifiable-reward RL with a flight recorder
+
+```bash
+provenir rl config.yaml --dataset data/train.jsonl \
+  --algorithm grpo --verifier math
+```
+
+Runs the `RLOrchestrator` loop (rollout → verify → reward → flight recorder →
+hacking detector → eval gate) with a hack-resistant verifiable reward and full
+RL observability. `--algorithm` accepts `grpo | dapo | gspo`; `--verifier`
+accepts `exact_answer | math | contains`.
+
+### 4 — Wrap any training run with `import provenir`
+
+```python
+import provenir
+
+with provenir.track("my-run", dataset=train_ds) as run:
+    for step, metrics in training_loop():
+        run.log_step(metrics)
+    run.record_eval("mmlu", score=0.71)
+
+# run.manifest, run.flight_recorder, run.hacking_report, run.passport
+```
+
+### 5 — Run the RLAIF pipeline (no human labels needed)
 
 ```python
 from provenir.train.rlaif import RLAIFConfig, RLAIFPipeline
@@ -179,7 +302,7 @@ for it in pipeline.run(train_ds, eval_ds):
           f"eval={it.eval_result}")
 ```
 
-### 4 â€” Generate a RAG training dataset from documents
+### 6 — Generate a RAG training dataset from documents
 
 ```python
 from provenir.data.rag_generator import RAGDataGenerator, RAGGeneratorConfig
@@ -197,7 +320,7 @@ dataset.save("data/rag_train.jsonl")
 print(f"Generated {len(dataset.records)} Q&A pairs")
 ```
 
-### 5 â€” Data flywheel: auto-augment from eval failures
+### 7 — Data flywheel: auto-augment from eval failures
 
 ```python
 from provenir.data.flywheel import DataFlywheel, FlywheelConfig
@@ -215,7 +338,7 @@ flywheel = DataFlywheel(
 augmented_dataset = flywheel.run(train_dataset, eval_dataset)
 ```
 
-### 6 â€” Merge LoRA adapters
+### 8 — Merge LoRA adapters
 
 ```bash
 provenir merge adapter_v1/ adapter_v2/ --strategy slerp --output merged/
@@ -236,7 +359,7 @@ result = merger.merge(
 print(f"Merged to {result.output_path} using {result.strategy}")
 ```
 
-### 7 â€” Run standard benchmarks
+### 9 — Run standard benchmarks
 
 ```bash
 provenir benchmark --model-path ./my-adapter --benchmarks mmlu hellaswag arc_easy
@@ -255,33 +378,33 @@ for r in results:
     print(f"{r.benchmark}: {r.score:.3f} ({r.num_examples} examples)")
 ```
 
-### 8 â€” Push to HuggingFace Hub
+### 10 — Push to HuggingFace Hub
 
 ```bash
 provenir hub push ./my-adapter --repo-id myorg/llama3-finetuned --private
 ```
 
-### 9 â€” Start the REST API server
+### 11 — Start the REST API server
 
 ```bash
 provenir serve --host 0.0.0.0 --port 8000
 ```
 
 ```
-GET  /health              â†’ {"status": "ok"}
-POST /jobs/train          â†’ Submit training job, returns manifest
-GET  /manifests           â†’ List all run IDs
-GET  /manifests/{run_id}  â†’ Retrieve manifest by ID
-POST /eval                â†’ Run evaluation on predictions
-GET  /adapters            â†’ List registered adapters
-GET  /audit               â†’ Full audit log (JSONL)
+GET  /health              → {"status": "ok"}
+POST /jobs/train          → Submit training job, returns manifest
+GET  /manifests           → List all run IDs
+GET  /manifests/{run_id}  → Retrieve manifest by ID
+POST /eval                → Run evaluation on predictions
+GET  /adapters            → List registered adapters
+GET  /audit               → Full audit log (JSONL)
 ```
 
 ---
 
 ## Core Concepts
 
-### Manifests â€” Reproducibility by Default
+### Manifests — Reproducibility by Default
 
 Every training run produces a `RunManifest`: a content-addressed record that
 captures the SHA-256 hash of the config, dataset, git commit, random seed, and
@@ -302,7 +425,7 @@ Six built-in formats, all swappable at runtime:
 | `llama3` | Llama 3 / Meta's official format |
 | `mistral` | Mistral instruction format |
 | `phi3` | Microsoft Phi-3 format |
-| `raw_completion` | Plain prompt â†’ completion (legacy) |
+| `raw_completion` | Plain prompt → completion (legacy) |
 
 ```python
 from provenir.data.templates import TEMPLATE_REGISTRY
@@ -314,35 +437,58 @@ text = TEMPLATE_REGISTRY.format("llama3", {
 })
 ```
 
-### RLAIF Pipeline â€” The Unique Moat
+### RLAIF Pipeline — The Unique Moat
 
 Provenir is the **only open-source fine-tuning framework** that combines
 automated preference generation, DPO training, evaluation-gated iteration,
-and regression detection into a single reproducible loop â€” without requiring
+and regression detection into a single reproducible loop — without requiring
 human labellers.
 
 ```
-â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
-â”‚                    RLAIF Iteration Loop                      â”‚
-â”‚                                                             â”‚
-â”‚  dataset â”€â”€â–º generate N response variants per prompt        â”‚
-â”‚              â”€â”€â–º LLM judge: pairwise ranking                â”‚
-â”‚              â”€â”€â–º (chosen, rejected) preference pairs        â”‚
-â”‚              â”€â”€â–º DPO training                               â”‚
-â”‚              â”€â”€â–º automatic evaluation                       â”‚
-â”‚              â”€â”€â–º regression gate                            â”‚
-â”‚              â”€â”€â–º iterate (up to n_iterations)               â”‚
-â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
+┌─────────────────────────────────────────────────────────────┐
+│                    RLAIF Iteration Loop                      │
+│                                                             │
+│  dataset ──► generate N response variants per prompt        │
+│              ──► LLM judge: pairwise ranking                │
+│              ──► (chosen, rejected) preference pairs        │
+│              ──► DPO training                               │
+│              ──► automatic evaluation                       │
+│              ──► regression gate                            │
+│              ──► iterate (up to n_iterations)               │
+└─────────────────────────────────────────────────────────────┘
 ```
 
 Each iteration is fully logged, manifested, and replayable. The pipeline
 terminates early if quality regresses beyond the configured threshold.
 
+### Verifiable-Reward RL — RLVR without gaming
+
+For RL with verifiable rewards (RLVR), Provenir provides an OpenEnv-compatible
+`Environment` protocol and a library of hack-resistant verifiers. The
+`RLOrchestrator` fuses rollout, verification, reward-hacking detection, RL
+observability, and an eval gate into one loop over GRPO / DAPO / GSPO:
+
+```python
+from provenir.environments import MathVerifier
+from provenir.train.rl import RLOrchestrator, RLConfig
+
+orchestrator = RLOrchestrator(
+    config=RLConfig(algorithm="grpo"),   # grpo | dapo | gspo
+    verifier=MathVerifier(),
+)
+
+report = orchestrator.run(train_ds, eval_ds)
+# report.flight_recorder → per-step RL anomalies
+# report.hacking_report  → reward-hacking findings
+```
+
+See the [Trust Layer guide](https://anilatambharii.github.io/provenir/guides/trust-layer/).
+
 ### LLM-as-Judge
 
 ```python
 from provenir.eval.judge import (
-    StubJudge,      # deterministic, no API calls â€” for CI
+    StubJudge,      # deterministic, no API calls — for CI
     CachedJudge,    # SHA-256 disk cache over any judge
     AnthropicJudge, # Claude
     OpenAIJudge,    # GPT-4o
@@ -351,11 +497,23 @@ from provenir.eval.judge import (
 # Wrap any judge with disk caching
 judge = CachedJudge(AnthropicJudge(model="claude-haiku-4-5-20251001"))
 pref = judge.score_pairwise("Explain gravity", response_a, response_b)
-# â†’ Preference(preferred='a', confidence=0.87, rationale='...')
+# → Preference(preferred='a', confidence=0.87, rationale='...')
 
 scores = judge.score_rubric("Explain gravity", response, criteria=[
     "factual accuracy", "clarity", "conciseness"
 ])
+```
+
+To measure and remove judge bias, wrap judges with the calibration tooling:
+
+```python
+from provenir.eval.judge_calibration import DebiasedJudge, EnsembleJudge
+
+# Evaluate both orderings to remove position bias
+debiased = DebiasedJudge(AnthropicJudge())
+
+# Majority vote across multiple judges
+ensemble = EnsembleJudge([AnthropicJudge(), OpenAIJudge(), StubJudge()])
 ```
 
 ### Evaluation Layer
@@ -365,33 +523,60 @@ from provenir.eval.harness import MultiMetricEvaluator
 
 evaluator = MultiMetricEvaluator()
 result = evaluator.evaluate(dataset, predictions)
-# result.metrics â†’ {exact_match, token_f1, bleu4, rouge_l}
+# result.metrics → {exact_match, token_f1, bleu4, rouge_l}
 # result.metrics[*].mean, .ci_lower, .ci_upper (Wilson 95% CI)
 ```
 
-### Training Observability
+### RL Observability & Reward-Hacking Detection
 
 ```python
-from provenir.train.observability import ObservabilityConfig, TrainingObserver
+from provenir.observability import FlightRecorder, RewardHackingDetector
 
-observer = TrainingObserver(ObservabilityConfig(
-    backend="wandb",          # wandb | mlflow | tensorboard | none
-    project="my-project",
-    run_name="llama3-v2",
-    log_every_n_steps=10,
-    tags=("baseline", "lora"),
-))
+recorder = FlightRecorder()
+detector = RewardHackingDetector()
 
-with observer:
-    for step, metrics in training_loop():
-        observer.log_step(step, metrics)
-    observer.log_eval({"exact_match": 0.82, "bleu4": 0.61})
+for step, metrics in rl_loop():
+    recorder.log_step(metrics)     # KL, entropy, reward std, advantages, …
+
+for anomaly in recorder.anomalies():
+    print(anomaly.kind, anomaly.step, anomaly.detail)
+
+report = detector.analyze(rollouts)
+if report.is_hacking:
+    print("Reward hacking:", report.findings)
+```
+
+### Contamination Firewall
+
+Detect and remove training samples that overlap with your evaluation set —
+preventing inflated benchmark numbers:
+
+```python
+from provenir.eval.contamination import ContaminationChecker
+
+checker = ContaminationChecker()          # 13-gram + embedding + exact, MinHash at scale
+report  = checker.check(train_dataset, eval_dataset)
+print(f"Overlap: {report.overlap_ratio:.1%} across {report.n_hits} records")
+```
+
+Legacy `SemanticDecontaminationChecker` remains available and falls back to
+substring matching when `sentence-transformers` is not installed.
+
+### Model Passport / BOM
+
+```python
+from provenir.governance.passport import ModelPassport
+
+passport = ModelPassport.build(run.manifest, key="team-signing-key")
+passport.save("passport.json")           # signed HMAC-SHA256 Bill-of-Materials
+
+# Later, verify integrity and inspect compliance risk flags
+loaded = ModelPassport.load("passport.json")
+assert loaded.verify(key="team-signing-key")
+print(loaded.risk_flags)  # e.g. ["unscanned_pii", "contaminated_eval", "unknown_license"]
 ```
 
 ### Semantic Decontamination
-
-Detect and remove training samples that semantically overlap with your
-evaluation set â€” preventing inflated benchmark numbers:
 
 ```python
 from provenir.data.quality import SemanticDecontaminationChecker
@@ -428,15 +613,20 @@ if report.has_pii:
 ```
 provenir train <config.yaml>              Run a training job
 provenir eval <predictions.jsonl>         Evaluate predictions
+provenir rl <config.yaml>                 Verifiable-reward RL + flight recorder
+                                          (--algorithm grpo|dapo|gspo,
+                                           --verifier exact_answer|math|contains)
+provenir contamination <train> <eval>     Train/eval overlap check
+provenir passport show|verify <p.json>    Inspect / verify a signed Model Passport
 provenir audit                            Inspect the audit log
 provenir model-card                       Generate a model card
 provenir reproduce <manifest.json>        Reproduce a run exactly
 provenir sweep <config.yaml>              Hyperparameter sweep
 provenir compare <run_a> <run_b>          Side-by-side manifest diff
-provenir benchmark --model-path <path>    Run MMLU / HellaSwag / ARC / â€¦
+provenir benchmark --model-path <path>    Run MMLU / HellaSwag / ARC / …
 provenir merge <a/> <b/> --strategy slerp Merge LoRA adapters
-provenir hub push <adapter/> --repo-id â€¦  Push to HuggingFace Hub
-provenir hub pull <repo_id> --output â€¦    Pull from HuggingFace Hub
+provenir hub push <adapter/> --repo-id …  Push to HuggingFace Hub
+provenir hub pull <repo_id> --output …    Pull from HuggingFace Hub
 provenir serve                            Start REST API server
 provenir rlaif <config.yaml>              Run RLAIF pipeline
 ```
@@ -506,9 +696,9 @@ Powered by [EleutherAI lm-evaluation-harness](https://github.com/EleutherAI/lm-e
 
 | Strategy | Best For | Description |
 |---|---|---|
-| `slerp` | Two similar-task adapters | Spherical linear interpolation â€” preserves weight direction, blends magnitude smoothly |
-| `ties` | Dissimilar-task adapters | Magnitude trimming + sign election â€” reduces task interference |
-| `dare` | Many adapters | Random drop + rescale (DARE-TIES) â€” scales to 5+ adapters without magnitude collapse |
+| `slerp` | Two similar-task adapters | Spherical linear interpolation — preserves weight direction, blends magnitude smoothly |
+| `ties` | Dissimilar-task adapters | Magnitude trimming + sign election — reduces task interference |
+| `dare` | Many adapters | Random drop + rescale (DARE-TIES) — scales to 5+ adapters without magnitude collapse |
 
 ---
 
@@ -555,12 +745,12 @@ Interactive docs available at `http://localhost:8000/docs` (Swagger UI).
 | `hub` | `pip install "provenir[hub]"` | HuggingFace Hub push / pull |
 | `merge` | `pip install "provenir[merge]"` | SLERP / TIES / DARE adapter merging |
 | `semantic` | `pip install "provenir[semantic]"` | Embedding-based decontamination |
-| `benchmarks` | `pip install "provenir[benchmarks]"` | MMLU, HellaSwag, ARC, GSM8K, â€¦ |
+| `benchmarks` | `pip install "provenir[benchmarks]"` | MMLU, HellaSwag, ARC, GSM8K, … |
 | `judge-anthropic` | `pip install "provenir[judge-anthropic]"` | LLM-as-judge via Claude |
 | `judge-openai` | `pip install "provenir[judge-openai]"` | LLM-as-judge via GPT-4o |
 | `all` | `pip install "provenir[all]"` | Everything |
 
-All optional features degrade gracefully when their packages are absent â€”
+All optional features degrade gracefully when their packages are absent —
 stub implementations run without error so pipelines still work in CPU-only
 or sandboxed environments.
 
@@ -570,24 +760,41 @@ or sandboxed environments.
 
 ```
 src/provenir/
-â”œâ”€â”€ core/           RunManifest, RunConfig, DistributedConfig
-â”œâ”€â”€ data/           JsonlDataset, QualityScorer, CurriculumSampler,
-â”‚                   SemanticDecontaminationChecker, PromptTemplates (6 formats),
-â”‚                   DataFlywheel, RAGDataGenerator
-â”œâ”€â”€ train/          Trainer, TRLBackend (SFT/DPO/LoRA/QLoRA),
-â”‚   â”œâ”€â”€ backends/   PEFTConfig, TrainingObserver (W&B/MLflow/TensorBoard),
-â”‚   â””â”€â”€ ...         EvalCallback, DPOTrainer, GRPOTrainer, PPOTrainer,
-â”‚                   GridSweep, RandomSweep, RLAIFPipeline
-â”œâ”€â”€ eval/           ExactMatch, TokenF1, BLEU-4, ROUGE-L, Wilson CI,
-â”‚                   RAGEvaluator, BenchmarkEvaluator,
-â”‚                   LLM-as-Judge (Stub/Cached/Anthropic/OpenAI)
-â”œâ”€â”€ adapters/       AdapterRegistry, HubClient, ModelMerger (SLERP/TIES/DARE)
-â”œâ”€â”€ rewards/        ExactMatch, Format, WeightedSum, Min, Max, Threshold, Clamped
-â”œâ”€â”€ governance/     AuditLogger, PIIScanner, PIIMasker, SecretScanner, ModelCardGen
-â”œâ”€â”€ orchestrate/    CostEstimator
-â”œâ”€â”€ plugins/        PluginRegistry
-â”œâ”€â”€ server/         FastAPI REST server
-â””â”€â”€ cli/            13 CLI commands
+├── core/           RunManifest, RunConfig, DistributedConfig
+├── data/           JsonlDataset, QualityScorer, CurriculumSampler,
+│                   SemanticDecontaminationChecker, PromptTemplates (6 formats),
+│                   DataFlywheel, RAGDataGenerator
+├── environments/   Verifiable-reward RLVR verifiers + OpenEnv-compatible
+│                   Environment protocol (ExactAnswer, Math, RegexFormat,
+│                   JSONSchema, ToolCall, Contains, Composite, Code +
+│                   PythonSandbox)
+├── observability/  RL Flight Recorder (KL / entropy / length / advantage /
+│                   reward-std / gradient anomalies), RewardHackingDetector
+├── provenance/     Deterministic replay: environment fingerprint,
+│                   kernel-determinism flags, lineage DAG, ReplayEngine
+├── integrations/   `import provenir` wrapper — provenir.track(...) run context
+├── train/          Trainer, TRLBackend (SFT/DPO/LoRA/QLoRA),
+│   ├── rl.py       RLOrchestrator + GRPO / DAPO / GSPO configs
+│   ├── rl_eval_gate.py  Fused contamination + regression + hacking loop guard
+│   ├── backends/   PEFTConfig, TrainingObserver (W&B/MLflow/TensorBoard),
+│   │   └── adapters.py  verl / TRL / Unsloth adapters + BackendSelector
+│   └── ...         EvalCallback, DPOTrainer, GRPOTrainer, PPOTrainer,
+│                   GridSweep, RandomSweep, RLAIFPipeline
+├── eval/           ExactMatch, TokenF1, BLEU-4, ROUGE-L, Wilson CI,
+│   ├── contamination.py  13-gram / embedding / exact + MinHash firewall
+│   ├── canary.py         Canary-tagged private eval vaults
+│   ├── judge_calibration.py  DebiasedJudge, EnsembleJudge, bias metrics
+│   └── ...         RAGEvaluator, BenchmarkEvaluator,
+│                   LLM-as-Judge (Stub/Cached/Anthropic/OpenAI)
+├── adapters/       AdapterRegistry, HubClient, ModelMerger (SLERP/TIES/DARE)
+├── rewards/        ExactMatch, Format, WeightedSum, Min, Max, Threshold, Clamped
+├── governance/     AuditLogger, PIIScanner, PIIMasker, SecretScanner, ModelCardGen
+│   ├── bom.py      Model Bill-of-Materials (data + code + evals + config)
+│   └── passport.py Signed (HMAC-SHA256) Model Passport + risk flags
+├── orchestrate/    CostEstimator
+├── plugins/        PluginRegistry
+├── server/         FastAPI REST server
+└── cli/            CLI commands (incl. rl, contamination, passport)
 ```
 
 ---
@@ -607,7 +814,7 @@ python -m pytest -q
 
 The project enforces strict type-checking (`mypy --strict`), ruff linting
 (E, F, I rules, line-length 100), and comprehensive test coverage of all
-core logic across 456 tests.
+core logic across 909 tests.
 
 ---
 
@@ -618,6 +825,14 @@ core logic across 456 tests.
 | Core manifests + reproducibility | Production-ready |
 | Evaluation pipeline | Production-ready |
 | PII / governance / audit | Production-ready |
+| RL Flight Recorder + reward-hacking detection | Production-ready |
+| Contamination firewall + canary vaults | Production-ready |
+| Judge calibration | Production-ready |
+| Deterministic replay + lineage DAG | Production-ready |
+| Signed Model Passport / BOM | Production-ready |
+| Verifiable-reward environments (RLVR) | Beta |
+| RL orchestration (GRPO / DAPO / GSPO) | Beta |
+| Backend adapters (verl / TRL / Unsloth) | Beta |
 | TRL backend (SFT + DPO + LoRA) | Beta |
 | RLAIF pipeline | Beta |
 | REST API server | Beta |
@@ -628,16 +843,14 @@ core logic across 456 tests.
 | Benchmark evaluation suite | Beta |
 | Distributed training (FSDP / DeepSpeed) | Experimental |
 | Web UI / dashboard | Roadmap |
-| Real-time rollout integration | Roadmap |
 
 ---
 
 ## Roadmap
 
-- **v0.3** â€” vLLM and SGLang backends for online rollout; perplexity metric
-- **v0.4** â€” Streaming training events via WebSocket; live eval dashboard
-- **v0.5** â€” Multi-agent RLAIF (constitutional AI loop); reward model training
-- **v1.0** â€” Production SLAs; enterprise governance controls; HIPAA/SOC2 audit trail
+- **v0.4** — Streaming training events via WebSocket; live eval + flight-recorder dashboard
+- **v0.5** — Multi-agent RLAIF (constitutional AI loop); reward model training
+- **v1.0** — Production SLAs; enterprise governance controls; HIPAA/SOC2 audit trail
 
 ---
 
@@ -648,36 +861,41 @@ Every run produces a content-addressed manifest. Every manifest can reproduce
 the exact run that created it. There is no "it worked on my machine."
 
 **2. Evaluation before deployment.**
-The regression gate, EvalCallback, and RLAIF loop all prevent degraded models
-from advancing through the pipeline without explicit override.
+The regression gate, EvalCallback, RL eval gate, and RLAIF loop all prevent
+degraded models from advancing through the pipeline without explicit override.
 
-**3. Degrade gracefully.**
-Every optional dependency â€” torch, TRL, anthropic, wandb, huggingface_hub â€”
+**3. Trust over throughput.**
+RL observability, reward-hacking detection, verifiable rewards, contamination
+firewalls, and signed passports catch the failures that raw-throughput engines
+ignore.
+
+**4. Degrade gracefully.**
+Every optional dependency — torch, TRL, anthropic, wandb, huggingface_hub —
 is conditionally imported. The full orchestration stack, manifest system, and
 evaluation pipeline work without a GPU.
 
-**4. Governance is not optional.**
-PII scanning, secret detection, audit logging, and model card generation are
-built into the core package, not plugins. Every production deployment should
-be auditable.
+**5. Governance is not optional.**
+PII scanning, secret detection, audit logging, model card generation, and the
+signed Model Passport are built into the core package, not plugins. Every
+production deployment should be auditable.
 
-**5. Plugin-first architecture.**
-New training backends, reward functions, metrics, and judges are registered
-via protocol interfaces. No monkey-patching, no subclassing deep hierarchies.
+**6. Orchestrate the winners.**
+Provenir wraps verl / TRL / Unsloth via backend-agnostic adapters rather than
+reimplementing kernels. It adds the trust layer on top of the best engines.
 
 ---
 
 ## Non-Goals
 
 - Reimplementing training kernels or competing with Unsloth on raw single-GPU throughput
-- Forking or replacing the Hugging Face training stack â€” Provenir wraps and orchestrates it
+- Forking or replacing the Hugging Face / verl training stacks — Provenir wraps and orchestrates them
 - Providing hosted SaaS, billing, or proprietary cloud services
 
 ---
 
 ## License
 
-Apache 2.0 â€” see [LICENSE](LICENSE).
+Apache 2.0 — see [LICENSE](LICENSE).
 
 ---
 
@@ -687,10 +905,9 @@ If you use Provenir in research, please cite:
 
 ```bibtex
 @software{provenir2025,
-  title  = {Provenir: Reproducible, Evaluation-First Fine-Tuning Orchestration},
+  title  = {Provenir: The Trust Layer for Model Post-Training},
   year   = {2025},
   url    = {https://github.com/anilatambharii/provenir},
-  note   = {v0.2.0}
+  note   = {v0.3.0}
 }
 ```
-
