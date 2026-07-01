@@ -906,6 +906,17 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#v050-rh-bench-research-artifacts-2026" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        v0.5.0 — RH-Bench + research artifacts (2026)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#v040-loop-doctor-agentic-environments-2026" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1162,6 +1173,17 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#v050-rh-bench-research-artifacts-2026" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        v0.5.0 — RH-Bench + research artifacts (2026)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#v040-loop-doctor-agentic-environments-2026" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1405,6 +1427,34 @@
 
 <h1 id="changelog">Changelog</h1>
 <p>All notable changes to Provenir are documented here.</p>
+<hr />
+<h2 id="v050-rh-bench-research-artifacts-2026">v0.5.0 — RH-Bench + research artifacts (2026)</h2>
+<p>Research track. After an extensive literature survey (which found that both
+RL-stage contamination detection and reward-hacking detector benchmarks were
+already occupied by 2025–2026 work), this release ships an <strong>honestly-framed,
+unifying</strong> artifact plus the framework's own software-paper submission.</p>
+<ul>
+<li><strong>RH-Bench</strong> (<code>provenir.bench.rhbench</code>): a reproducible benchmark for
+  <em>evaluating</em> reward-hacking detectors. An 8-category taxonomy grounded in the
+  formal proxy-up/true-down definition; a deterministic labeled-trajectory corpus
+  generator; a detector-evaluation protocol reporting per-category and overall
+  precision/recall/F1/AUROC (Mann-Whitney U); and two deltas over prior
+  detector benchmarks — <strong>held-out hack-TYPE generalization</strong> (<code>evaluate_held_out</code>,
+  vs. held-out environments in prior work) and a <strong>compute-saved-by-early-detection</strong>
+  metric (<code>compute_savings</code>) wired to the training gate. Baseline detectors
+  included (<code>ProvenirDetector</code>, proxy-divergence, length, random). Framed as
+  unifying/standardizing, not first — cites TRACE (arXiv:2601.20103), Cheap
+  Reward Hacking Detection (arXiv:2606.08893), Shihab et al. (arXiv:2507.05619),
+  and EvalStop (arXiv:2606.04145).</li>
+<li><strong>JOSS submission</strong> (<code>paper/paper.md</code>, <code>paper.bib</code>): a software paper for the
+  framework itself (reviews software, not novelty — an achievable venue).</li>
+<li><strong>Research skeleton</strong> (<code>paper/rhbench_paper.md</code>): an honestly-positioned draft
+  targeting TMLR or the NeurIPS Evaluations &amp; Datasets track.</li>
+</ul>
+<p>Known limitation: the released RH-Bench corpus is synthetic, so every hack
+carries a proxy-divergence signature and strong baselines score near-perfect
+AUROC — the benchmark is not yet discriminative. Adding subtler/adversarial
+hacks and human-verified real trajectories is the primary next step.</p>
 <hr />
 <h2 id="v040-loop-doctor-agentic-environments-2026">v0.4.0 — Loop Doctor + Agentic Environments (2026)</h2>
 <p>Two features that make the loops <em>intelligent</em> and unlock agentic post-training.</p>
