@@ -906,6 +906,56 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#v040-loop-doctor-agentic-environments-2026" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        v0.4.0 — Loop Doctor + Agentic Environments (2026)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="v0.4.0 — Loop Doctor + Agentic Environments (2026)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-loop-doctor-provenirloop" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Loop Doctor (provenir.loop)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#agentic-environments-provenirenvironmentsagentic-tasks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Agentic environments (provenir.environments.agentic, .tasks)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#test-suite" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Test Suite
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#v031-2026" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -995,7 +1045,7 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#test-suite" class="md-nav__link">
+  <a href="#test-suite_1" class="md-nav__link">
     <span class="md-ellipsis">
       
         Test Suite
@@ -1034,7 +1084,7 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#test-suite_1" class="md-nav__link">
+  <a href="#test-suite_2" class="md-nav__link">
     <span class="md-ellipsis">
       
         Test Suite
@@ -1112,6 +1162,56 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#v040-loop-doctor-agentic-environments-2026" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        v0.4.0 — Loop Doctor + Agentic Environments (2026)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="v0.4.0 — Loop Doctor + Agentic Environments (2026)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-loop-doctor-provenirloop" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Loop Doctor (provenir.loop)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#agentic-environments-provenirenvironmentsagentic-tasks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Agentic environments (provenir.environments.agentic, .tasks)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#test-suite" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Test Suite
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#v031-2026" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1201,7 +1301,7 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#test-suite" class="md-nav__link">
+  <a href="#test-suite_1" class="md-nav__link">
     <span class="md-ellipsis">
       
         Test Suite
@@ -1240,7 +1340,7 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#test-suite_1" class="md-nav__link">
+  <a href="#test-suite_2" class="md-nav__link">
     <span class="md-ellipsis">
       
         Test Suite
@@ -1305,6 +1405,47 @@
 
 <h1 id="changelog">Changelog</h1>
 <p>All notable changes to Provenir are documented here.</p>
+<hr />
+<h2 id="v040-loop-doctor-agentic-environments-2026">v0.4.0 — Loop Doctor + Agentic Environments (2026)</h2>
+<p>Two features that make the loops <em>intelligent</em> and unlock agentic post-training.</p>
+<h3 id="the-loop-doctor-provenirloop">The Loop Doctor (<code>provenir.loop</code>)</h3>
+<p>When a training loop stalls, "it's not working" is useless. The Loop Doctor does
+<strong>differential diagnosis</strong> over Provenir's trust signals and attributes the stall
+to one of four causes — and only Provenir can, because it already produces all
+four signals:</p>
+<ul>
+<li><strong>eval</strong> — the eval is contaminated, so the metrics are lying (checked first);</li>
+<li><strong>reward</strong> — the reward is being gamed (reward hacking);</li>
+<li><strong>algorithm</strong> — the optimization is unstable (entropy/advantage/KL collapse),
+  with a concrete fix per anomaly;</li>
+<li><strong>data</strong> — the model has plateaued for lack of sufficient or fresh data.</li>
+</ul>
+<p>When the verdict is <em>data</em>, it emits a concrete, human-facing <strong><code>DataRequest</code></strong>
+(which slices, how many examples, how recent) — turning "give me more data" into
+an actionable ask. <code>LoopController</code> maps the diagnosis to the next action
+(<code>clean_eval</code> / <code>fix_reward</code> / <code>stabilize</code> / <code>collect_data</code> / <code>continue</code>).
+<code>SliceAnalyzer</code> localizes failures to specific data slices. New CLI:
+<code>provenir diagnose &lt;reward_history...&gt;</code>.</p>
+<h3 id="agentic-environments-provenirenvironmentsagentic-tasks">Agentic environments (<code>provenir.environments.agentic</code>, <code>.tasks</code>)</h3>
+<p>Stateful, multi-turn, <strong>tool-use environments</strong> with verifiable rewards —
+"environments" are the acknowledged #1 RL bottleneck of 2026.</p>
+<ul>
+<li><strong><code>ToolEnvironment</code></strong> — an OpenEnv-compatible multi-turn env: the agent calls
+  tools (JSON tool-calls) that read/write shared episode state, then submits a
+  final answer verified by any Provenir <code>Verifier</code>.</li>
+<li><strong><code>EpisodeRunner</code></strong> + <strong><code>AgentPolicy</code></strong> — run a policy against an environment
+  to a terminal reward; <code>StubAgentPolicy</code> for deterministic tests.</li>
+<li><strong>Multi-turn credit assignment</strong> (<code>assign_credit</code>, <code>CreditConfig</code>) — spread a
+  terminal reward across turns (<code>last_turn</code> / <code>uniform</code> / <code>discounted</code>),
+  addressing the sparse "reward only on the last token" problem.</li>
+<li><strong><code>AGENTIC_TASK_REGISTRY</code></strong> — shareable, discoverable tasks (<code>lookup</code>,
+  <code>calculator</code>) demonstrating the "environments hub" pattern, with a <code>safe_eval</code>
+  that never calls <code>eval</code>.</li>
+</ul>
+<h3 id="test-suite">Test Suite</h3>
+<ul>
+<li>1000+ tests, all passing. <code>ruff</code> + <code>mypy --strict</code> + <code>pytest</code> + <code>mkdocs --strict</code>.</li>
+</ul>
 <hr />
 <h2 id="v031-2026">v0.3.1 (2026)</h2>
 <p>Follow-up to the Trust Layer release.</p>
@@ -1399,7 +1540,7 @@ signed Model Passport. Zero breaking changes.</p>
 <li><code>provenir passport show|verify &lt;passport.json&gt;</code> — inspect / verify a signed
   Model Passport.</li>
 </ul>
-<h3 id="test-suite">Test Suite</h3>
+<h3 id="test-suite_1">Test Suite</h3>
 <ul>
 <li>909 tests — all passing.</li>
 <li>CI: ruff + mypy (strict) + pytest on Python 3.11 and 3.12.</li>
@@ -1440,7 +1581,7 @@ layers.</p>
 - <code>PIIScanner</code>, <code>PIIMasker</code>: detect and mask PII before training
 - <code>SecretScanner</code>: detect accidentally included credentials
 - <code>ModelCardGenerator</code>: HuggingFace-compatible model card generation</p>
-<h3 id="test-suite_1">Test Suite</h3>
+<h3 id="test-suite_2">Test Suite</h3>
 <ul>
 <li>456 tests, 30 test modules — all passing</li>
 <li>CI: ruff + mypy (strict) + pytest on Python 3.11 and 3.12</li>
