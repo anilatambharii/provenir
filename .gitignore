@@ -14,6 +14,8 @@ artifacts/
 .judge_cache/
 .provenir_judge_cache/
 site/
+# Unpublished research/paper drafts — LOCAL ONLY, never publish
+paper/
 *.jsonl
 !examples/*.jsonl
 !tests/fixtures/*.jsonl
