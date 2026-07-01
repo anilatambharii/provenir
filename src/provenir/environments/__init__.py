@@ -8,6 +8,18 @@ verifier as the project's ``RewardFn``.
 
 from __future__ import annotations
 
+from provenir.environments.agentic import (
+    AgentPolicy,
+    CreditConfig,
+    EpisodeResult,
+    EpisodeRunner,
+    StubAgentPolicy,
+    Tool,
+    ToolEnvironment,
+    ToolRegistry,
+    Turn,
+    assign_credit,
+)
 from provenir.environments.base import (
     Environment,
     Observation,
@@ -27,6 +39,11 @@ from provenir.environments.sandbox import (
     SandboxConfig,
     SandboxResult,
 )
+from provenir.environments.tasks import (
+    AGENTIC_TASK_REGISTRY,
+    make_calculator_environment,
+    make_lookup_environment,
+)
 from provenir.environments.verifiers import (
     CompositeVerifier,
     ContainsVerifier,
@@ -38,12 +55,17 @@ from provenir.environments.verifiers import (
 )
 
 __all__ = [
+    "AGENTIC_TASK_REGISTRY",
     "VERIFIER_REGISTRY",
+    "AgentPolicy",
     "CodeVerifier",
     "CompositeVerifier",
     "ContainsVerifier",
+    "CreditConfig",
     "Environment",
     "EnvironmentRegistry",
+    "EpisodeResult",
+    "EpisodeRunner",
     "ExactAnswerVerifier",
     "JSONSchemaVerifier",
     "MathVerifier",
@@ -53,9 +75,17 @@ __all__ = [
     "SandboxConfig",
     "SandboxResult",
     "StepResult",
+    "StubAgentPolicy",
+    "Tool",
     "ToolCallVerifier",
+    "ToolEnvironment",
+    "ToolRegistry",
+    "Turn",
     "VerificationResult",
     "Verifier",
     "VerifierRegistry",
     "VerifierReward",
+    "assign_credit",
+    "make_calculator_environment",
+    "make_lookup_environment",
 ]

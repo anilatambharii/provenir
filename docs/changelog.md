@@ -4,6 +4,53 @@ All notable changes to Provenir are documented here.
 
 ---
 
+## v0.4.0 — Loop Doctor + Agentic Environments (2026)
+
+Two features that make the loops *intelligent* and unlock agentic post-training.
+
+### The Loop Doctor (`provenir.loop`)
+
+When a training loop stalls, "it's not working" is useless. The Loop Doctor does
+**differential diagnosis** over Provenir's trust signals and attributes the stall
+to one of four causes — and only Provenir can, because it already produces all
+four signals:
+
+- **eval** — the eval is contaminated, so the metrics are lying (checked first);
+- **reward** — the reward is being gamed (reward hacking);
+- **algorithm** — the optimization is unstable (entropy/advantage/KL collapse),
+  with a concrete fix per anomaly;
+- **data** — the model has plateaued for lack of sufficient or fresh data.
+
+When the verdict is *data*, it emits a concrete, human-facing **`DataRequest`**
+(which slices, how many examples, how recent) — turning "give me more data" into
+an actionable ask. `LoopController` maps the diagnosis to the next action
+(`clean_eval` / `fix_reward` / `stabilize` / `collect_data` / `continue`).
+`SliceAnalyzer` localizes failures to specific data slices. New CLI:
+`provenir diagnose <reward_history...>`.
+
+### Agentic environments (`provenir.environments.agentic`, `.tasks`)
+
+Stateful, multi-turn, **tool-use environments** with verifiable rewards —
+"environments" are the acknowledged #1 RL bottleneck of 2026.
+
+- **`ToolEnvironment`** — an OpenEnv-compatible multi-turn env: the agent calls
+  tools (JSON tool-calls) that read/write shared episode state, then submits a
+  final answer verified by any Provenir `Verifier`.
+- **`EpisodeRunner`** + **`AgentPolicy`** — run a policy against an environment
+  to a terminal reward; `StubAgentPolicy` for deterministic tests.
+- **Multi-turn credit assignment** (`assign_credit`, `CreditConfig`) — spread a
+  terminal reward across turns (`last_turn` / `uniform` / `discounted`),
+  addressing the sparse "reward only on the last token" problem.
+- **`AGENTIC_TASK_REGISTRY`** — shareable, discoverable tasks (`lookup`,
+  `calculator`) demonstrating the "environments hub" pattern, with a `safe_eval`
+  that never calls `eval`.
+
+### Test Suite
+
+- 1000+ tests, all passing. `ruff` + `mypy --strict` + `pytest` + `mkdocs --strict`.
+
+---
+
 ## v0.3.1 (2026)
 
 Follow-up to the Trust Layer release.

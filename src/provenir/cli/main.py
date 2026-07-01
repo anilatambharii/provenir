@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import sys
 from pathlib import Path
 
 from provenir.core.config import load_run_config
@@ -30,7 +31,18 @@ _METRIC_MAP: dict[str, MetricFn] = {
 }
 
 
+def _ensure_utf8_stdout() -> None:
+    """Force UTF-8 stdout so glyphs like arrows survive a cp1252 Windows console."""
+    reconfigure = getattr(sys.stdout, "reconfigure", None)
+    if callable(reconfigure):
+        try:
+            reconfigure(encoding="utf-8")
+        except (ValueError, OSError):  # pragma: no cover - platform dependent
+            pass
+
+
 def main() -> None:  # noqa: C901 – CLI dispatcher, complexity is expected
+    _ensure_utf8_stdout()
     parser = argparse.ArgumentParser(prog="provenir")
     subparsers = parser.add_subparsers(dest="command")
 
@@ -170,6 +182,26 @@ def main() -> None:  # noqa: C901 – CLI dispatcher, complexity is expected
     )
     contam_p.add_argument("--text-key", default="prompt")
     contam_p.add_argument("--output", default="artifacts/contamination/report.json")
+
+    # --- diagnose (Loop Doctor) ---
+    diagnose_p = subparsers.add_parser(
+        "diagnose", help="Diagnose why a training loop stalled (Loop Doctor)"
+    )
+    diagnose_p.add_argument(
+        "reward_history",
+        nargs="+",
+        type=float,
+        help="Per-iteration mean reward/score values",
+    )
+    diagnose_p.add_argument(
+        "--anomaly", nargs="*", default=[], help="Flight-recorder anomaly kinds observed"
+    )
+    diagnose_p.add_argument("--hacking-rate", type=float, default=0.0)
+    diagnose_p.add_argument("--contamination-rate", type=float, default=0.0)
+    diagnose_p.add_argument(
+        "--data-age-days", type=float, default=None, help="Age of the training data in days"
+    )
+    diagnose_p.add_argument("--output", default="artifacts/diagnosis/diagnosis.json")
 
     # --- passport (Model Passport / BOM) ---
     passport_p = subparsers.add_parser(
@@ -444,6 +476,26 @@ def main() -> None:  # noqa: C901 – CLI dispatcher, complexity is expected
         print(f"Contamination check ({args.method}): {verdict}")
         print(f"  hits:               {len(report.hits)}")
         print(f"  contamination rate: {report.contamination_rate:.3f}  →  {args.output}")
+        return
+
+    if args.command == "diagnose":
+        from provenir.loop import LoopController, LoopDoctor, LoopSignals
+
+        signals = LoopSignals(
+            reward_history=list(args.reward_history),
+            anomaly_kinds=list(args.anomaly),
+            hacking_rate=args.hacking_rate,
+            contamination_rate=args.contamination_rate,
+            data_age_days=args.data_age_days,
+        )
+        diagnosis = LoopDoctor().diagnose(signals)
+        action = LoopController().decide(diagnosis)
+        output_path = Path(args.output)
+        output_path.parent.mkdir(parents=True, exist_ok=True)
+        diag_payload = {"diagnosis": diagnosis.to_dict(), "action": action.to_dict()}
+        output_path.write_text(json.dumps(diag_payload, indent=2), encoding="utf-8")
+        print(diagnosis.to_markdown())
+        print(f"Recommended action: {action.action}  →  {args.output}")
         return
 
     if args.command == "passport":

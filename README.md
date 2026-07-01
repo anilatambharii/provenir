@@ -4,7 +4,7 @@
 [![PyPI](https://img.shields.io/pypi/v/provenir.svg)](https://pypi.org/project/provenir/)
 [![Python](https://img.shields.io/pypi/pyversions/provenir.svg)](https://pypi.org/project/provenir/)
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
-[![Tests](https://img.shields.io/badge/tests-909%20passing-brightgreen.svg)](https://github.com/anilatambharii/provenir/actions)
+[![Tests](https://img.shields.io/badge/tests-1038%20passing-brightgreen.svg)](https://github.com/anilatambharii/provenir/actions)
 [![Docs](https://img.shields.io/badge/docs-online-blue.svg)](https://anilatambharii.github.io/provenir)
 
 **The trust layer for model post-training — reproducible, evaluation-first orchestration for LLM fine-tuning and RL.**
@@ -24,7 +24,7 @@ pip install "provenir[train]"          # SFT + DPO + LoRA / QLoRA via TRL
 pip install "provenir[all]"            # Everything
 ```
 
-> **v0.3.0** · Apache-2.0 · Python ≥ 3.11 · 909 tests · zero breaking changes
+> **v0.4.0** · Apache-2.0 · Python ≥ 3.11 · 1038 tests · zero breaking changes
 
 ---
 
@@ -59,6 +59,8 @@ produced a model.
 | **Judge calibration** | — | — | — | — | ✓ |
 | **Deterministic replay / lineage DAG** | — | — | — | — | ✓ |
 | **Signed Model Passport** | — | — | — | — | ✓ |
+| **Loop Doctor (differential diagnosis)** | — | — | — | — | ✓ |
+| **Agentic environments (multi-turn tool use)** | — | — | — | — | ✓ |
 
 ---
 
@@ -256,7 +258,7 @@ confidence intervals and a regression gate vs. the baseline.
 ### 3 — Verifiable-reward RL with a flight recorder
 
 ```bash
-provenir rl config.yaml --dataset data/train.jsonl \
+provenir rl --dataset data/train.jsonl \
   --algorithm grpo --verifier math
 ```
 
@@ -613,9 +615,12 @@ if report.has_pii:
 ```
 provenir train <config.yaml>              Run a training job
 provenir eval <predictions.jsonl>         Evaluate predictions
-provenir rl <config.yaml>                 Verifiable-reward RL + flight recorder
+provenir rl --dataset <data.jsonl>        Verifiable-reward RL + flight recorder
                                           (--algorithm grpo|dapo|gspo,
                                            --verifier exact_answer|math|contains)
+provenir diagnose <reward_history...>     Loop Doctor: diagnose a stalled loop
+                                          (--anomaly, --hacking-rate,
+                                           --contamination-rate, --data-age-days)
 provenir contamination <train> <eval>     Train/eval overlap check
 provenir passport show|verify <p.json>    Inspect / verify a signed Model Passport
 provenir audit                            Inspect the audit log
@@ -814,7 +819,7 @@ python -m pytest -q
 
 The project enforces strict type-checking (`mypy --strict`), ruff linting
 (E, F, I rules, line-length 100), and comprehensive test coverage of all
-core logic across 909 tests.
+core logic across 1038 tests.
 
 ---
 
@@ -908,6 +913,6 @@ If you use Provenir in research, please cite:
   title  = {Provenir: The Trust Layer for Model Post-Training},
   year   = {2025},
   url    = {https://github.com/anilatambharii/provenir},
-  note   = {v0.3.0}
+  note   = {v0.4.0}
 }
 ```
