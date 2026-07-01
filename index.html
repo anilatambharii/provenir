@@ -448,6 +448,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#new-in-v03-the-trust-layer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        New in v0.3 — The Trust Layer
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#quick-install" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -670,6 +681,62 @@
     
   
     Core Concepts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="guides/trust-layer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Trust Layer
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="guides/trust-layer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Trust Layer
   
 
     
@@ -961,6 +1028,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#new-in-v03-the-trust-layer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        New in v0.3 — The Trust Layer
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#quick-install" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1014,17 +1092,21 @@
 
 
 <h1 id="provenir">Provenir</h1>
-<p><strong>Reproducible, evaluation-first orchestration for LLM fine-tuning.</strong></p>
-<p>Provenir coordinates every layer of the fine-tuning lifecycle — raw data ingestion, quality filtering, prompt templating, SFT/DPO/GRPO training, eval-in-the-loop early stopping, LLM-as-judge preference generation, RLAIF iteration, adapter merging, benchmark evaluation, and production serving — in a single auditable, reproducible pipeline.</p>
+<p><strong>The trust layer for model post-training — reproducible, evaluation-first orchestration for LLM fine-tuning and RL.</strong></p>
+<blockquote>
+<p><strong>v0.3.0</strong> · Apache-2.0 · Python ≥ 3.11 · 909 tests · zero breaking changes</p>
+</blockquote>
+<p>Provenir coordinates every layer of the fine-tuning and reinforcement-learning lifecycle — raw data ingestion, quality filtering, prompt templating, SFT/DPO/GRPO training, verifiable-reward RL, eval-in-the-loop early stopping, LLM-as-judge preference generation, RLAIF iteration, adapter merging, benchmark evaluation, and production serving — in a single auditable, reproducible pipeline. On top of that it adds the trust primitives that raw-throughput engines leave out: RL observability, reward-hacking detection, contamination-safe evaluation, deterministic replay, and a signed Model Passport.</p>
 <hr />
 <h2 id="why-provenir">Why Provenir?</h2>
 <p>Every major fine-tuning framework optimises for raw throughput.
 Provenir optimises for <strong>trust</strong>:</p>
 <ul>
 <li><strong>Reproducibility</strong> — every run produces a content-addressed <code>RunManifest</code> that captures config hash, dataset hash, git SHA, and the full provenance chain. Any run can be reproduced exactly with <code>provenir reproduce</code>.</li>
-<li><strong>Evaluation-gated iteration</strong> — the <code>EvalCallback</code> evaluates mid-training and halts or raises an alarm when quality regresses, before the model reaches production.</li>
+<li><strong>Evaluation-gated iteration</strong> — the <code>EvalCallback</code> and RL eval gate evaluate mid-training and halt or raise an alarm when quality regresses, before the model reaches production.</li>
+<li><strong>RL you can trust</strong> — an RL Flight Recorder detects training pathologies, and a reward-hacking detector catches the #1 RL failure mode before it wastes GPU budget.</li>
 <li><strong>No human labellers required</strong> — the RLAIF pipeline uses an LLM judge to generate preference pairs, run DPO, evaluate, and iterate autonomously.</li>
-<li><strong>Governance built-in</strong> — PII scanning, secret detection, append-only audit log, and model card generation ship in the core package, not as plugins.</li>
+<li><strong>Governance built-in</strong> — PII scanning, secret detection, append-only audit log, model card generation, and a signed Model Passport ship in the core package, not as plugins.</li>
 </ul>
 <hr />
 <h2 id="feature-matrix">Feature Matrix</h2>
@@ -1035,12 +1117,14 @@ Provenir optimises for <strong>trust</strong>:</p>
 <th style="text-align: center;">Axolotl</th>
 <th style="text-align: center;">TRL</th>
 <th style="text-align: center;">Unsloth</th>
+<th style="text-align: center;">verl</th>
 <th style="text-align: center;"><strong>Provenir</strong></th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td>SFT / DPO / GRPO</td>
+<td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
@@ -1052,9 +1136,11 @@ Provenir optimises for <strong>trust</strong>:</p>
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
 <td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
 </tr>
 <tr>
 <td>Reproducible manifests</td>
+<td style="text-align: center;">—</td>
 <td style="text-align: center;">—</td>
 <td style="text-align: center;">—</td>
 <td style="text-align: center;">—</td>
@@ -1065,10 +1151,12 @@ Provenir optimises for <strong>trust</strong>:</p>
 <td style="text-align: center;">—</td>
 <td style="text-align: center;">partial</td>
 <td style="text-align: center;">—</td>
+<td style="text-align: center;">—</td>
 <td style="text-align: center;">✓</td>
 </tr>
 <tr>
 <td>LLM-as-Judge</td>
+<td style="text-align: center;">—</td>
 <td style="text-align: center;">—</td>
 <td style="text-align: center;">—</td>
 <td style="text-align: center;">—</td>
@@ -1079,10 +1167,12 @@ Provenir optimises for <strong>trust</strong>:</p>
 <td style="text-align: center;">—</td>
 <td style="text-align: center;">—</td>
 <td style="text-align: center;">—</td>
+<td style="text-align: center;">—</td>
 <td style="text-align: center;">✓</td>
 </tr>
 <tr>
 <td>Data flywheel</td>
+<td style="text-align: center;">—</td>
 <td style="text-align: center;">—</td>
 <td style="text-align: center;">—</td>
 <td style="text-align: center;">—</td>
@@ -1093,10 +1183,12 @@ Provenir optimises for <strong>trust</strong>:</p>
 <td style="text-align: center;">—</td>
 <td style="text-align: center;">—</td>
 <td style="text-align: center;">—</td>
+<td style="text-align: center;">—</td>
 <td style="text-align: center;">✓</td>
 </tr>
 <tr>
 <td>Adapter merging (SLERP/TIES/DARE)</td>
+<td style="text-align: center;">—</td>
 <td style="text-align: center;">—</td>
 <td style="text-align: center;">—</td>
 <td style="text-align: center;">—</td>
@@ -1107,10 +1199,12 @@ Provenir optimises for <strong>trust</strong>:</p>
 <td style="text-align: center;">—</td>
 <td style="text-align: center;">—</td>
 <td style="text-align: center;">—</td>
+<td style="text-align: center;">—</td>
 <td style="text-align: center;">✓</td>
 </tr>
 <tr>
 <td>Semantic decontamination</td>
+<td style="text-align: center;">—</td>
 <td style="text-align: center;">—</td>
 <td style="text-align: center;">—</td>
 <td style="text-align: center;">—</td>
@@ -1121,10 +1215,68 @@ Provenir optimises for <strong>trust</strong>:</p>
 <td style="text-align: center;">—</td>
 <td style="text-align: center;">—</td>
 <td style="text-align: center;">—</td>
+<td style="text-align: center;">—</td>
 <td style="text-align: center;">✓</td>
 </tr>
 <tr>
 <td>Governance &amp; audit log</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">✓</td>
+</tr>
+<tr>
+<td><strong>RL Flight Recorder</strong></td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">✓</td>
+</tr>
+<tr>
+<td><strong>Reward-hacking detection</strong></td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">✓</td>
+</tr>
+<tr>
+<td><strong>Verifiable-reward environments (RLVR)</strong></td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">✓</td>
+</tr>
+<tr>
+<td><strong>Contamination firewall</strong></td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">✓</td>
+</tr>
+<tr>
+<td><strong>Judge calibration</strong></td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">✓</td>
+</tr>
+<tr>
+<td><strong>Deterministic replay / lineage DAG</strong></td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">✓</td>
+</tr>
+<tr>
+<td><strong>Signed Model Passport</strong></td>
+<td style="text-align: center;">—</td>
 <td style="text-align: center;">—</td>
 <td style="text-align: center;">—</td>
 <td style="text-align: center;">—</td>
@@ -1133,50 +1285,71 @@ Provenir optimises for <strong>trust</strong>:</p>
 </tbody>
 </table>
 <hr />
+<h2 id="new-in-v03-the-trust-layer">New in v0.3 — The Trust Layer</h2>
+<p>v0.3.0 turns Provenir into the <strong>trust layer for model post-training</strong>. Four pillars:</p>
+<ul>
+<li><strong>A. RL Flight Recorder + reward-hacking detection</strong> — a black box for RL runs (<code>provenir.observability</code>) flags KL blowup/collapse, entropy collapse, length explosion, advantage collapse, reward-std collapse, reward spikes, and gradient explosion; the reward-hacking detector catches length inflation, format exploits, test tampering, verifier gaming, and proxy-reward divergence.</li>
+<li><strong>B. Contamination-safe trustworthy eval + judge calibration</strong> — a contamination firewall (<code>provenir.eval.contamination</code>, <code>provenir.eval.canary</code>) with 13-gram / embedding / exact overlap detection, MinHash at scale, and canary-tagged private eval vaults, plus <code>DebiasedJudge</code> and <code>EnsembleJudge</code> calibration.</li>
+<li><strong>C. Verifiable-reward environments + GRPO/DAPO/GSPO orchestration</strong> — hack-resistant RLVR verifiers (<code>provenir.environments</code>) and an <code>RLOrchestrator</code> (<code>provenir.train.rl</code>) that runs rollout → verify → reward → flight recorder → hacking detector → eval-gate over verl / TRL / Unsloth via backend-agnostic adapters.</li>
+<li><strong>D. Deterministic replay + lineage DAG + signed Model Passport</strong> — content-addressed environment fingerprint, lineage DAG, and <code>ReplayEngine</code> (<code>provenir.provenance</code>) plus a signed (HMAC-SHA256) Model Passport / BOM (<code>provenir.governance.passport</code>) with compliance risk flags. Maps to <strong>EU AI Act Article 12</strong>.</li>
+</ul>
+<p>Drop the whole trust layer into <strong>any</strong> training loop with three lines:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">provenir</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="k">with</span> <span class="n">provenir</span><span class="o">.</span><span class="n">track</span><span class="p">(</span><span class="s2">&quot;my-run&quot;</span><span class="p">,</span> <span class="n">dataset</span><span class="o">=</span><span class="n">train_ds</span><span class="p">)</span> <span class="k">as</span> <span class="n">run</span><span class="p">:</span>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>    <span class="k">for</span> <span class="n">step</span><span class="p">,</span> <span class="n">metrics</span> <span class="ow">in</span> <span class="n">training_loop</span><span class="p">():</span>
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>        <span class="n">run</span><span class="o">.</span><span class="n">log_step</span><span class="p">(</span><span class="n">metrics</span><span class="p">)</span>
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>    <span class="n">run</span><span class="o">.</span><span class="n">record_eval</span><span class="p">(</span><span class="s2">&quot;mmlu&quot;</span><span class="p">,</span> <span class="n">score</span><span class="o">=</span><span class="mf">0.71</span><span class="p">)</span>
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="c1"># run.manifest, run.flight_recorder, run.hacking_report, run.passport</span>
+</code></pre></div>
+<p>See the <a href="guides/trust-layer/">Trust Layer guide</a> for full examples.</p>
+<hr />
 <h2 id="quick-install">Quick Install</h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>pip<span class="w"> </span>install<span class="w"> </span>provenir<span class="w">                        </span><span class="c1"># core</span>
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">&quot;provenir[train]&quot;</span><span class="w">               </span><span class="c1"># + SFT/DPO/LoRA via TRL</span>
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">&quot;provenir[all]&quot;</span><span class="w">                 </span><span class="c1"># everything</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>pip<span class="w"> </span>install<span class="w"> </span>provenir<span class="w">                        </span><span class="c1"># core</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">&quot;provenir[train]&quot;</span><span class="w">               </span><span class="c1"># + SFT/DPO/LoRA via TRL</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">&quot;provenir[all]&quot;</span><span class="w">                 </span><span class="c1"># everything</span>
 </code></pre></div>
 <hr />
 <h2 id="architecture">Architecture</h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>┌──────────────────────────────────────────────────────────────────┐
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>│                      provenir CLI / REST API                      │
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>└──────────────┬───────────────────────────────────┬───────────────┘
-<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>               │                                   │
-<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>   ┌───────────▼──────────┐           ┌────────────▼──────────────┐
-<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>   │      Orchestration    │           │       Data Pipeline        │
-<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>   │  RunManifest          │           │  JsonlDataset              │
-<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>   │  RLAIFPipeline        │           │  QualityScorer             │
-<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>   │  DataFlywheel         │           │  CurriculumSampler         │
-<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>   │  HyperparamSweep      │           │  RAGDataGenerator          │
-<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>   └───────────┬──────────┘           │  PromptTemplates (6)       │
-<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a>               │                      └───────────────────────────┘
-<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a>   ┌───────────▼──────────────────────────────────────────────────┐
-<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a>   │                       Training Backends                        │
-<a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a>   │         TRLBackend (SFT · DPO · LoRA · QLoRA)                │
-<a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a>   │         DistributedConfig (FSDP · DeepSpeed · DDP)           │
-<a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a>   └───────────┬──────────────────────────────────────────────────┘
-<a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a>               │
-<a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a>   ┌───────────▼──────────────────────────────────────────────────┐
-<a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a>   │                      Evaluation Layer                          │
-<a id="__codelineno-1-21" name="__codelineno-1-21" href="#__codelineno-1-21"></a>   │  ExactMatch · TokenF1 · BLEU-4 · ROUGE-L · Wilson CI         │
-<a id="__codelineno-1-22" name="__codelineno-1-22" href="#__codelineno-1-22"></a>   │  RAGEvaluator · BenchmarkEvaluator (MMLU/HellaSwag/ARC/…)    │
-<a id="__codelineno-1-23" name="__codelineno-1-23" href="#__codelineno-1-23"></a>   │  LLM-as-Judge (Stub / Cached / Anthropic / OpenAI)           │
-<a id="__codelineno-1-24" name="__codelineno-1-24" href="#__codelineno-1-24"></a>   │  EvalCallback (early stopping · regression gate)              │
-<a id="__codelineno-1-25" name="__codelineno-1-25" href="#__codelineno-1-25"></a>   └───────────┬──────────────────────────────────────────────────┘
-<a id="__codelineno-1-26" name="__codelineno-1-26" href="#__codelineno-1-26"></a>               │
-<a id="__codelineno-1-27" name="__codelineno-1-27" href="#__codelineno-1-27"></a>   ┌───────────▼──────────────────────────────────────────────────┐
-<a id="__codelineno-1-28" name="__codelineno-1-28" href="#__codelineno-1-28"></a>   │                      Governance Layer                          │
-<a id="__codelineno-1-29" name="__codelineno-1-29" href="#__codelineno-1-29"></a>   │  AuditLogger · PIIScanner · SecretScanner · ModelCardGen      │
-<a id="__codelineno-1-30" name="__codelineno-1-30" href="#__codelineno-1-30"></a>   │  SemanticDecontamination · AdapterRegistry · HubClient        │
-<a id="__codelineno-1-31" name="__codelineno-1-31" href="#__codelineno-1-31"></a>   └──────────────────────────────────────────────────────────────┘
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>┌──────────────────────────────────────────────────────────────────┐
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>│                      provenir CLI / REST API                      │
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>└──────────────┬───────────────────────────────────┬───────────────┘
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>               │                                   │
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>   ┌───────────▼──────────┐           ┌────────────▼──────────────┐
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>   │      Orchestration    │           │       Data Pipeline        │
+<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>   │  RunManifest          │           │  JsonlDataset              │
+<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>   │  RLAIFPipeline        │           │  QualityScorer             │
+<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>   │  DataFlywheel         │           │  CurriculumSampler         │
+<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>   │  HyperparamSweep      │           │  RAGDataGenerator          │
+<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a>   └───────────┬──────────┘           │  PromptTemplates (6)       │
+<a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a>               │                      └───────────────────────────┘
+<a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a>   ┌───────────▼──────────────────────────────────────────────────┐
+<a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a>   │                       Training Backends                        │
+<a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a>   │         TRLBackend (SFT · DPO · LoRA · QLoRA)                │
+<a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a>   │         DistributedConfig (FSDP · DeepSpeed · DDP)           │
+<a id="__codelineno-2-17" name="__codelineno-2-17" href="#__codelineno-2-17"></a>   └───────────┬──────────────────────────────────────────────────┘
+<a id="__codelineno-2-18" name="__codelineno-2-18" href="#__codelineno-2-18"></a>               │
+<a id="__codelineno-2-19" name="__codelineno-2-19" href="#__codelineno-2-19"></a>   ┌───────────▼──────────────────────────────────────────────────┐
+<a id="__codelineno-2-20" name="__codelineno-2-20" href="#__codelineno-2-20"></a>   │                      Evaluation Layer                          │
+<a id="__codelineno-2-21" name="__codelineno-2-21" href="#__codelineno-2-21"></a>   │  ExactMatch · TokenF1 · BLEU-4 · ROUGE-L · Wilson CI         │
+<a id="__codelineno-2-22" name="__codelineno-2-22" href="#__codelineno-2-22"></a>   │  RAGEvaluator · BenchmarkEvaluator (MMLU/HellaSwag/ARC/…)    │
+<a id="__codelineno-2-23" name="__codelineno-2-23" href="#__codelineno-2-23"></a>   │  LLM-as-Judge (Stub / Cached / Anthropic / OpenAI)           │
+<a id="__codelineno-2-24" name="__codelineno-2-24" href="#__codelineno-2-24"></a>   │  EvalCallback (early stopping · regression gate)              │
+<a id="__codelineno-2-25" name="__codelineno-2-25" href="#__codelineno-2-25"></a>   └───────────┬──────────────────────────────────────────────────┘
+<a id="__codelineno-2-26" name="__codelineno-2-26" href="#__codelineno-2-26"></a>               │
+<a id="__codelineno-2-27" name="__codelineno-2-27" href="#__codelineno-2-27"></a>   ┌───────────▼──────────────────────────────────────────────────┐
+<a id="__codelineno-2-28" name="__codelineno-2-28" href="#__codelineno-2-28"></a>   │                      Governance Layer                          │
+<a id="__codelineno-2-29" name="__codelineno-2-29" href="#__codelineno-2-29"></a>   │  AuditLogger · PIIScanner · SecretScanner · ModelCardGen      │
+<a id="__codelineno-2-30" name="__codelineno-2-30" href="#__codelineno-2-30"></a>   │  SemanticDecontamination · AdapterRegistry · HubClient        │
+<a id="__codelineno-2-31" name="__codelineno-2-31" href="#__codelineno-2-31"></a>   └──────────────────────────────────────────────────────────────┘
 </code></pre></div>
 <hr />
 <h2 id="navigation">Navigation</h2>
 <ul>
 <li><a href="quickstart/">Quickstart</a> — up and running in 5 minutes</li>
 <li><a href="concepts/">Core Concepts</a> — manifests, RLAIF, judge, governance</li>
+<li><a href="guides/trust-layer/">Trust Layer</a> — <code>import provenir</code>, flight recorder, reward-hacking, contamination firewall, Model Passport</li>
 <li><a href="guides/rlaif/">RLAIF Pipeline</a> — AI-feedback loop without human labellers</li>
 <li><a href="guides/flywheel/">Data Flywheel</a> — auto-augment from eval failures</li>
 <li><a href="guides/rag/">RAG Dataset Generation</a> — build RAG training data from documents</li>
