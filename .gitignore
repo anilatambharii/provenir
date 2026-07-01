@@ -14,6 +14,12 @@ artifacts/
 .judge_cache/
 .provenir_judge_cache/
 site/
+# Unpublished research/paper drafts and benchmark — LOCAL ONLY, never publish
+paper/
+src/provenir/bench/
+tests/test_rhbench.py
+examples/rhbench_demo.py
 *.jsonl
 !examples/*.jsonl
 !tests/fixtures/*.jsonl
+.claude/
