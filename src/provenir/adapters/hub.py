@@ -1,6 +1,7 @@
 ﻿from __future__ import annotations
 
 import hashlib
+import json
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
@@ -96,6 +97,31 @@ class HubClient:
             commit_sha=getattr(commit_info, "oid", None),
             files_pushed=pushed_files,
         )
+
+    def push_with_passport(
+        self,
+        adapter_path: Path,
+        config: HubConfig,
+        passport_json: str,
+        model_card: str | None = None,
+    ) -> HubPushResult:
+        """Push adapter + signed passport JSON to the Hub.
+
+        Writes passport.json and passport.md alongside the adapter files
+        before uploading, so the signed attestation travels with the model.
+        """
+        passport_path = adapter_path / "provenir_passport.json"
+        passport_path.write_text(passport_json, encoding="utf-8")
+        try:
+            from provenir.governance.passport import ModelPassport
+
+            p = ModelPassport.from_dict(json.loads(passport_json))
+            (adapter_path / "provenir_passport.md").write_text(
+                p.to_markdown(), encoding="utf-8"
+            )
+        except Exception:
+            pass
+        return self.push_adapter(adapter_path, config, model_card=model_card)
 
     def pull_model(
         self,

@@ -31,7 +31,10 @@ import hashlib
 import json
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Callable, Mapping, TypeVar
+from typing import TYPE_CHECKING, Any, Callable, Mapping, TypeVar
+
+if TYPE_CHECKING:
+    from provenir.alerts.webhook import Alerter
 
 from provenir.core.abstractions import RunManifest
 from provenir.core.manifest import RunManifestStore
@@ -104,6 +107,9 @@ class TrackingConfig:
     sign_passport: bool = False
     signing_key: bytes = b""
     capture_env: bool = True
+    alert_webhook_url: str = ""
+    alert_on_anomaly: bool = True
+    alert_on_hacking: bool = True
 
     def __post_init__(self) -> None:
         if not self.name:
@@ -180,6 +186,15 @@ class ProvenirRun:
         self._passport: ModelPassport | None = None
         self._finalized = False
 
+        from provenir.alerts import AlertConfig, Alerter
+
+        _alert_cfg = AlertConfig(
+            webhook_url=config.alert_webhook_url,
+            on_anomaly=config.alert_on_anomaly,
+            on_hacking=config.alert_on_hacking,
+        )
+        self._alerter = Alerter(_alert_cfg, run_id=config.name)
+
     # -- context management ------------------------------------------------
 
     def __enter__(self) -> ProvenirRun:
@@ -220,7 +235,9 @@ class ProvenirRun:
             }
             known.setdefault("step", len(self._flight_recorder.history))
             record = RLStepMetrics(**known)
-        self._flight_recorder.log_step(record)
+        new_anomalies = self._flight_recorder.log_step(record)
+        for anomaly in new_anomalies:
+            self._alerter.fire_anomaly(anomaly)
 
     def log_trajectory(self, trajectory: dict[str, Any]) -> None:
         """Buffer a rollout ``trajectory`` for batch reward-hacking detection."""
@@ -273,6 +290,11 @@ class ProvenirRun:
 
         run_id = self.config.name
         self._hacking_report = self._detector.detect_batch(self._trajectories)
+        if self._hacking_report is not None and not self._hacking_report.is_clean:
+            self._alerter.fire_hacking(
+                self._hacking_report.hacking_rate,
+                self._hacking_report.by_kind(),
+            )
         self._lineage = self._build_lineage(run_id)
         self._bom = self._build_bom(run_id)
         self._manifest = self._build_manifest(run_id, partial=partial)
@@ -440,6 +462,11 @@ class ProvenirRun:
     def anomalies(self) -> list[Any]:
         """Every anomaly the flight recorder detected so far."""
         return self._flight_recorder.anomalies
+
+    @property
+    def alerter(self) -> "Alerter":
+        """The alerter for this run (inspect .fired to see alerts without a real URL)."""
+        return self._alerter
 
 
 def track(name: str, **kwargs: Any) -> ProvenirRun:

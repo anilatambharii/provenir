@@ -126,6 +126,15 @@ def main() -> None:  # noqa: C901 – CLI dispatcher, complexity is expected
     )
     merge_p.add_argument("--output", default="artifacts/merged_adapter")
 
+    # --- report ---
+    report_p = subparsers.add_parser(
+        "report", help="Generate an HTML report from a run output directory"
+    )
+    report_p.add_argument("run_dir", help="ProvenirRun output directory")
+    report_p.add_argument(
+        "--output", default=None, help="Output HTML path (default: <run_dir>/report.html)"
+    )
+
     # --- hub push ---
     hub_p = subparsers.add_parser("hub", help="HuggingFace Hub operations")
     hub_sub = hub_p.add_subparsers(dest="hub_command")
@@ -135,6 +144,9 @@ def main() -> None:  # noqa: C901 – CLI dispatcher, complexity is expected
     hub_push_p.add_argument("repo_id", help="username/model-name")
     hub_push_p.add_argument("--private", action="store_true")
     hub_push_p.add_argument("--token", default=None)
+    hub_push_p.add_argument(
+        "--passport", default=None, help="Path to a passport.json to upload alongside the adapter"
+    )
 
     hub_pull_p = hub_sub.add_parser("pull", help="Pull model from Hub")
     hub_pull_p.add_argument("repo_id")
@@ -355,6 +367,16 @@ def main() -> None:  # noqa: C901 – CLI dispatcher, complexity is expected
         print(f"Merged {len(adapter_paths)} adapters → {result_m.output_path}{stub_note}")
         return
 
+    if args.command == "report":
+        from provenir.report import ReportGenerator
+
+        run_dir = Path(args.run_dir)
+        run_report = ReportGenerator.from_run_dir(run_dir)
+        out = Path(args.output) if args.output else run_dir / "report.html"
+        run_report.save(out)
+        print(f"Report written → {out}")
+        return
+
     if args.command == "hub":
         from provenir.adapters.hub import HubClient, HubConfig
 
@@ -365,7 +387,15 @@ def main() -> None:  # noqa: C901 – CLI dispatcher, complexity is expected
                 private=getattr(args, "private", False),
                 token=getattr(args, "token", None),
             )
-            push_result = client.push_adapter(Path(args.adapter_path), hub_cfg)
+            passport_arg: str | None = getattr(args, "passport", None)
+            if passport_arg is not None:
+                push_result = client.push_with_passport(
+                    Path(args.adapter_path),
+                    hub_cfg,
+                    Path(passport_arg).read_text(encoding="utf-8"),
+                )
+            else:
+                push_result = client.push_adapter(Path(args.adapter_path), hub_cfg)
             stub_note = (
                 " [stub — huggingface_hub not installed]" if not push_result.commit_sha else ""
             )

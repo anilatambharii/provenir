@@ -4,6 +4,66 @@ All notable changes to Provenir are documented here.
 
 ---
 
+## v0.5.0 — Observability, Alerts, and Passport Hub Push (2026)
+
+Operational completeness: run reports, webhook alerts, and passport-signed Hub pushes.
+**1 153 tests, all passing.**
+
+### Run Report (`provenir.report`)
+
+`RunReport.from_run_dir(path)` reads the JSON artifacts written by any `ProvenirRun` and
+produces a **self-contained HTML report** — health badge, eval table, reward-hacking signals
+by category, lineage nodes, and full flight-recorder summary — with no additional
+dependencies beyond the stdlib.  `RunReport.from_run(run)` builds the same report directly
+from a live `ProvenirRun` object without touching disk.
+
+New CLI command: **`provenir report <run_dir> [--output report.html]`**
+
+### Webhook / Slack alerts (`provenir.alerts`)
+
+`AlertConfig` + `Alerter` fire JSON POST payloads to any HTTP endpoint (Slack incoming
+webhooks, PagerDuty, generic HTTP) using **stdlib `urllib.request` only** — no new package
+dependencies.  All network errors are caught and suppressed so alerting can never crash a
+training run.
+
+Wire into any run with three `TrackingConfig` fields:
+
+```python
+with provenir.track(
+    "my-run",
+    alert_webhook_url="https://hooks.slack.com/...",
+    alert_on_anomaly=True,
+    alert_on_hacking=True,
+) as run:
+    ...
+```
+
+Alerts fire immediately on each flight-recorder anomaly (severity-gated via
+`AlertConfig.min_severity`) and on batch hacking detection at finalization.
+`run.alerter.fired` exposes fired alerts for testing without a real URL.
+
+### Hub → Passport push (`provenir.adapters.hub`)
+
+`HubClient.push_with_passport(adapter_path, config, passport_json)` writes
+`provenir_passport.json` and `provenir_passport.md` alongside the adapter before uploading,
+so the signed attestation travels with every model pushed to HuggingFace Hub.
+
+New CLI flag: **`provenir hub push <adapter> <repo> --passport <passport.json>`**
+
+### Interactive dashboard (`dashboard/`)
+
+A **Streamlit demo app** (`streamlit run dashboard/app.py`) that imports Provenir and
+demonstrates every feature interactively with sample datasets — run tracking, contamination
+firewall, reward-hacking detection, RL flight recorder, Loop Doctor, Model Passport, Lineage
+DAG, agentic environments, and RH-Bench (if the local private module is present).
+
+### Test suite
+
+- **1 153 tests** — all passing on Python 3.11 and 3.12.
+- ruff + mypy --strict clean.
+
+---
+
 ## v0.4.0 — Loop Doctor + Agentic Environments (2026)
 
 Two features that make the loops *intelligent* and unlock agentic post-training.
