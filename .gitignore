@@ -16,6 +16,7 @@ artifacts/
 site/
 # Unpublished research/paper drafts and benchmark — LOCAL ONLY, never publish
 paper/
+strategy/
 src/provenir/bench/
 tests/test_rhbench.py
 examples/rhbench_demo.py
