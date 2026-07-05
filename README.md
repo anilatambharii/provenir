@@ -4,7 +4,7 @@
 [![PyPI](https://img.shields.io/pypi/v/provenir.svg)](https://pypi.org/project/provenir/)
 [![Python](https://img.shields.io/pypi/pyversions/provenir.svg)](https://pypi.org/project/provenir/)
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
-[![Tests](https://img.shields.io/badge/tests-1038%20passing-brightgreen.svg)](https://github.com/anilatambharii/provenir/actions)
+[![Tests](https://img.shields.io/badge/tests-1153%20passing-brightgreen.svg)](https://github.com/anilatambharii/provenir/actions)
 [![Docs](https://img.shields.io/badge/docs-online-blue.svg)](https://anilatambharii.github.io/provenir)
 
 **The trust layer for model post-training — reproducible, evaluation-first orchestration for LLM fine-tuning and RL.**
@@ -24,7 +24,7 @@ pip install "provenir[train]"          # SFT + DPO + LoRA / QLoRA via TRL
 pip install "provenir[all]"            # Everything
 ```
 
-> **v0.4.0** · Apache-2.0 · Python ≥ 3.11 · 1038 tests · zero breaking changes
+> **v0.5.1** · Apache-2.0 · Python ≥ 3.11 · 1,153 tests · zero breaking changes
 
 ---
 
@@ -61,6 +61,9 @@ produced a model.
 | **Signed Model Passport** | — | — | — | — | ✓ |
 | **Loop Doctor (differential diagnosis)** | — | — | — | — | ✓ |
 | **Agentic environments (multi-turn tool use)** | — | — | — | — | ✓ |
+| **Webhook / Slack alerts** | — | — | — | — | ✓ |
+| **Self-contained HTML run reports** | — | — | — | — | ✓ |
+| **Passport-signed Hub push** | — | — | — | — | ✓ |
 
 ---
 
@@ -136,6 +139,72 @@ with provenir.track("my-run", dataset=train_ds) as run:
 
 See the [Trust Layer guide](https://anilatambharii.github.io/provenir/guides/trust-layer/)
 for full examples.
+
+---
+
+## New in v0.4 — Loop Doctor + Agentic Environments
+
+### Loop Doctor — differential diagnosis for stalled training loops
+
+When a training loop stops improving, "it's not working" is useless. The Loop Doctor
+(`provenir.loop`) does **differential diagnosis** over Provenir's trust signals and
+attributes the stall to exactly one cause:
+
+- **eval** — the eval is contaminated; the metrics are lying
+- **reward** — the reward is being gamed (reward hacking)
+- **algorithm** — the optimiser is unstable; emits a concrete per-anomaly fix
+- **data** — the model has plateaued; emits an actionable `DataRequest` (which slices, how many, how recent)
+
+`LoopController` maps the verdict to the next action (`clean_eval` / `fix_reward` /
+`stabilize` / `collect_data` / `continue`). New CLI: `provenir diagnose <reward_history...>`.
+
+### Agentic environments — multi-turn, tool-use, verifiable rewards
+
+`provenir.environments.agentic` delivers stateful, **OpenEnv-compatible** multi-turn
+environments where the agent emits JSON tool-calls that read/write shared episode state,
+then submits a final answer verified by any Provenir `Verifier`.
+`EpisodeRunner` + `AgentPolicy` run a policy to a terminal reward; multi-turn
+**credit assignment** (`assign_credit`, `CreditConfig`) spreads a sparse terminal reward
+across turns (`last_turn` / `uniform` / `discounted`).
+
+---
+
+## New in v0.5 — Observability, Alerts, and Passport Hub Push
+
+### Webhook / Slack alerts (`provenir.alerts`)
+
+```python
+with provenir.track(
+    "my-run",
+    alert_webhook_url="https://hooks.slack.com/...",
+    alert_on_anomaly=True,
+    alert_on_hacking=True,
+) as run:
+    ...
+```
+
+`AlertConfig` + `Alerter` fire JSON POST payloads to any HTTP endpoint using **stdlib
+`urllib.request` only** — no extra dependencies. All network errors are caught so
+alerting can never crash a training run.
+
+### Self-contained HTML run reports (`provenir.report`)
+
+```bash
+provenir report ./my-run-dir --output report.html
+```
+
+`RunReport.from_run_dir(path)` reads the JSON artifacts written by any `ProvenirRun`
+and produces a **self-contained HTML report** — health badge, eval table, reward-hacking
+signals by category, lineage nodes, and full flight-recorder summary.
+
+### Passport-signed Hub push
+
+```bash
+provenir hub push ./my-adapter --repo-id myorg/llama3 --passport passport.json
+```
+
+Writes `provenir_passport.json` + `provenir_passport.md` alongside the adapter before
+uploading so the signed attestation travels with every model on HuggingFace Hub.
 
 ---
 
@@ -819,7 +888,7 @@ python -m pytest -q
 
 The project enforces strict type-checking (`mypy --strict`), ruff linting
 (E, F, I rules, line-length 100), and comprehensive test coverage of all
-core logic across 1038 tests.
+core logic across 1,153 tests.
 
 ---
 
@@ -835,6 +904,11 @@ core logic across 1038 tests.
 | Judge calibration | Production-ready |
 | Deterministic replay + lineage DAG | Production-ready |
 | Signed Model Passport / BOM | Production-ready |
+| Loop Doctor (differential diagnosis) | Production-ready |
+| Agentic environments (multi-turn tool-use) | Production-ready |
+| Webhook / Slack alerts | Production-ready |
+| Self-contained HTML run reports | Production-ready |
+| Passport-signed Hub push | Production-ready |
 | Verifiable-reward environments (RLVR) | Beta |
 | RL orchestration (GRPO / DAPO / GSPO) | Beta |
 | Backend adapters (verl / TRL / Unsloth) | Beta |
@@ -847,15 +921,16 @@ core logic across 1038 tests.
 | HuggingFace Hub integration | Beta |
 | Benchmark evaluation suite | Beta |
 | Distributed training (FSDP / DeepSpeed) | Experimental |
-| Web UI / dashboard | Roadmap |
+| Interactive Streamlit dashboard | Available (`streamlit run dashboard/app.py`) |
 
 ---
 
 ## Roadmap
 
-- **v0.4** — Streaming training events via WebSocket; live eval + flight-recorder dashboard
-- **v0.5** — Multi-agent RLAIF (constitutional AI loop); reward model training
-- **v1.0** — Production SLAs; enterprise governance controls; HIPAA/SOC2 audit trail
+- ✅ **v0.4** — Loop Doctor · Agentic Environments · Multi-turn credit assignment
+- ✅ **v0.5** — Webhook alerts · HTML run reports · Passport-signed Hub push · Interactive dashboard
+- **v0.6** — Streaming training events via WebSocket · live flight-recorder dashboard · reward model training
+- **v1.0** — Production SLAs · enterprise governance controls · HIPAA/SOC2 audit trail · multi-tenant serving
 
 ---
 
@@ -909,10 +984,11 @@ Apache 2.0 — see [LICENSE](LICENSE).
 If you use Provenir in research, please cite:
 
 ```bibtex
-@software{provenir2025,
-  title  = {Provenir: The Trust Layer for Model Post-Training},
-  year   = {2025},
+@software{provenir2026,
+  author = {Prasad, Anil},
+  title  = {Provenir: An Open-Source Trust Layer for Model Post-Training},
+  year   = {2026},
   url    = {https://github.com/anilatambharii/provenir},
-  note   = {v0.4.0}
+  note   = {v0.5.1}
 }
 ```
