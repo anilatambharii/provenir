@@ -24,3 +24,10 @@ examples/rhbench_demo.py
 !examples/*.jsonl
 !tests/fixtures/*.jsonl
 .claude/
+# Signing keys and certificates — never commit private key material
+*.key
+*.pem
+*.p12
+secrets/
+# Env variants beyond .env
+.env.*

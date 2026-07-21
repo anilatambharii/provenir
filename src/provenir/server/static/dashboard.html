@@ -1,0 +1,1391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Provenir v0.8 Dashboard</title>
+<style>
+  :root {
+    --sidebar-bg: #1a1f2e;
+    --sidebar-hover: #252c40;
+    --sidebar-active: #2d3550;
+    --accent: #4f8ef7;
+    --accent-light: #6aa3ff;
+    --success: #22c55e;
+    --danger: #ef4444;
+    --warning: #f59e0b;
+    --orange: #f97316;
+    --info: #06b6d4;
+    --bg: #f4f6fb;
+    --card: #ffffff;
+    --border: #e2e8f0;
+    --text: #1e293b;
+    --text-muted: #64748b;
+    --result-bg: #f1f5f9;
+    --mono: 'Fira Code', 'Cascadia Code', 'Consolas', monospace;
+    --radius: 8px;
+    --sidebar-width: 220px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    display: flex;
+    min-height: 100vh;
+  }
+
+  /* === SIDEBAR === */
+  #sidebar {
+    width: var(--sidebar-width);
+    background: var(--sidebar-bg);
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 0; left: 0; bottom: 0;
+    overflow-y: auto;
+    z-index: 100;
+  }
+
+  .sidebar-brand {
+    padding: 24px 20px 16px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+
+  .sidebar-brand .logo {
+    font-size: 20px;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: -0.5px;
+  }
+
+  .sidebar-brand .logo span { color: var(--accent); }
+
+  .sidebar-brand .version-badge {
+    display: inline-block;
+    margin-top: 6px;
+    padding: 2px 8px;
+    background: rgba(79,142,247,0.18);
+    color: var(--accent-light);
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+  }
+
+  .sidebar-nav { padding: 12px 0; flex: 1; }
+
+  .nav-item {
+    display: block;
+    padding: 10px 20px;
+    color: rgba(255,255,255,0.65);
+    cursor: pointer;
+    font-size: 13.5px;
+    font-weight: 500;
+    transition: background 0.15s, color 0.15s;
+    border-left: 3px solid transparent;
+    user-select: none;
+  }
+
+  .nav-item:hover { background: var(--sidebar-hover); color: rgba(255,255,255,0.9); }
+  .nav-item.active { background: var(--sidebar-active); color: #fff; border-left-color: var(--accent); }
+
+  .nav-item .nav-icon { margin-right: 8px; font-size: 15px; }
+
+  /* === TOP BAR === */
+  #topbar {
+    position: fixed;
+    top: 0;
+    left: var(--sidebar-width);
+    right: 0;
+    height: 56px;
+    background: var(--card);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    padding: 0 28px;
+    z-index: 90;
+    gap: 16px;
+  }
+
+  #topbar h1 { font-size: 16px; font-weight: 600; color: var(--text); flex: 1; }
+
+  .server-status {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: var(--text-muted);
+  }
+
+  .status-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: var(--text-muted);
+    transition: background 0.3s;
+  }
+  .status-dot.online { background: var(--success); box-shadow: 0 0 0 3px rgba(34,197,94,0.2); }
+  .status-dot.offline { background: var(--danger); box-shadow: 0 0 0 3px rgba(239,68,68,0.2); }
+
+  /* === MAIN CONTENT === */
+  #main {
+    margin-left: var(--sidebar-width);
+    margin-top: 56px;
+    padding: 32px 36px;
+    flex: 1;
+    min-height: calc(100vh - 56px);
+  }
+
+  .section { display: none; }
+  .section.active { display: block; }
+
+  .section-header { margin-bottom: 24px; }
+  .section-header h2 { font-size: 22px; font-weight: 700; color: var(--text); }
+  .section-header p { margin-top: 6px; font-size: 14px; color: var(--text-muted); }
+
+  /* === CARDS === */
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+    margin-bottom: 20px;
+  }
+
+  /* === FORM ELEMENTS === */
+  .form-group { margin-bottom: 16px; }
+  .form-group label { display: block; font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+
+  .form-group input[type="text"],
+  .form-group input[type="number"],
+  .form-group select,
+  .form-group textarea {
+    width: 100%;
+    padding: 9px 12px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-size: 13.5px;
+    font-family: inherit;
+    color: var(--text);
+    background: #fff;
+    transition: border-color 0.15s;
+    outline: none;
+  }
+
+  .form-group input:focus,
+  .form-group select:focus,
+  .form-group textarea:focus { border-color: var(--accent); }
+
+  .form-group textarea { font-family: var(--mono); font-size: 12.5px; resize: vertical; min-height: 90px; }
+
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+  .checkbox-group { display: flex; flex-direction: column; gap: 8px; }
+  .checkbox-item { display: flex; align-items: center; gap: 8px; font-size: 13.5px; cursor: pointer; }
+  .checkbox-item input { width: 15px; height: 15px; cursor: pointer; accent-color: var(--accent); }
+
+  /* === BUTTONS === */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 9px 18px;
+    border: none;
+    border-radius: 6px;
+    font-size: 13.5px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.15s, transform 0.1s;
+  }
+  .btn:hover { opacity: 0.9; }
+  .btn:active { transform: scale(0.98); }
+  .btn-primary { background: var(--accent); color: #fff; }
+  .btn-secondary { background: var(--result-bg); color: var(--text); border: 1px solid var(--border); }
+  .btn-sm { padding: 5px 12px; font-size: 12px; }
+
+  /* === RESULT PANEL === */
+  .result-panel {
+    margin-top: 20px;
+    padding: 18px;
+    background: var(--result-bg);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    display: none;
+  }
+  .result-panel.show { display: block; }
+
+  .result-panel pre {
+    font-family: var(--mono);
+    font-size: 12.5px;
+    white-space: pre-wrap;
+    word-break: break-word;
+    color: var(--text);
+  }
+
+  /* === BADGES === */
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+  }
+  .badge-success { background: rgba(34,197,94,0.12); color: #15803d; }
+  .badge-danger  { background: rgba(239,68,68,0.12); color: #b91c1c; }
+  .badge-warning { background: rgba(245,158,11,0.12); color: #b45309; }
+  .badge-orange  { background: rgba(249,115,22,0.12); color: #c2410c; }
+  .badge-info    { background: rgba(6,182,212,0.12); color: #0e7490; }
+  .badge-muted   { background: rgba(100,116,139,0.12); color: var(--text-muted); }
+
+  /* === BANNER === */
+  .banner {
+    padding: 16px 20px;
+    border-radius: var(--radius);
+    font-size: 22px;
+    font-weight: 800;
+    text-align: center;
+    margin-bottom: 16px;
+    letter-spacing: 1px;
+  }
+  .banner-success { background: rgba(34,197,94,0.1); color: #15803d; border: 2px solid rgba(34,197,94,0.3); }
+  .banner-danger  { background: rgba(239,68,68,0.1); color: #b91c1c; border: 2px solid rgba(239,68,68,0.3); }
+
+  /* === ERROR PANEL === */
+  .error-panel {
+    padding: 14px 16px;
+    background: rgba(239,68,68,0.07);
+    border: 1px solid rgba(239,68,68,0.3);
+    border-radius: var(--radius);
+    color: #b91c1c;
+    font-size: 13px;
+  }
+
+  /* === TABLE === */
+  .data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  .data-table th {
+    text-align: left;
+    padding: 10px 12px;
+    background: var(--result-bg);
+    font-weight: 600;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-muted);
+    border-bottom: 1px solid var(--border);
+  }
+  .data-table td {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  .data-table tr:last-child td { border-bottom: none; }
+  .data-table tr:hover td { background: rgba(79,142,247,0.04); cursor: pointer; }
+
+  /* === TABS === */
+  .tab-header { display: flex; gap: 0; margin-bottom: 20px; border-bottom: 2px solid var(--border); }
+  .tab-btn {
+    padding: 10px 18px;
+    font-size: 13.5px;
+    font-weight: 600;
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    cursor: pointer;
+    color: var(--text-muted);
+    transition: color 0.15s;
+  }
+  .tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  /* === PROGRESS BAR === */
+  .progress-bar-wrap { background: #e2e8f0; border-radius: 20px; height: 18px; overflow: hidden; }
+  .progress-bar-fill { height: 100%; border-radius: 20px; transition: width 0.5s; display: flex; align-items: center; padding-left: 10px; font-size: 11px; font-weight: 700; color: #fff; }
+
+  /* === STATUS SECTION SPECIFIC === */
+  .status-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 16px; }
+  .stat-card { background: var(--result-bg); border-radius: var(--radius); padding: 16px 20px; }
+  .stat-card .stat-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted); }
+  .stat-card .stat-value { font-size: 20px; font-weight: 700; margin-top: 6px; color: var(--text); }
+
+  /* === CHART CONTAINER === */
+  .chart-container { position: relative; height: 200px; margin-bottom: 16px; }
+
+  /* === COPY BUTTON === */
+  .copy-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 8px;
+    font-size: 11px;
+    background: rgba(79,142,247,0.1);
+    color: var(--accent);
+    border: 1px solid rgba(79,142,247,0.2);
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 600;
+    margin-left: 6px;
+    transition: background 0.15s;
+  }
+  .copy-btn:hover { background: rgba(79,142,247,0.2); }
+
+  /* === DETAIL CARD === */
+  .detail-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; margin-top: 16px; }
+  .detail-row { display: flex; gap: 12px; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 13px; }
+  .detail-row:last-child { border-bottom: none; }
+  .detail-key { font-weight: 600; color: var(--text-muted); min-width: 160px; }
+  .detail-val { color: var(--text); word-break: break-all; }
+
+  /* === SEARCH BOX === */
+  .search-box { padding: 8px 12px; border: 1px solid var(--border); border-radius: 6px; font-size: 13px; width: 280px; outline: none; }
+  .search-box:focus { border-color: var(--accent); }
+
+  /* === CHECK LIST === */
+  .check-list { list-style: none; display: flex; flex-direction: column; gap: 8px; margin-top: 8px; }
+  .check-list li { display: flex; align-items: center; gap: 10px; font-size: 14px; }
+  .check-icon { font-size: 18px; }
+
+  /* === LOADING SPINNER === */
+  .spinner {
+    display: inline-block;
+    width: 14px; height: 14px;
+    border: 2px solid rgba(255,255,255,0.4);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    margin-right: 4px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .loading-text { color: var(--text-muted); font-size: 13px; padding: 12px 0; }
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<nav id="sidebar">
+  <div class="sidebar-brand">
+    <div class="logo">Pro<span>venir</span></div>
+    <div class="version-badge">v0.8.0</div>
+  </div>
+  <div class="sidebar-nav">
+    <div class="nav-item active" data-section="status">   <span class="nav-icon">&#x2665;</span> Status</div>
+    <div class="nav-item" data-section="train">           <span class="nav-icon">&#x1F4DA;</span> Train</div>
+    <div class="nav-item" data-section="evaluate">        <span class="nav-icon">&#x1F4CA;</span> Evaluate</div>
+    <div class="nav-item" data-section="scan">            <span class="nav-icon">&#x1F50D;</span> Supply-Chain Scan</div>
+    <div class="nav-item" data-section="passport">        <span class="nav-icon">&#x1F4C4;</span> Passport</div>
+    <div class="nav-item" data-section="rag">             <span class="nav-icon">&#x1F9E0;</span> RAG Corpus Scan</div>
+    <div class="nav-item" data-section="gate">            <span class="nav-icon">&#x1F6AA;</span> Promotion Gate</div>
+    <div class="nav-item" data-section="retraction">      <span class="nav-icon">&#x1F4CB;</span> Retraction Check</div>
+    <div class="nav-item" data-section="regulation">      <span class="nav-icon">&#x2696;</span> Regulation</div>
+    <div class="nav-item" data-section="manifests">       <span class="nav-icon">&#x1F5C2;</span> Run Manifests</div>
+    <div class="nav-item" data-section="audit">           <span class="nav-icon">&#x1F4DD;</span> Audit Log</div>
+  </div>
+</nav>
+
+<!-- TOP BAR -->
+<div id="topbar">
+  <h1>Provenir v0.8 Dashboard</h1>
+  <div class="server-status">
+    <div class="status-dot" id="topStatusDot"></div>
+    <span id="topStatusLabel">Checking...</span>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div id="main">
+
+  <!-- ===== STATUS ===== -->
+  <div class="section active" id="section-status">
+    <div class="section-header">
+      <h2>Server Status</h2>
+      <p>Live health check against <code>/health</code> — polled every 5 seconds.</p>
+    </div>
+    <div class="card">
+      <div style="display:flex;align-items:center;gap:14px;margin-bottom:8px;">
+        <span class="badge badge-muted" id="statusBadge">Checking...</span>
+        <span style="font-size:13px;color:var(--text-muted);">Last checked: <span id="statusLastChecked">—</span></span>
+        <button class="btn btn-secondary btn-sm" onclick="doHealthCheck()">Refresh Now</button>
+      </div>
+      <div class="status-grid">
+        <div class="stat-card">
+          <div class="stat-label">Status</div>
+          <div class="stat-value" id="statStatus">—</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Version</div>
+          <div class="stat-value" id="statVersion">—</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Environment</div>
+          <div class="stat-value" id="statEnv">—</div>
+        </div>
+      </div>
+      <div id="statusRawPanel" class="result-panel" style="margin-top:16px;"></div>
+    </div>
+  </div>
+
+  <!-- ===== TRAIN ===== -->
+  <div class="section" id="section-train">
+    <div class="section-header">
+      <h2>Train</h2>
+      <p>Submit a supervised fine-tuning job via <code>POST /jobs/train</code>.</p>
+    </div>
+    <div class="card">
+      <div class="form-row">
+        <div class="form-group">
+          <label>Job Name</label>
+          <input type="text" id="trainName" value="api-test-sft">
+        </div>
+        <div class="form-group">
+          <label>Seed</label>
+          <input type="number" id="trainSeed" value="42">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Backend</label>
+          <select id="trainBackend" disabled>
+            <option value="stub">stub</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Output Directory</label>
+          <input type="text" id="trainOutputDir" value="artifacts/train_output">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Training Records (JSONL — one JSON object per line)</label>
+        <textarea id="trainRecords" rows="5">{"prompt":"What is 2+2?","response":"4","label":1}
+{"prompt":"Capital of France?","response":"Paris","label":1}
+{"prompt":"Who wrote Hamlet?","response":"Shakespeare","label":1}</textarea>
+      </div>
+      <button class="btn btn-primary" onclick="runTrain()">&#x25B6; Run Training Job</button>
+      <div class="result-panel" id="trainResult"></div>
+    </div>
+  </div>
+
+  <!-- ===== EVALUATE ===== -->
+  <div class="section" id="section-evaluate">
+    <div class="section-header">
+      <h2>Evaluate</h2>
+      <p>Score predictions against references via <code>POST /eval</code>.</p>
+    </div>
+    <div class="card">
+      <div class="form-group">
+        <label>Records (JSONL)</label>
+        <textarea id="evalRecords" rows="5">{"prompt":"What is 2+2?","response":"4","label":1}
+{"prompt":"Capital of France?","response":"Paris","label":1}
+{"prompt":"Who wrote Hamlet?","response":"Shakespeare","label":1}</textarea>
+      </div>
+      <div class="form-group">
+        <label>Predictions (one per line, must match record count)</label>
+        <textarea id="evalPreds" rows="4">4
+Paris
+Shakespeare</textarea>
+      </div>
+      <button class="btn btn-primary" onclick="runEval()">&#x25B6; Run Evaluation</button>
+      <div class="result-panel" id="evalResult"></div>
+    </div>
+  </div>
+
+  <!-- ===== SCAN ===== -->
+  <div class="section" id="section-scan">
+    <div class="section-header">
+      <h2>Supply-Chain Scan</h2>
+      <p>Check model artifacts for threats via <code>POST /scan</code>.</p>
+    </div>
+    <div class="card">
+      <div class="form-group">
+        <label>Model / Artifact Path</label>
+        <input type="text" id="scanPath" value="tests/fixtures/scan">
+      </div>
+      <button class="btn btn-primary" onclick="runScan()">&#x1F50D; Scan Model</button>
+      <div class="result-panel" id="scanResult"></div>
+    </div>
+  </div>
+
+  <!-- ===== PASSPORT ===== -->
+  <div class="section" id="section-passport">
+    <div class="section-header">
+      <h2>Passport</h2>
+      <p>Load and verify model passports — cryptographic model identity cards.</p>
+    </div>
+    <div class="card">
+      <div class="tab-header">
+        <button class="tab-btn active" onclick="switchTab('passport','load',this)">Load from File</button>
+        <button class="tab-btn" onclick="switchTab('passport','verify',this)">Verify Signature</button>
+      </div>
+      <div class="tab-panel active" id="passport-tab-load">
+        <div class="form-group">
+          <label>Passport File Path</label>
+          <input type="text" id="passportLoadPath" value="artifacts/e2e_demo/passport.json">
+        </div>
+        <button class="btn btn-primary" onclick="runPassportLoad()">&#x1F4C4; Load Passport</button>
+        <div class="result-panel" id="passportLoadResult"></div>
+      </div>
+      <div class="tab-panel" id="passport-tab-verify">
+        <div class="form-group">
+          <label>Passport File Path</label>
+          <input type="text" id="passportVerifyPath" value="artifacts/e2e_demo/passport.json">
+        </div>
+        <div class="form-group">
+          <label>Signing Key</label>
+          <input type="text" id="passportVerifyKey" value="demo-key-provenir-e2e">
+        </div>
+        <button class="btn btn-primary" onclick="runPassportVerify()">&#x2713; Verify Signature</button>
+        <div class="result-panel" id="passportVerifyResult"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== RAG ===== -->
+  <div class="section" id="section-rag">
+    <div class="section-header">
+      <h2>RAG Corpus Scan</h2>
+      <p>Audit a retrieval corpus for PII, retracted papers, and training overlap via <code>POST /rag-corpus/scan</code>.</p>
+    </div>
+    <div class="card">
+      <div class="form-group">
+        <label>Corpus Directory</label>
+        <input type="text" id="ragDir" value="artifacts/test_rag">
+      </div>
+      <div class="form-group">
+        <label>Known Retracted DOIs (one per line)</label>
+        <textarea id="ragDois" rows="3">10.1234/retracted-rag-paper</textarea>
+      </div>
+      <button class="btn btn-primary" onclick="runRagScan()">&#x1F9E0; Scan Corpus</button>
+      <div class="result-panel" id="ragResult"></div>
+    </div>
+  </div>
+
+  <!-- ===== GATE ===== -->
+  <div class="section" id="section-gate">
+    <div class="section-header">
+      <h2>Promotion Gate</h2>
+      <p>Evaluate whether a model passport meets production promotion criteria via <code>POST /gate/promote</code>.</p>
+    </div>
+    <div class="card">
+      <div class="form-row">
+        <div class="form-group">
+          <label>Passport Path</label>
+          <input type="text" id="gatePath" value="artifacts/e2e_demo/passport.json">
+        </div>
+        <div class="form-group">
+          <label>Target Stage</label>
+          <input type="text" id="gateStage" value="production">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Required Checks</label>
+        <div class="checkbox-group">
+          <label class="checkbox-item"><input type="checkbox" id="gateReqScan" checked> Require Scan</label>
+          <label class="checkbox-item"><input type="checkbox" id="gateReqNoRetraction" checked> Require No Retraction</label>
+          <label class="checkbox-item"><input type="checkbox" id="gateReqSigned" checked> Require Signed</label>
+          <label class="checkbox-item"><input type="checkbox" id="gateReqNoPii" checked> Require No PII</label>
+          <label class="checkbox-item"><input type="checkbox" id="gateReqNoContam" checked> Require No Contamination</label>
+        </div>
+      </div>
+      <div class="form-group" style="max-width:200px;">
+        <label>Min Validity Score (optional)</label>
+        <input type="number" id="gateMinValidity" placeholder="e.g. 0.8" step="0.01" min="0" max="1">
+      </div>
+      <button class="btn btn-primary" onclick="runGate()">&#x1F6AA; Evaluate Gate</button>
+      <div class="result-panel" id="gateResult"></div>
+    </div>
+  </div>
+
+  <!-- ===== RETRACTION ===== -->
+  <div class="section" id="section-retraction">
+    <div class="section-header">
+      <h2>Retraction Check</h2>
+      <p>Cross-reference training data citations against known retracted papers via <code>POST /retraction/check</code>.</p>
+    </div>
+    <div class="card">
+      <div class="form-group">
+        <label>Passport Path</label>
+        <input type="text" id="retractionPath" value="artifacts/e2e_demo/passport.json">
+      </div>
+      <div class="form-group">
+        <label>Known Retracted DOIs (one per line, may be blank)</label>
+        <textarea id="retractionDois" rows="3" placeholder="10.xxxx/retracted-paper&#10;10.yyyy/another-paper"></textarea>
+      </div>
+      <button class="btn btn-primary" onclick="runRetraction()">&#x1F4CB; Check Retractions</button>
+      <div class="result-panel" id="retractionResult"></div>
+    </div>
+  </div>
+
+  <!-- ===== REGULATION ===== -->
+  <div class="section" id="section-regulation">
+    <div class="section-header">
+      <h2>Regulation Evidence</h2>
+      <p>Generate compliance evidence for regulatory frameworks via <code>POST /regulation</code>.</p>
+    </div>
+    <div class="card">
+      <div class="form-row">
+        <div class="form-group">
+          <label>Passport Path</label>
+          <input type="text" id="regulationPath" value="artifacts/e2e_demo/passport.json">
+        </div>
+        <div class="form-group">
+          <label>Regulatory Framework</label>
+          <select id="regulationFramework">
+            <option value="art53">EU AI Act — Art. 53</option>
+            <option value="annex-iv">EU AI Act — Annex IV</option>
+            <option value="fda-pccp">FDA PCCP</option>
+            <option value="nist-rmf">NIST AI RMF</option>
+          </select>
+        </div>
+      </div>
+      <button class="btn btn-primary" onclick="runRegulation()">&#x2696; Generate Evidence</button>
+      <div class="result-panel" id="regulationResult"></div>
+    </div>
+  </div>
+
+  <!-- ===== MANIFESTS ===== -->
+  <div class="section" id="section-manifests">
+    <div class="section-header">
+      <h2>Run Manifests</h2>
+      <p>Browse all training run manifests. Click a row to see full detail.</p>
+    </div>
+    <div class="card">
+      <div style="display:flex;gap:12px;align-items:center;margin-bottom:16px;">
+        <input type="text" class="search-box" id="manifestSearch" placeholder="Filter by run ID..." oninput="filterManifests()">
+        <button class="btn btn-secondary btn-sm" onclick="loadManifests()">&#x21BB; Refresh</button>
+      </div>
+      <div id="manifestsTable"><div class="loading-text">Loading manifests...</div></div>
+      <div id="manifestDetail"></div>
+    </div>
+  </div>
+
+  <!-- ===== AUDIT ===== -->
+  <div class="section" id="section-audit">
+    <div class="section-header">
+      <h2>Audit Log</h2>
+      <p>Immutable event trail for all API operations.</p>
+    </div>
+    <div class="card">
+      <div style="margin-bottom:16px;">
+        <button class="btn btn-secondary btn-sm" onclick="loadAudit()">&#x21BB; Refresh</button>
+      </div>
+      <div id="auditTable"><div class="loading-text">Loading audit log...</div></div>
+    </div>
+  </div>
+
+</div><!-- /main -->
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
+<script>
+// ============================================================
+// UTILITIES
+// ============================================================
+let evalChart = null;
+
+async function apiFetch(url, options = {}) {
+  try {
+    const res = await fetch(url, options);
+    let data;
+    try { data = await res.json(); } catch(_) { data = { _raw: await res.text() }; }
+    return { ok: res.ok, status: res.status, data };
+  } catch (e) {
+    return { ok: false, status: 0, data: { error: 'Cannot reach server at this URL — is it running?' } };
+  }
+}
+
+function showResult(panelId, html) {
+  const el = document.getElementById(panelId);
+  el.innerHTML = html;
+  el.classList.add('show');
+}
+
+function showError(panelId, status, data) {
+  const msg = status === 0 ? data.error : `HTTP ${status}: ${JSON.stringify(data, null, 2)}`;
+  showResult(panelId, `<div class="error-panel"><strong>Error</strong><pre style="margin-top:8px;white-space:pre-wrap;">${escHtml(msg)}</pre></div>`);
+}
+
+function escHtml(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function prettyJson(obj) {
+  return `<pre>${escHtml(JSON.stringify(obj, null, 2))}</pre>`;
+}
+
+function copyText(text, btn) {
+  navigator.clipboard.writeText(text).then(() => {
+    const orig = btn.textContent;
+    btn.textContent = 'Copied!';
+    setTimeout(() => { btn.textContent = orig; }, 1200);
+  });
+}
+
+function riskBadge(level) {
+  const map = { none: 'badge-success', low: 'badge-info', medium: 'badge-warning', high: 'badge-danger' };
+  const cls = map[String(level).toLowerCase()] || 'badge-muted';
+  return `<span class="badge ${cls}">${escHtml(level)}</span>`;
+}
+
+function severityBadge(sev) {
+  const s = String(sev).toLowerCase();
+  if (s === 'high' || s === 'critical') return `<span class="badge badge-danger">${escHtml(sev)}</span>`;
+  if (s === 'medium') return `<span class="badge badge-warning">${escHtml(sev)}</span>`;
+  if (s === 'low') return `<span class="badge badge-info">${escHtml(sev)}</span>`;
+  return `<span class="badge badge-muted">${escHtml(sev)}</span>`;
+}
+
+function setBtnLoading(btn, loading) {
+  if (loading) {
+    btn._orig = btn.innerHTML;
+    btn.innerHTML = '<span class="spinner"></span> Running...';
+    btn.disabled = true;
+  } else {
+    btn.innerHTML = btn._orig || btn.innerHTML;
+    btn.disabled = false;
+  }
+}
+
+// ============================================================
+// NAVIGATION
+// ============================================================
+document.querySelectorAll('.nav-item').forEach(item => {
+  item.addEventListener('click', () => {
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    item.classList.add('active');
+    const sec = item.dataset.section;
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.getElementById('section-' + sec).classList.add('active');
+    if (sec === 'manifests') loadManifests();
+    if (sec === 'audit') loadAudit();
+  });
+});
+
+// ============================================================
+// TABS
+// ============================================================
+function switchTab(group, tab, btnEl) {
+  document.querySelectorAll(`#section-${group} .tab-btn`).forEach(b => b.classList.remove('active'));
+  document.querySelectorAll(`#section-${group} .tab-panel`).forEach(p => p.classList.remove('active'));
+  btnEl.classList.add('active');
+  document.getElementById(`${group}-tab-${tab}`).classList.add('active');
+}
+
+// ============================================================
+// STATUS / HEALTH
+// ============================================================
+async function doHealthCheck() {
+  const r = await apiFetch('/health');
+  const now = new Date().toLocaleTimeString();
+  document.getElementById('statusLastChecked').textContent = now;
+
+  const dot = document.getElementById('topStatusDot');
+  const label = document.getElementById('topStatusLabel');
+  const badge = document.getElementById('statusBadge');
+
+  if (r.ok) {
+    dot.className = 'status-dot online';
+    label.textContent = 'Online';
+    badge.className = 'badge badge-success';
+    badge.textContent = 'ONLINE';
+    document.getElementById('statStatus').textContent = r.data.status || 'ok';
+    document.getElementById('statVersion').textContent = r.data.version || '—';
+    document.getElementById('statEnv').textContent = r.data.environment || r.data.env || '—';
+    const panel = document.getElementById('statusRawPanel');
+    panel.innerHTML = prettyJson(r.data);
+    panel.classList.add('show');
+  } else {
+    dot.className = 'status-dot offline';
+    label.textContent = 'Offline';
+    badge.className = 'badge badge-danger';
+    badge.textContent = 'OFFLINE';
+    document.getElementById('statStatus').textContent = 'unreachable';
+    document.getElementById('statVersion').textContent = '—';
+    document.getElementById('statEnv').textContent = '—';
+    const panel = document.getElementById('statusRawPanel');
+    panel.innerHTML = `<div class="error-panel">Server is not reachable.</div>`;
+    panel.classList.add('show');
+  }
+}
+
+doHealthCheck();
+setInterval(doHealthCheck, 5000);
+
+// ============================================================
+// TRAIN
+// ============================================================
+async function runTrain() {
+  const btn = event.currentTarget;
+  setBtnLoading(btn, true);
+  const name = document.getElementById('trainName').value.trim();
+  const seed = parseInt(document.getElementById('trainSeed').value) || 42;
+  const outputDir = document.getElementById('trainOutputDir').value.trim();
+  const rawRecords = document.getElementById('trainRecords').value.trim();
+
+  let records = [];
+  for (const line of rawRecords.split('\n')) {
+    const l = line.trim();
+    if (l) {
+      try { records.push(JSON.parse(l)); }
+      catch(e) { showResult('trainResult', `<div class="error-panel">Invalid JSON on line: ${escHtml(l)}</div>`); setBtnLoading(btn, false); return; }
+    }
+  }
+
+  const body = { config: { name, seed, backend: 'stub', output_dir: outputDir }, records };
+  const r = await apiFetch('/jobs/train', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(body) });
+  setBtnLoading(btn, false);
+  if (!r.ok) { showError('trainResult', r.status, r.data); return; }
+
+  const d = r.data;
+  const runId = d.run_id || d.id || '—';
+  const cfgHash = (d.config_hash || '').slice(0, 16) || '—';
+  const dsHash  = (d.dataset_hash || '').slice(0, 16) || '—';
+
+  const html = `
+    <div class="banner banner-success" style="font-size:16px;margin-bottom:12px;">&#x2714; Training Job Submitted</div>
+    <div class="detail-card">
+      <div class="detail-row">
+        <div class="detail-key">Run ID</div>
+        <div class="detail-val"><code>${escHtml(runId)}</code>
+          <button class="copy-btn" onclick="copyText('${escHtml(runId)}',this)">Copy</button>
+        </div>
+      </div>
+      <div class="detail-row">
+        <div class="detail-key">Config Hash</div>
+        <div class="detail-val"><code>${escHtml(cfgHash)}...</code></div>
+      </div>
+      <div class="detail-row">
+        <div class="detail-key">Dataset Hash</div>
+        <div class="detail-val"><code>${escHtml(dsHash)}...</code></div>
+      </div>
+      <div class="detail-row">
+        <div class="detail-key">Records</div>
+        <div class="detail-val">${records.length} record(s)</div>
+      </div>
+    </div>
+    <details style="margin-top:12px;"><summary style="cursor:pointer;font-size:12px;color:var(--text-muted);">Raw Response</summary>${prettyJson(d)}</details>
+  `;
+  showResult('trainResult', html);
+}
+
+// ============================================================
+// EVALUATE
+// ============================================================
+async function runEval() {
+  const btn = event.currentTarget;
+  setBtnLoading(btn, true);
+  const rawRecords = document.getElementById('evalRecords').value.trim();
+  const rawPreds   = document.getElementById('evalPreds').value.trim();
+
+  let records = [];
+  for (const line of rawRecords.split('\n')) {
+    const l = line.trim();
+    if (l) {
+      try { records.push(JSON.parse(l)); }
+      catch(e) { showResult('evalResult', `<div class="error-panel">Invalid JSON: ${escHtml(l)}</div>`); setBtnLoading(btn, false); return; }
+    }
+  }
+
+  const predictions = rawPreds.split('\n').map(l => l.trim()).filter(Boolean);
+  const body = { records, predictions };
+
+  const r = await apiFetch('/eval', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(body) });
+  setBtnLoading(btn, false);
+  if (!r.ok) { showError('evalResult', r.status, r.data); return; }
+
+  const d = r.data;
+  const metrics = d.metrics || d.scores || d;
+  const names  = ['exact_match', 'token_f1', 'bleu', 'rouge_l'];
+  const values = names.map(k => {
+    const v = metrics[k];
+    if (v !== undefined && v !== null) {
+      if (typeof v === 'object') return typeof v.mean === 'number' ? v.mean : (typeof v.score === 'number' ? v.score : 0);
+      return parseFloat(v) || 0;
+    }
+    // Try dot-notation alternatives
+    for (const key of Object.keys(metrics)) {
+      if (key.toLowerCase().includes(k.replace('_',''))) return parseFloat(metrics[key]) || 0;
+    }
+    return 0;
+  });
+
+  const labels = ['Exact Match', 'Token F1', 'BLEU', 'ROUGE-L'];
+
+  // Destroy old chart
+  if (evalChart) { evalChart.destroy(); evalChart = null; }
+
+  let ciHtml = '';
+  for (const name of names) {
+    const mv = metrics[name];
+    if (mv && typeof mv === 'object' && mv.ci_low !== undefined) {
+      ciHtml += `<div style="font-size:12.5px;margin-top:4px;color:var(--text-muted);">
+        <strong>${escHtml(name)}</strong>: ${mv.mean?.toFixed(4) ?? '—'}
+        (95% CI: ${mv.ci_low?.toFixed(4) ?? '—'} – ${mv.ci_high?.toFixed(4) ?? '—'})
+      </div>`;
+    }
+  }
+
+  const html = `
+    <div class="chart-container">
+      <canvas id="evalChartCanvas"></canvas>
+    </div>
+    ${ciHtml ? `<div style="margin-top:8px;padding:10px 14px;background:#fff;border-radius:6px;border:1px solid var(--border);"><strong style="font-size:12px;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-muted);">Confidence Intervals</strong>${ciHtml}</div>` : ''}
+    <details style="margin-top:12px;"><summary style="cursor:pointer;font-size:12px;color:var(--text-muted);">Raw Response</summary>${prettyJson(d)}</details>
+  `;
+  showResult('evalResult', html);
+
+  // Build chart after DOM update
+  setTimeout(() => {
+    const ctx = document.getElementById('evalChartCanvas');
+    if (!ctx) return;
+    evalChart = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels,
+        datasets: [{
+          label: 'Score',
+          data: values,
+          backgroundColor: ['rgba(79,142,247,0.75)', 'rgba(34,197,94,0.75)', 'rgba(245,158,11,0.75)', 'rgba(239,68,68,0.75)'],
+          borderColor:      ['rgba(79,142,247,1)',    'rgba(34,197,94,1)',    'rgba(245,158,11,1)',    'rgba(239,68,68,1)'],
+          borderWidth: 1.5,
+          borderRadius: 4,
+        }]
+      },
+      options: {
+        indexAxis: 'y',
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          x: { min: 0, max: 1, ticks: { font: { size: 11 } }, grid: { color: 'rgba(0,0,0,0.06)' } },
+          y: { ticks: { font: { size: 12, weight: '600' } }, grid: { display: false } }
+        },
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: { label: ctx => ` ${(ctx.raw * 100).toFixed(1)}%` }
+          }
+        }
+      }
+    });
+  }, 50);
+}
+
+// ============================================================
+// SUPPLY-CHAIN SCAN
+// ============================================================
+async function runScan() {
+  const btn = event.currentTarget;
+  setBtnLoading(btn, true);
+  const path = document.getElementById('scanPath').value.trim();
+  const r = await apiFetch('/scan', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ path }) });
+  setBtnLoading(btn, false);
+  if (!r.ok) { showError('scanResult', r.status, r.data); return; }
+
+  const d = r.data;
+  const findings   = d.findings || d.results || [];
+  const totalFiles = d.files_scanned ?? d.total_files ?? '—';
+  const safe       = d.safe ?? (findings.length === 0);
+  const safeBadge  = safe ? '<span class="badge badge-success">SAFE</span>' : '<span class="badge badge-danger">UNSAFE</span>';
+
+  let tableHtml = '';
+  if (findings.length > 0) {
+    const rows = findings.map(f => `
+      <tr>
+        <td>${severityBadge(f.severity || f.level || 'unknown')}</td>
+        <td>${escHtml(f.threat || f.type || f.message || JSON.stringify(f))}</td>
+        <td style="font-family:var(--mono);font-size:12px;">${escHtml(f.file || f.path || '—')}</td>
+      </tr>`).join('');
+    tableHtml = `
+      <table class="data-table" style="margin-top:14px;">
+        <thead><tr><th>Severity</th><th>Threat</th><th>File</th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table>`;
+  } else {
+    tableHtml = `<p style="margin-top:12px;font-size:13px;color:var(--text-muted);">No findings detected.</p>`;
+  }
+
+  const html = `
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:4px;">
+      ${safeBadge}
+      <span style="font-size:14px;font-weight:600;">${totalFiles} file(s) scanned — ${findings.length} finding(s)</span>
+    </div>
+    ${tableHtml}
+    <details style="margin-top:12px;"><summary style="cursor:pointer;font-size:12px;color:var(--text-muted);">Raw Response</summary>${prettyJson(d)}</details>
+  `;
+  showResult('scanResult', html);
+}
+
+// ============================================================
+// PASSPORT — LOAD
+// ============================================================
+async function runPassportLoad() {
+  const btn = event.currentTarget;
+  setBtnLoading(btn, true);
+  const path = document.getElementById('passportLoadPath').value.trim();
+  const r = await apiFetch('/passport/load', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ path }) });
+  setBtnLoading(btn, false);
+  if (!r.ok) { showError('passportLoadResult', r.status, r.data); return; }
+
+  const d = r.data;
+  const passport = d.passport || d;
+
+  const riskFlags = passport.risk_flags || passport.risks || [];
+  let flagsHtml = riskFlags.length > 0
+    ? riskFlags.map(f => `<span class="badge badge-warning" style="margin-right:4px;margin-bottom:4px;">${escHtml(f)}</span>`).join('')
+    : '<span class="badge badge-success">None</span>';
+
+  const evalScores = passport.eval_scores || passport.metrics || {};
+
+  let scoresHtml = Object.keys(evalScores).length > 0
+    ? Object.entries(evalScores).map(([k,v]) => `<span style="margin-right:10px;font-size:13px;"><strong>${escHtml(k)}:</strong> ${typeof v === 'number' ? v.toFixed(4) : escHtml(String(v))}</span>`).join('')
+    : '<span style="color:var(--text-muted);font-size:13px;">—</span>';
+
+  const datasetCount = passport.dataset_count ?? (Array.isArray(passport.datasets) ? passport.datasets.length : '—');
+  const bomHash = (passport.bom_hash || passport.bom?.hash || '—');
+
+  const html = `
+    <div class="detail-card">
+      <div class="detail-row"><div class="detail-key">Model ID</div><div class="detail-val"><code>${escHtml(passport.model_id || '—')}</code></div></div>
+      <div class="detail-row"><div class="detail-key">Base Model</div><div class="detail-val">${escHtml(passport.base_model || '—')}</div></div>
+      <div class="detail-row"><div class="detail-key">Run ID</div><div class="detail-val"><code>${escHtml(passport.run_id || '—')}</code></div></div>
+      <div class="detail-row"><div class="detail-key">Dataset Count</div><div class="detail-val">${datasetCount}</div></div>
+      <div class="detail-row"><div class="detail-key">Eval Scores</div><div class="detail-val">${scoresHtml}</div></div>
+      <div class="detail-row"><div class="detail-key">Risk Flags</div><div class="detail-val" style="flex-wrap:wrap;">${flagsHtml}</div></div>
+      <div class="detail-row"><div class="detail-key">BOM Hash</div><div class="detail-val" style="font-family:var(--mono);font-size:12px;">${escHtml(bomHash)}</div></div>
+    </div>
+    <details style="margin-top:12px;"><summary style="cursor:pointer;font-size:12px;color:var(--text-muted);">Raw Response</summary>${prettyJson(d)}</details>
+  `;
+  showResult('passportLoadResult', html);
+}
+
+// ============================================================
+// PASSPORT — VERIFY
+// ============================================================
+async function runPassportVerify() {
+  const btn = event.currentTarget;
+  setBtnLoading(btn, true);
+  const path = document.getElementById('passportVerifyPath').value.trim();
+  const key  = document.getElementById('passportVerifyKey').value.trim();
+  const r = await apiFetch('/passport/verify', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ path, key }) });
+  setBtnLoading(btn, false);
+  if (!r.ok) { showError('passportVerifyResult', r.status, r.data); return; }
+
+  const d = r.data;
+  const valid = d.valid ?? d.verified ?? (d.status === 'valid');
+
+  const html = `
+    <div class="banner ${valid ? 'banner-success' : 'banner-danger'}" style="font-size:20px;">
+      ${valid ? '&#x2714; VALID' : '&#x2718; INVALID'}
+    </div>
+    ${d.reason ? `<p style="font-size:13px;color:var(--text-muted);margin-top:8px;">Reason: ${escHtml(d.reason)}</p>` : ''}
+    <details style="margin-top:12px;"><summary style="cursor:pointer;font-size:12px;color:var(--text-muted);">Raw Response</summary>${prettyJson(d)}</details>
+  `;
+  showResult('passportVerifyResult', html);
+}
+
+// ============================================================
+// RAG CORPUS SCAN
+// ============================================================
+async function runRagScan() {
+  const btn = event.currentTarget;
+  setBtnLoading(btn, true);
+  const corpusDir = document.getElementById('ragDir').value.trim();
+  const knownRetracted = document.getElementById('ragDois').value.trim().split('\n').map(l=>l.trim()).filter(Boolean);
+  const body = { corpus_dir: corpusDir, known_retracted: knownRetracted, train_hashes: [] };
+
+  const r = await apiFetch('/rag-corpus/scan', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(body) });
+  setBtnLoading(btn, false);
+  if (!r.ok) { showError('ragResult', r.status, r.data); return; }
+
+  const d = r.data;
+  const totalDocs  = d.total_docs ?? d.total ?? '—';
+  const piiCount   = d.pii_count ?? d.pii ?? 0;
+  const retracted  = d.retracted_count ?? d.retracted ?? 0;
+  const contamCount= d.training_overlap_count ?? d.contamination ?? 0;
+  const riskLevel  = d.risk_level ?? d.risk ?? 'none';
+  const docs       = d.documents || d.results || [];
+
+  let docsHtml = '';
+  if (docs.length > 0) {
+    const rows = docs.map(doc => `
+      <tr>
+        <td style="font-family:var(--mono);font-size:12px;">${escHtml(doc.path || doc.id || doc.name || '—')}</td>
+        <td>${doc.pii ? '<span class="badge badge-warning">PII</span>' : '<span class="badge badge-success">Clean</span>'}</td>
+        <td>${doc.retracted ? '<span class="badge badge-danger">Retracted</span>' : '—'}</td>
+        <td>${doc.training_overlap ? '<span class="badge badge-orange">Overlap</span>' : '—'}</td>
+      </tr>`).join('');
+    docsHtml = `
+      <table class="data-table" style="margin-top:14px;">
+        <thead><tr><th>Document</th><th>PII</th><th>Retraction</th><th>Train Overlap</th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table>`;
+  }
+
+  const html = `
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:12px;">
+      <div class="stat-card"><div class="stat-label">Total Docs</div><div class="stat-value">${totalDocs}</div></div>
+      <div class="stat-card"><div class="stat-label">PII</div><div class="stat-value">${piiCount}</div></div>
+      <div class="stat-card"><div class="stat-label">Retracted</div><div class="stat-value">${retracted}</div></div>
+      <div class="stat-card"><div class="stat-label">Train Overlap</div><div class="stat-value">${contamCount}</div></div>
+    </div>
+    <div>Risk Level: ${riskBadge(riskLevel)}</div>
+    ${docsHtml}
+    <details style="margin-top:12px;"><summary style="cursor:pointer;font-size:12px;color:var(--text-muted);">Raw Response</summary>${prettyJson(d)}</details>
+  `;
+  showResult('ragResult', html);
+}
+
+// ============================================================
+// PROMOTION GATE
+// ============================================================
+async function runGate() {
+  const btn = event.currentTarget;
+  setBtnLoading(btn, true);
+  const path        = document.getElementById('gatePath').value.trim();
+  const stage       = document.getElementById('gateStage').value.trim();
+  const reqScan     = document.getElementById('gateReqScan').checked;
+  const reqNoRet    = document.getElementById('gateReqNoRetraction').checked;
+  const reqSigned   = document.getElementById('gateReqSigned').checked;
+  const reqNoPii    = document.getElementById('gateReqNoPii').checked;
+  const reqNoContam = document.getElementById('gateReqNoContam').checked;
+  const minValRaw   = document.getElementById('gateMinValidity').value.trim();
+  const minValidity = minValRaw ? parseFloat(minValRaw) : null;
+
+  const body = {
+    path, stage,
+    require_scan: reqScan,
+    require_no_retraction: reqNoRet,
+    require_signed: reqSigned,
+    require_no_pii: reqNoPii,
+    require_no_contamination: reqNoContam,
+    min_validity: minValidity
+  };
+
+  const r = await apiFetch('/gate/promote', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(body) });
+  setBtnLoading(btn, false);
+  if (!r.ok) { showError('gateResult', r.status, r.data); return; }
+
+  const d = r.data;
+  const passed = d.passed ?? d.approved ?? d.result === 'passed';
+  const checks  = d.checks || d.check_results || [];
+
+  let checksHtml = '';
+  if (checks.length > 0) {
+    const items = checks.map(c => {
+      const ok = c.passed ?? c.ok ?? c.result === 'pass';
+      return `<li>
+        <span class="check-icon">${ok ? '&#x2705;' : '&#x274C;'}</span>
+        <span style="font-weight:600;">${escHtml(c.name || c.check || '—')}</span>
+        ${c.reason ? `<span style="color:var(--text-muted);font-size:12.5px;"> — ${escHtml(c.reason)}</span>` : ''}
+      </li>`;
+    }).join('');
+    checksHtml = `<ul class="check-list">${items}</ul>`;
+  } else {
+    // Try to extract from flat response
+    const knownChecks = [
+      { key: 'scan_passed',           label: 'Scan' },
+      { key: 'no_retraction_passed',  label: 'No Retraction' },
+      { key: 'signed_passed',         label: 'Signed' },
+      { key: 'no_pii_passed',         label: 'No PII' },
+      { key: 'no_contamination_passed', label: 'No Contamination' },
+    ];
+    const items = knownChecks.map(c => {
+      const v = d[c.key];
+      if (v === undefined) return '';
+      return `<li><span class="check-icon">${v ? '&#x2705;' : '&#x274C;'}</span><span style="font-weight:600;">${c.label}</span></li>`;
+    }).join('');
+    if (items) checksHtml = `<ul class="check-list">${items}</ul>`;
+  }
+
+  const html = `
+    <div class="banner ${passed ? 'banner-success' : 'banner-danger'}">
+      ${passed ? '&#x2714; PASSED' : '&#x26D4; BLOCKED'}
+    </div>
+    <div style="font-size:14px;color:var(--text-muted);margin-bottom:12px;">Stage: <strong>${escHtml(stage)}</strong></div>
+    ${checksHtml}
+    <details style="margin-top:12px;"><summary style="cursor:pointer;font-size:12px;color:var(--text-muted);">Raw Response</summary>${prettyJson(d)}</details>
+  `;
+  showResult('gateResult', html);
+}
+
+// ============================================================
+// RETRACTION CHECK
+// ============================================================
+async function runRetraction() {
+  const btn = event.currentTarget;
+  setBtnLoading(btn, true);
+  const path = document.getElementById('retractionPath').value.trim();
+  const knownRetracted = document.getElementById('retractionDois').value.trim().split('\n').map(l=>l.trim()).filter(Boolean);
+  const body = { path, known_retracted: knownRetracted };
+
+  const r = await apiFetch('/retraction/check', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(body) });
+  setBtnLoading(btn, false);
+  if (!r.ok) { showError('retractionResult', r.status, r.data); return; }
+
+  const d = r.data;
+  const checked   = d.checked_count ?? d.total ?? d.citations_checked ?? '—';
+  const retracted = d.retracted_count ?? d.retracted ?? 0;
+  const rate      = (typeof checked === 'number' && checked > 0)
+    ? ((retracted / checked) * 100).toFixed(1) : '0.0';
+  const riskLevel = d.risk_level ?? d.risk ?? (retracted > 0 ? 'high' : 'none');
+
+  const html = `
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:12px;">
+      <div class="stat-card"><div class="stat-label">Citations Checked</div><div class="stat-value">${checked}</div></div>
+      <div class="stat-card"><div class="stat-label">Retracted</div><div class="stat-value">${retracted}</div></div>
+      <div class="stat-card"><div class="stat-label">Retraction Rate</div><div class="stat-value">${rate}%</div></div>
+    </div>
+    <div>Risk Level: ${riskBadge(riskLevel)}</div>
+    <details style="margin-top:12px;"><summary style="cursor:pointer;font-size:12px;color:var(--text-muted);">Raw Response</summary>${prettyJson(d)}</details>
+  `;
+  showResult('retractionResult', html);
+}
+
+// ============================================================
+// REGULATION
+// ============================================================
+async function runRegulation() {
+  const btn = event.currentTarget;
+  setBtnLoading(btn, true);
+  const path      = document.getElementById('regulationPath').value.trim();
+  const framework = document.getElementById('regulationFramework').value;
+  const body = { path, framework };
+
+  const r = await apiFetch('/regulation', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(body) });
+  setBtnLoading(btn, false);
+  if (!r.ok) { showError('regulationResult', r.status, r.data); return; }
+
+  const d = r.data;
+  const rawScore = d.coverage_score ?? d.coverage ?? d.score ?? null;
+  const pct      = rawScore !== null ? Math.round(parseFloat(rawScore) * (rawScore <= 1 ? 100 : 1)) : null;
+  const content  = d.content || d.evidence || d.markdown || d.text || JSON.stringify(d, null, 2);
+
+  let progressHtml = '';
+  if (pct !== null) {
+    const barColor = pct >= 80 ? 'var(--success)' : pct >= 50 ? 'var(--warning)' : 'var(--danger)';
+    progressHtml = `
+      <div style="margin-bottom:14px;">
+        <div style="display:flex;justify-content:space-between;font-size:13px;font-weight:600;margin-bottom:6px;">
+          <span>Coverage Score</span><span>${pct}%</span>
+        </div>
+        <div class="progress-bar-wrap">
+          <div class="progress-bar-fill" style="width:${pct}%;background:${barColor};">${pct >= 15 ? pct+'%' : ''}</div>
+        </div>
+      </div>`;
+  }
+
+  const html = `
+    ${progressHtml}
+    <div style="background:#fff;border:1px solid var(--border);border-radius:6px;padding:16px;margin-top:8px;">
+      <pre style="font-family:var(--mono);font-size:12px;white-space:pre-wrap;max-height:400px;overflow-y:auto;">${escHtml(content)}</pre>
+    </div>
+  `;
+  showResult('regulationResult', html);
+}
+
+// ============================================================
+// MANIFESTS
+// ============================================================
+let allManifests = [];
+
+async function loadManifests() {
+  const container = document.getElementById('manifestsTable');
+  container.innerHTML = '<div class="loading-text">Loading...</div>';
+  const r = await apiFetch('/manifests');
+  if (!r.ok) { container.innerHTML = `<div class="error-panel">Failed to load manifests (HTTP ${r.status})</div>`; return; }
+
+  const d = r.data;
+  allManifests = Array.isArray(d) ? d : (d.manifests || d.runs || Object.values(d));
+  renderManifests(allManifests);
+}
+
+function renderManifests(data) {
+  const container = document.getElementById('manifestsTable');
+  if (!data.length) { container.innerHTML = '<p style="color:var(--text-muted);font-size:13px;">No manifests found.</p>'; return; }
+
+  const rows = data.map(m => {
+    const runId = m.run_id || m.id || '—';
+    const name  = m.name || m.job_name || '—';
+    const ts    = m.timestamp || m.created_at || '—';
+    const status= m.status || '—';
+    return `<tr onclick="loadManifestDetail('${escHtml(runId)}')">
+      <td style="font-family:var(--mono);font-size:12px;">${escHtml(runId)}</td>
+      <td>${escHtml(name)}</td>
+      <td style="font-size:12px;color:var(--text-muted);">${escHtml(ts)}</td>
+      <td><span class="badge badge-muted">${escHtml(status)}</span></td>
+    </tr>`;
+  }).join('');
+
+  container.innerHTML = `
+    <table class="data-table">
+      <thead><tr><th>Run ID</th><th>Name</th><th>Timestamp</th><th>Status</th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table>`;
+}
+
+function filterManifests() {
+  const q = document.getElementById('manifestSearch').value.toLowerCase();
+  const filtered = q ? allManifests.filter(m => JSON.stringify(m).toLowerCase().includes(q)) : allManifests;
+  renderManifests(filtered);
+}
+
+async function loadManifestDetail(runId) {
+  const detail = document.getElementById('manifestDetail');
+  detail.innerHTML = '<div class="loading-text">Loading detail...</div>';
+  const r = await apiFetch(`/manifests/${encodeURIComponent(runId)}`);
+  if (!r.ok) { detail.innerHTML = `<div class="error-panel">Failed to load manifest detail.</div>`; return; }
+
+  const d = r.data;
+  const entries = Object.entries(d).map(([k,v]) =>
+    `<div class="detail-row">
+      <div class="detail-key">${escHtml(k)}</div>
+      <div class="detail-val">${typeof v === 'object' ? `<pre style="font-size:12px;font-family:var(--mono);">${escHtml(JSON.stringify(v,null,2))}</pre>` : escHtml(String(v))}</div>
+    </div>`
+  ).join('');
+  detail.innerHTML = `<div class="detail-card" style="margin-top:16px;"><h3 style="font-size:14px;margin-bottom:12px;">Detail: ${escHtml(runId)}</h3>${entries}</div>`;
+}
+
+// ============================================================
+// AUDIT LOG
+// ============================================================
+async function loadAudit() {
+  const container = document.getElementById('auditTable');
+  container.innerHTML = '<div class="loading-text">Loading...</div>';
+  const r = await apiFetch('/audit');
+  if (!r.ok) { container.innerHTML = `<div class="error-panel">Failed to load audit log (HTTP ${r.status})</div>`; return; }
+
+  const d = r.data;
+  const entries = Array.isArray(d) ? d : (d.entries || d.events || d.log || []);
+
+  if (!entries.length) { container.innerHTML = '<p style="color:var(--text-muted);font-size:13px;">Audit log is empty.</p>'; return; }
+
+  const rows = entries.map(e => {
+    const ts      = e.timestamp || e.ts || e.time || '—';
+    const event   = e.event || e.action || e.type || '—';
+    const actor   = e.actor || e.user || e.source || '—';
+    const payload = JSON.stringify(e.payload || e.data || e.details || {});
+    const truncPl = payload.length > 80 ? payload.slice(0, 80) + '…' : payload;
+    return `<tr>
+      <td style="font-size:12px;font-family:var(--mono);white-space:nowrap;">${escHtml(ts)}</td>
+      <td style="font-weight:600;">${escHtml(event)}</td>
+      <td>${escHtml(actor)}</td>
+      <td style="font-family:var(--mono);font-size:11.5px;color:var(--text-muted);">${escHtml(truncPl)}</td>
+    </tr>`;
+  }).join('');
+
+  container.innerHTML = `
+    <table class="data-table">
+      <thead><tr><th>Timestamp</th><th>Event</th><th>Actor</th><th>Payload</th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table>`;
+}
+</script>
+</body>
+</html>

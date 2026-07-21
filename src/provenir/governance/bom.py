@@ -3,7 +3,12 @@ from __future__ import annotations
 import hashlib
 import json
 from dataclasses import dataclass, field
-from typing import Any
+from typing import TYPE_CHECKING, Any
+
+if TYPE_CHECKING:
+    from provenir.environments.reward_validity import RewardValidityReport
+    from provenir.governance.retraction import RetractionComponent
+    from provenir.governance.scan import ScanComponent
 
 
 @dataclass(frozen=True)
@@ -21,6 +26,11 @@ class DataComponent:
     license: str = "unknown"
     pii_scanned: bool = False
     contamination_checked: bool = False
+    # EU AI Act Art. 53 / Annex XII provenance fields (additive, defaulted — zero breaking changes)
+    source_category: str = "unknown"
+    crawl_domains: dict[str, int] = field(default_factory=dict)
+    optout_respected: bool | None = None
+    retraction_dois: list[str] = field(default_factory=list)
 
     def __post_init__(self) -> None:
         if not self.name:
@@ -38,6 +48,10 @@ class DataComponent:
             "license": self.license,
             "pii_scanned": self.pii_scanned,
             "contamination_checked": self.contamination_checked,
+            "source_category": self.source_category,
+            "crawl_domains": dict(self.crawl_domains),
+            "optout_respected": self.optout_respected,
+            "retraction_dois": list(self.retraction_dois),
         }
 
 
@@ -96,6 +110,53 @@ class EvalComponent:
 
 
 @dataclass(frozen=True)
+class RewardValidityComponent:
+    """A signed-into-the-BOM summary of a reward's spurious-reward ablation result.
+
+    Carries the verdict from a :class:`~provenir.environments.reward_validity.RewardValidityReport`
+    so a Passport can attest "reward ``math`` scored validity 0.86, not spurious." Only primitives
+    are stored (governance stays independent of the environments layer); build one from a report via
+    :meth:`from_report`.
+
+    Example:
+        >>> RewardValidityComponent("math", "abc", 0.86, spurious=False).spurious
+        False
+    """
+
+    reward_name: str
+    report_hash: str
+    validity: float
+    spurious: bool
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "reward_name": self.reward_name,
+            "report_hash": self.report_hash,
+            "validity": self.validity,
+            "spurious": self.spurious,
+        }
+
+    @classmethod
+    def from_report(cls, report: RewardValidityReport) -> RewardValidityComponent:
+        """Build a component from a reward-validity report's signed summary."""
+        return cls(
+            reward_name=report.reward_name,
+            report_hash=report.content_hash(),
+            validity=report.validity,
+            spurious=report.spurious,
+        )
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> RewardValidityComponent:
+        return cls(
+            reward_name=data["reward_name"],
+            report_hash=data["report_hash"],
+            validity=data["validity"],
+            spurious=bool(data["spurious"]),
+        )
+
+
+@dataclass(frozen=True)
 class ModelBOM:
     """A Model Bill-of-Materials: the full lineage of a trained model.
 
@@ -125,6 +186,10 @@ class ModelBOM:
     evals: list[EvalComponent]
     hyperparameters: dict[str, Any] = field(default_factory=dict)
     created_at: str = ""
+    scan: ScanComponent | None = None
+    reward_validity: RewardValidityComponent | None = None
+    retraction: RetractionComponent | None = None
+    parent_passport_hash: str | None = None
 
     def __post_init__(self) -> None:
         if not self.model_id:
@@ -135,7 +200,7 @@ class ModelBOM:
             raise ValueError("run_id must be non-empty")
 
     def to_dict(self) -> dict[str, Any]:
-        return {
+        d: dict[str, Any] = {
             "model_id": self.model_id,
             "base_model": self.base_model,
             "run_id": self.run_id,
@@ -144,13 +209,23 @@ class ModelBOM:
             "evals": [component.to_dict() for component in self.evals],
             "hyperparameters": self.hyperparameters,
             "created_at": self.created_at,
+            "scan": self.scan.to_dict() if self.scan is not None else None,
+            "reward_validity": (
+                self.reward_validity.to_dict() if self.reward_validity is not None else None
+            ),
+            "retraction": self.retraction.to_dict() if self.retraction is not None else None,
+            "parent_passport_hash": self.parent_passport_hash,
         }
+        return d
 
     def canonical_json(self) -> str:
         """Return a deterministic, sorted-keys JSON serialization of the BOM.
 
         The output is independent of dict insertion order, making it a stable
-        basis for hashing and signing.
+        basis for hashing and signing.  ``parent_passport_hash`` is included in
+        the signed content, making fine-tune lineage tamper-evident: modifying
+        any ancestor's BOM changes its content hash, which invalidates every
+        descendant's ``parent_passport_hash`` pointer.
         """
         return json.dumps(
             self.to_dict(),
@@ -172,6 +247,11 @@ class ModelBOM:
               contamination-checked.
             - ``"unknown_license"`` if any data component has an unknown license.
             - ``"contaminated_eval"`` if any evaluation is flagged contaminated.
+            - ``"unsafe_model_scan"`` if the attached scan found a critical/high issue.
+            - ``"spurious_reward"`` if the attached reward-validity check flagged the
+              reward signal as spurious.
+            - ``"retracted_training_data"`` if the retraction monitor found retracted DOIs
+              in the training corpus.
         """
         flags: set[str] = set()
         for component in self.data:
@@ -184,4 +264,10 @@ class ModelBOM:
         for evaluation in self.evals:
             if evaluation.contaminated:
                 flags.add("contaminated_eval")
+        if self.scan is not None and self.scan.unsafe:
+            flags.add("unsafe_model_scan")
+        if self.reward_validity is not None and self.reward_validity.spurious:
+            flags.add("spurious_reward")
+        if self.retraction is not None and self.retraction.retracted_count > 0:
+            flags.add("retracted_training_data")
         return sorted(flags)

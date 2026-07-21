@@ -4,8 +4,8 @@ build-backend = "hatchling.build"
 
 [project]
 name = "provenir"
-version = "0.5.1"
-description = "The trust layer for model post-training: reproducibility, contamination-safe eval, reward-hacking detection, and signed provenance for any fine-tuning or RL run"
+version = "0.8.0"
+description = "The trust layer for model post-training: reproducibility, contamination-safe eval, reward-hacking detection, supply-chain scanning, TIM detection, retraction monitoring, LoRA lineage signing, Sigstore DSSE, CycloneDX/SPDX SBOM export, EU AI Act / FDA PCCP / NIST AI RMF regulatory evidence, and M&A acquisition packaging"
 readme = "README.md"
 requires-python = ">=3.11"
 license = { text = "Apache-2.0" }
@@ -16,6 +16,9 @@ keywords = [
   "orchestration", "reproducibility", "provenance", "lineage",
   "evaluation", "contamination", "reward-hacking", "verifiable-rewards",
   "model-passport", "rag", "governance", "audit", "huggingface", "trl",
+  "supply-chain", "sbom", "cyclonedx", "spdx", "sigstore", "dsse",
+  "eu-ai-act", "fda-pccp", "nist-ai-rmf", "regulation", "compliance",
+  "retraction", "training-inference-mismatch", "model-security",
 ]
 classifiers = [
   "Development Status :: 4 - Beta",

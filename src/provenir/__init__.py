@@ -1,7 +1,10 @@
 """Provenir — the trust layer for model post-training.
 
-Reproducibility, contamination-safe evaluation, reward-hacking detection, and
-signed provenance for any fine-tuning or RL run — one import, any backend.
+Reproducibility, contamination-safe evaluation, reward-hacking detection,
+supply-chain threat scanning, training-inference mismatch detection, retraction
+monitoring, LoRA lineage signing, Sigstore DSSE signing, CycloneDX/SPDX SBOM
+export, regulatory evidence generation (EU AI Act, FDA PCCP, NIST AI RMF), and
+M&A acquisition packaging — one import, any backend.
 
 Quick start::
 
@@ -30,4 +33,4 @@ __all__ = [
     "track",
     "provenance_tracked",
 ]
-__version__ = "0.5.1"
+__version__ = "0.8.0"

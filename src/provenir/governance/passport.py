@@ -15,7 +15,10 @@ from provenir.governance.bom import (
     DataComponent,
     EvalComponent,
     ModelBOM,
+    RewardValidityComponent,
 )
+from provenir.governance.retraction import RetractionComponent
+from provenir.governance.scan import ScanComponent
 
 _HMAC_SHA256 = "HMAC-SHA256"
 
@@ -127,6 +130,10 @@ class ModelPassport:
                     license=component.get("license", "unknown"),
                     pii_scanned=component.get("pii_scanned", False),
                     contamination_checked=component.get("contamination_checked", False),
+                    source_category=component.get("source_category", "unknown"),
+                    crawl_domains=dict(component.get("crawl_domains", {})),
+                    optout_respected=component.get("optout_respected", None),
+                    retraction_dois=list(component.get("retraction_dois", [])),
                 )
                 for component in bom_data["data"]
             ],
@@ -145,6 +152,18 @@ class ModelPassport:
             ],
             hyperparameters=dict(bom_data.get("hyperparameters", {})),
             created_at=bom_data.get("created_at", ""),
+            scan=ScanComponent.from_dict(bom_data["scan"]) if bom_data.get("scan") else None,
+            reward_validity=(
+                RewardValidityComponent.from_dict(bom_data["reward_validity"])
+                if bom_data.get("reward_validity")
+                else None
+            ),
+            retraction=(
+                RetractionComponent.from_dict(bom_data["retraction"])
+                if bom_data.get("retraction")
+                else None
+            ),
+            parent_passport_hash=bom_data.get("parent_passport_hash"),
         )
         attestation_data = data.get("attestation")
         attestation = Attestation.from_dict(attestation_data) if attestation_data else None
@@ -201,6 +220,13 @@ class ModelPassport:
                 lines.append(f"- {flag}")
         else:
             lines.append("- none")
+        lines.append("")
+
+        lines.append("## Lineage")
+        if bom.parent_passport_hash:
+            lines.append(f"- Parent passport hash: `{bom.parent_passport_hash}`")
+        else:
+            lines.append("- Parent: (base model — no parent passport)")
         lines.append("")
 
         lines.append("## Attestation")

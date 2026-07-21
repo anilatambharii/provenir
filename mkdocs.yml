@@ -57,6 +57,9 @@ nav:
       - Adapter Merging: guides/merging.md
       - Benchmarks: guides/benchmarks.md
       - Governance & Audit: guides/governance.md
+      - Verifier Reliability: guides/verifier-reliability.md
+      - Supply-Chain Scan: guides/supply-chain-scan.md
+      - Reward Validity: guides/reward-validity.md
   - API Reference: api.md
   - Changelog: changelog.md
 

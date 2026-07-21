@@ -24,7 +24,7 @@ pip install "provenir[train]"          # SFT + DPO + LoRA / QLoRA via TRL
 pip install "provenir[all]"            # Everything
 ```
 
-> **v0.5.1** · Apache-2.0 · Python ≥ 3.11 · 1,153 tests · zero breaking changes
+> **v0.6.0** · Apache-2.0 · Python ≥ 3.11 · zero breaking changes
 
 ---
 
@@ -989,6 +989,6 @@ If you use Provenir in research, please cite:
   title  = {Provenir: An Open-Source Trust Layer for Model Post-Training},
   year   = {2026},
   url    = {https://github.com/anilatambharii/provenir},
-  note   = {v0.5.1}
+  note   = {v0.6.0}
 }
 ```

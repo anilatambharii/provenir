@@ -4,6 +4,71 @@ All notable changes to Provenir are documented here.
 
 ---
 
+## Unreleased — Supply-Chain Model Scanner
+
+Static model artifact scanning as a first-class trust primitive.
+
+### Supply-chain scanner (`provenir.governance.scan`)
+
+`ModelScanner.scan(path)` inspects every file under a model directory for seven
+threat classes — **pickle_reduce**, **scanner_evasion**, **chat_template_exec**,
+**keras_lambda**, **weight_format**, **namespace_pin**, and **embedded_secret** —
+using stdlib only (`pickletools`, `zipfile`, `struct`, `re`, `json`). Nothing is
+executed or deserialised; any parse error is itself a `high`-severity finding
+(fail-closed). Returns a `ScanReport` with deterministic `content_hash()` and
+`to_dict()` for embedding in a passport.
+
+`scan_gate(report)` raises `ScanBlocked` if the report is unsafe (`critical` or
+`high` findings). Mirrors `reliability.gate_promotion`; `allow_severities` can
+downgrade specific severity levels for non-production environments.
+
+`ScanComponent.from_report(report)` captures the scan verdict into a BOM
+component. `ModelBOM` gains an additive, defaulted `scan: ScanComponent | None`
+field; `risk_flags()` adds `"unsafe_model_scan"` when `scan.unsafe`. Because
+`canonical_json` feeds the passport signature, **the scan verdict is inside the
+signed envelope** — a clean passport cannot be signed over a dirty model.
+
+New CLI command: **`provenir scan <path> [--json out.json]`** — exits `1` when
+unsafe. Supports EU AI Act Art. 15 (cybersecurity/robustness) and OWASP LLM03/LLM05.
+
+### Test suite
+
+- 20+ new tests in `tests/test_scan.py` — all passing.
+- ruff + mypy --strict clean, zero breaking changes.
+
+---
+
+## v0.6.0 — Verifier-Reliability Harness (2026)
+
+Verifier reliability as a first-class trust primitive for RLVR.
+
+### Verifier-reliability harness (`provenir.environments.reliability`)
+
+`ReliabilityHarness.evaluate(verifier, probes)` stress-tests any `Verifier`
+across six failure modes — **consistency**, **invariance**, **sensitivity**,
+**gameability**, **monotonicity**, and **boundary** — and returns a
+`ReliabilityReport` with per-mode scores, an overall weighted score, a
+`hard_fail` flag (set when sensitivity or gameability is violated), and a
+full outcome log.
+
+`gate_promotion(report, stage)` blocks promotion to protected stages
+(`"production"`, `"prod"`, `"release"`) when the verifier fails; raises
+`PromotionBlocked` with a human-readable reason. Mirrors the enterprise
+pattern of requiring a validated artifact before model registration.
+
+New CLI command: **`provenir verify-reliability --verifier <name> --probes <file.jsonl> [--stage production] [--output report.json]`**
+
+The report embeds cleanly in a Model Passport, so adversarial testing results
+travel with every promoted artifact. Supports EU AI Act Art. 15 (accuracy /
+robustness) and Art. 55(1)(a) (documented adversarial testing).
+
+### Test suite
+
+- 32 new tests in `tests/test_reliability.py` — all passing.
+- ruff + mypy --strict clean, zero breaking changes.
+
+---
+
 ## v0.5.0 — Observability, Alerts, and Passport Hub Push (2026)
 
 Operational completeness: run reports, webhook alerts, and passport-signed Hub pushes.
