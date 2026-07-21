@@ -10,13 +10,9 @@
       
       
       
-        <link rel="canonical" href="https://anilatambharii.github.io/provenir/guides/flywheel/">
+        <link rel="canonical" href="https://anilatambharii.github.io/provenir/guides/dsse-signing/">
       
       
-        <link rel="prev" href="../rlaif/">
-      
-      
-        <link rel="next" href="../rag/">
       
       
         
@@ -27,7 +23,7 @@
     
     
       
-        <title>Data Flywheel - Provenir</title>
+        <title>DSSE Signing — Sigstore-compatible Passport Envelopes - Provenir</title>
       
     
     
@@ -78,7 +74,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#data-flywheel" class="md-skip">
+        <a href="#dsse-signing-sigstore-compatible-passport-envelopes" class="md-skip">
           Skip to content
         </a>
       
@@ -112,7 +108,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Data Flywheel
+              DSSE Signing — Sigstore-compatible Passport Envelopes
             
           </span>
         </div>
@@ -260,12 +256,10 @@
   
   
   
-    
-  
   
     
     
-      <li class="md-tabs__item md-tabs__item--active">
+      <li class="md-tabs__item">
         <a href="../../concepts/" class="md-tabs__link">
           
   
@@ -507,31 +501,26 @@
       
   
   
-    
   
   
-  
     
     
     
     
-      
-        
-        
       
       
         
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
         
           
-          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
             
   
   
@@ -549,7 +538,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_3">
             <span class="md-nav__icon md-icon"></span>
             
@@ -676,37 +665,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Data Flywheel
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../flywheel/" class="md-nav__link">
         
   
   
@@ -722,98 +684,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#overview" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Overview
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#quick-start" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Quick Start
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#configuration" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Configuration
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Configuration">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#flywheelconfig" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        FlywheelConfig
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#using-with-rlaif" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Using with RLAIF
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#offline-mode-stubjudge" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Offline Mode (StubJudge)
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -1103,10 +973,32 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#overview" class="md-nav__link">
+  <a href="#why-dsse" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Overview
+        Why DSSE?
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-envelope-format" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The envelope format
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#how-it-differs-from-hmac-only-signing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How it differs from HMAC-only signing
       
     </span>
   </a>
@@ -1117,7 +1009,7 @@
   <a href="#quick-start" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Quick Start
+        Quick start
       
     </span>
   </a>
@@ -1125,22 +1017,77 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#configuration" class="md-nav__link">
+  <a href="#api-reference" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Configuration
+        API reference
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Configuration">
+    <nav class="md-nav" aria-label="API reference">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#flywheelconfig" class="md-nav__link">
+  <a href="#sign_dssepassport-key-key_iddefault-dsseenvelope" class="md-nav__link">
     <span class="md-ellipsis">
       
-        FlywheelConfig
+        sign_dsse(passport, key, key_id="default") -&gt; DSSEEnvelope
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#verify_dsseenvelope-key-bool" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        verify_dsse(envelope, key) -&gt; bool
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#passport_from_dsseenvelope-modelpassport" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        passport_from_dsse(envelope) -&gt; ModelPassport
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#envelope_from_dictdata-dsseenvelope" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        envelope_from_dict(data) -&gt; DSSEEnvelope
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dsseenvelopecontent_hash-str" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DSSEEnvelope.content_hash() -&gt; str
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dsseenvelopepayload_json-str" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DSSEEnvelope.payload_json() -&gt; str
       
     </span>
   </a>
@@ -1153,10 +1100,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#using-with-rlaif" class="md-nav__link">
+  <a href="#optional-sigstore-rekor-transparency-log" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Using with RLAIF
+        Optional: Sigstore / Rekor transparency log
       
     </span>
   </a>
@@ -1164,10 +1111,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#offline-mode-stubjudge" class="md-nav__link">
+  <a href="#running-the-demo" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Offline Mode (StubJudge)
+        Running the demo
       
     </span>
   </a>
@@ -1194,107 +1141,192 @@
   
 
 
-<h1 id="data-flywheel">Data Flywheel</h1>
-<p>Automatically mine evaluation failures, generate high-quality augmented
-variants, and feed them back into the training set — without human labelling.</p>
-<hr />
-<h2 id="overview">Overview</h2>
-<p>The <code>DataFlywheel</code> closes the loop between evaluation and training:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>training set  ──►  model  ──►  eval predictions
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>                                    │
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>                           score &lt; threshold?
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>                                    │
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>                                    ▼
-<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>                           mine failure records
-<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>                                    │
-<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>                                    ▼
-<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>                           judge: generate variants
-<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>                                    │
-<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>                                    ▼
-<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>                           quality filter
-<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>                                    │
-<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>                                    ▼
-<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>                           augmented training set
-</code></pre></div>
-<p>Each cycle produces new training examples targeted exactly at the failure modes
-your current model exhibits — no manual annotation required.</p>
-<hr />
-<h2 id="quick-start">Quick Start</h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">provenir.data.flywheel</span><span class="w"> </span><span class="kn">import</span> <span class="n">DataFlywheel</span><span class="p">,</span> <span class="n">FlywheelConfig</span>
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">provenir.eval.judge</span><span class="w"> </span><span class="kn">import</span> <span class="n">AnthropicJudge</span>
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="kn">from</span><span class="w"> </span><span class="nn">provenir.data.dataset</span><span class="w"> </span><span class="kn">import</span> <span class="n">JsonlDataset</span>
-<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>
-<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="n">flywheel</span> <span class="o">=</span> <span class="n">DataFlywheel</span><span class="p">(</span>
-<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>    <span class="n">config</span><span class="o">=</span><span class="n">FlywheelConfig</span><span class="p">(</span>
-<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>        <span class="n">min_score_threshold</span><span class="o">=</span><span class="mf">0.7</span><span class="p">,</span>       <span class="c1"># mine predictions scoring below this</span>
-<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>        <span class="n">max_variants_per_failure</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>    <span class="c1"># generate N variants per failure</span>
-<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>        <span class="n">quality_filter_threshold</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>  <span class="c1"># keep variants scoring above this</span>
-<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>    <span class="p">),</span>
-<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>    <span class="n">judge</span><span class="o">=</span><span class="n">AnthropicJudge</span><span class="p">(),</span>
-<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="p">)</span>
-<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a>
-<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="n">train_ds</span> <span class="o">=</span> <span class="n">JsonlDataset</span><span class="o">.</span><span class="n">from_jsonl</span><span class="p">(</span><span class="s2">&quot;data/train.jsonl&quot;</span><span class="p">)</span>
-<a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a><span class="n">eval_ds</span>  <span class="o">=</span> <span class="n">JsonlDataset</span><span class="o">.</span><span class="n">from_jsonl</span><span class="p">(</span><span class="s2">&quot;data/eval.jsonl&quot;</span><span class="p">)</span>
-<a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a>
-<a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a><span class="n">augmented</span> <span class="o">=</span> <span class="n">flywheel</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">train_ds</span><span class="p">,</span> <span class="n">eval_ds</span><span class="p">)</span>
-<a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a><span class="n">augmented</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">&quot;data/train_augmented.jsonl&quot;</span><span class="p">)</span>
-<a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a>
-<a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Original:  </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">train_ds</span><span class="o">.</span><span class="n">records</span><span class="p">)</span><span class="si">}</span><span class="s2"> records&quot;</span><span class="p">)</span>
-<a id="__codelineno-1-21" name="__codelineno-1-21" href="#__codelineno-1-21"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Augmented: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">augmented</span><span class="o">.</span><span class="n">records</span><span class="p">)</span><span class="si">}</span><span class="s2"> records&quot;</span><span class="p">)</span>
-</code></pre></div>
-<hr />
-<h2 id="configuration">Configuration</h2>
-<h3 id="flywheelconfig">FlywheelConfig</h3>
+<h1 id="dsse-signing-sigstore-compatible-passport-envelopes">DSSE Signing — Sigstore-compatible Passport Envelopes</h1>
+<h2 id="why-dsse">Why DSSE?</h2>
+<p>Provenir's built-in <code>PassportSigner</code> uses HMAC-SHA256 to produce tamper-evident
+passports.  HMAC works well inside a single organisation where all verifiers
+hold the shared key, but it breaks down the moment you need <strong>cross-organisational
+trust</strong>:</p>
+<ul>
+<li>You cannot verify the signature without the secret key.</li>
+<li>Sharing the key means sharing the ability to forge signatures.</li>
+<li>There is no standard wire format — every consumer needs Provenir-specific
+  parsing logic.</li>
+</ul>
+<p><strong>DSSE (Dead Simple Signing Envelope)</strong> solves all three problems.  It is the
+envelope format used by:</p>
 <table>
 <thead>
 <tr>
-<th>Field</th>
-<th>Default</th>
-<th>Description</th>
+<th>Ecosystem</th>
+<th>Standard / Tool</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><code>min_score_threshold</code></td>
-<td><code>0.7</code></td>
-<td>Eval predictions below this score are treated as failures</td>
+<td>Sigstore</td>
+<td><a href="https://github.com/sigstore/sigstore-python"><code>sigstore/sigstore-python</code></a></td>
 </tr>
 <tr>
-<td><code>max_variants_per_failure</code></td>
-<td><code>3</code></td>
-<td>Number of augmented variants to generate per failure</td>
+<td>in-toto</td>
+<td><a href="https://github.com/in-toto/ITE/blob/master/ITE/6/">ITE-6 / DSSE transport</a></td>
 </tr>
 <tr>
-<td><code>quality_filter_threshold</code></td>
-<td><code>0.5</code></td>
-<td>Generated variants must score above this to be included</td>
+<td>npm</td>
+<td><code>npm audit signatures</code></td>
+</tr>
+<tr>
+<td>PyPI</td>
+<td>Trusted Publishers + Sigstore</td>
+</tr>
+<tr>
+<td>Maven / Java</td>
+<td>Sigstore for Maven</td>
+</tr>
+<tr>
+<td>GitHub Actions</td>
+<td>OIDC-based artifact attestations</td>
 </tr>
 </tbody>
 </table>
+<p>By wrapping Provenir passports in DSSE envelopes, they plug into every
+existing SBOM and supply-chain compliance workflow without additional
+integration work.</p>
 <hr />
-<h2 id="using-with-rlaif">Using with RLAIF</h2>
-<p>The flywheel pairs naturally with the RLAIF pipeline. Run the flywheel first
-to enrich the training set, then run RLAIF to fine-tune on both original and
-augmented data:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1"># Step 1: Augment</span>
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="n">augmented</span> <span class="o">=</span> <span class="n">DataFlywheel</span><span class="p">(</span><span class="n">config</span><span class="o">=</span><span class="n">FlywheelConfig</span><span class="p">(),</span> <span class="n">judge</span><span class="o">=</span><span class="n">judge</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">train_ds</span><span class="p">,</span> <span class="n">eval_ds</span><span class="p">)</span>
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>
-<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="c1"># Step 2: RLAIF on augmented set</span>
-<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="n">pipeline</span> <span class="o">=</span> <span class="n">RLAIFPipeline</span><span class="p">(</span><span class="n">judge</span><span class="o">=</span><span class="n">judge</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="n">backend</span><span class="p">,</span> <span class="n">base_config</span><span class="o">=</span><span class="n">config</span><span class="p">)</span>
-<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="n">iterations</span> <span class="o">=</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">augmented</span><span class="p">,</span> <span class="n">eval_ds</span><span class="p">)</span>
+<h2 id="the-envelope-format">The envelope format</h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="p">{</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">  </span><span class="nt">&quot;payloadType&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;application/vnd.provenir.passport+json&quot;</span><span class="p">,</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">  </span><span class="nt">&quot;payload&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&lt;base64url(canonical_passport_json)&gt;&quot;</span><span class="p">,</span>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">  </span><span class="nt">&quot;signatures&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">    </span><span class="p">{</span>
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w">      </span><span class="nt">&quot;keyid&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&lt;key_id&gt;&quot;</span><span class="p">,</span>
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="w">      </span><span class="nt">&quot;sig&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&lt;base64url(HMAC-SHA256(PAE(payloadType, payload)))&gt;&quot;</span>
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="w">    </span><span class="p">}</span>
+<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="w">  </span><span class="p">]</span>
+<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="p">}</span>
+</code></pre></div>
+<p>The signature is computed not over the raw payload, but over the
+<strong>Pre-Authentication Encoding (PAE)</strong>:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>PAE(type, body) = &quot;DSSEv1&quot; SP LEN(type) SP type SP LEN(body) SP body
+</code></pre></div>
+<p>PAE binds the payload type into the signed content so a signature over
+<code>application/vnd.provenir.passport+json</code> cannot be replayed against a
+different payload type.</p>
+<hr />
+<h2 id="how-it-differs-from-hmac-only-signing">How it differs from HMAC-only signing</h2>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th><code>PassportSigner</code> (HMAC)</th>
+<th><code>sign_dsse</code> (DSSE)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Wire format</td>
+<td>Provenir-specific JSON</td>
+<td>DSSE — industry standard</td>
+</tr>
+<tr>
+<td>Interoperability</td>
+<td>Provenir only</td>
+<td>Any DSSE consumer</td>
+</tr>
+<tr>
+<td>Key distribution</td>
+<td>Required for verify</td>
+<td>Required (HMAC variant) or optional (Sigstore/OIDC)</td>
+</tr>
+<tr>
+<td>Replay protection</td>
+<td>Hash-of-BOM</td>
+<td>PAE type-binding</td>
+</tr>
+<tr>
+<td>Transparency log</td>
+<td>No</td>
+<td>Optional via Rekor</td>
+</tr>
+</tbody>
+</table>
+<p>The two mechanisms are <strong>complementary</strong>, not competing.  You can keep the
+existing <code>PassportSigner</code> attestation inside the passport and additionally
+wrap the whole passport in a DSSE envelope for cross-org distribution.</p>
+<hr />
+<h2 id="quick-start">Quick start</h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">provenir.governance.passport</span><span class="w"> </span><span class="kn">import</span> <span class="n">PassportSigner</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">provenir.governance.sigstore_signing</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>    <span class="n">sign_dsse</span><span class="p">,</span>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>    <span class="n">verify_dsse</span><span class="p">,</span>
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>    <span class="n">passport_from_dsse</span><span class="p">,</span>
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>    <span class="n">envelope_from_dict</span><span class="p">,</span>
+<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="p">)</span>
+<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>
+<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a><span class="c1"># 1. Build a signed passport the usual way</span>
+<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="n">signer</span> <span class="o">=</span> <span class="n">PassportSigner</span><span class="p">(</span><span class="sa">b</span><span class="s2">&quot;my-secret-key&quot;</span><span class="p">,</span> <span class="n">key_id</span><span class="o">=</span><span class="s2">&quot;ci&quot;</span><span class="p">)</span>
+<a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a><span class="n">passport</span> <span class="o">=</span> <span class="n">signer</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">bom</span><span class="p">,</span> <span class="n">signed_at</span><span class="o">=</span><span class="s2">&quot;2026-07-12T00:00:00Z&quot;</span><span class="p">)</span>
+<a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a>
+<a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a><span class="c1"># 2. Wrap it in a DSSE envelope</span>
+<a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a><span class="n">envelope</span> <span class="o">=</span> <span class="n">sign_dsse</span><span class="p">(</span><span class="n">passport</span><span class="p">,</span> <span class="sa">b</span><span class="s2">&quot;my-secret-key&quot;</span><span class="p">,</span> <span class="n">key_id</span><span class="o">=</span><span class="s2">&quot;ci&quot;</span><span class="p">)</span>
+<a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a>
+<a id="__codelineno-2-17" name="__codelineno-2-17" href="#__codelineno-2-17"></a><span class="c1"># 3. Serialise and ship</span>
+<a id="__codelineno-2-18" name="__codelineno-2-18" href="#__codelineno-2-18"></a><span class="n">envelope_json</span> <span class="o">=</span> <span class="n">envelope</span><span class="o">.</span><span class="n">to_json</span><span class="p">()</span>
+<a id="__codelineno-2-19" name="__codelineno-2-19" href="#__codelineno-2-19"></a>
+<a id="__codelineno-2-20" name="__codelineno-2-20" href="#__codelineno-2-20"></a><span class="c1"># 4. On the receiving side: verify</span>
+<a id="__codelineno-2-21" name="__codelineno-2-21" href="#__codelineno-2-21"></a><span class="n">received</span> <span class="o">=</span> <span class="n">envelope_from_dict</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">envelope_json</span><span class="p">))</span>
+<a id="__codelineno-2-22" name="__codelineno-2-22" href="#__codelineno-2-22"></a><span class="k">assert</span> <span class="n">verify_dsse</span><span class="p">(</span><span class="n">received</span><span class="p">,</span> <span class="sa">b</span><span class="s2">&quot;my-secret-key&quot;</span><span class="p">)</span>
+<a id="__codelineno-2-23" name="__codelineno-2-23" href="#__codelineno-2-23"></a>
+<a id="__codelineno-2-24" name="__codelineno-2-24" href="#__codelineno-2-24"></a><span class="c1"># 5. Extract the full passport</span>
+<a id="__codelineno-2-25" name="__codelineno-2-25" href="#__codelineno-2-25"></a><span class="n">recovered</span> <span class="o">=</span> <span class="n">passport_from_dsse</span><span class="p">(</span><span class="n">received</span><span class="p">)</span>
+<a id="__codelineno-2-26" name="__codelineno-2-26" href="#__codelineno-2-26"></a><span class="nb">print</span><span class="p">(</span><span class="n">recovered</span><span class="o">.</span><span class="n">bom</span><span class="o">.</span><span class="n">model_id</span><span class="p">)</span>
 </code></pre></div>
 <hr />
-<h2 id="offline-mode-stubjudge">Offline Mode (StubJudge)</h2>
-<p>For CI and testing, use <code>StubJudge</code> to run the flywheel without any API calls:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">provenir.eval.judge</span><span class="w"> </span><span class="kn">import</span> <span class="n">StubJudge</span>
-<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>
-<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="n">flywheel</span> <span class="o">=</span> <span class="n">DataFlywheel</span><span class="p">(</span>
-<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>    <span class="n">config</span><span class="o">=</span><span class="n">FlywheelConfig</span><span class="p">(</span><span class="n">max_variants_per_failure</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
-<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>    <span class="n">judge</span><span class="o">=</span><span class="n">StubJudge</span><span class="p">(),</span>
-<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="p">)</span>
+<h2 id="api-reference">API reference</h2>
+<h3 id="sign_dssepassport-key-key_iddefault-dsseenvelope"><code>sign_dsse(passport, key, key_id="default") -&gt; DSSEEnvelope</code></h3>
+<p>Sign a <code>ModelPassport</code> into a DSSE envelope using HMAC-SHA256.</p>
+<ul>
+<li><code>passport</code> — a <code>ModelPassport</code> (signed or unsigned).</li>
+<li><code>key</code> — raw signing key bytes.</li>
+<li><code>key_id</code> — opaque string stored in the <code>signatures[].keyid</code> field.</li>
+</ul>
+<h3 id="verify_dsseenvelope-key-bool"><code>verify_dsse(envelope, key) -&gt; bool</code></h3>
+<p>Return <code>True</code> if any signature in the envelope verifies against <code>key</code>.
+Returns <code>False</code> for an empty <code>signatures</code> list.</p>
+<h3 id="passport_from_dsseenvelope-modelpassport"><code>passport_from_dsse(envelope) -&gt; ModelPassport</code></h3>
+<p>Decode the base64url payload and deserialise back to a <code>ModelPassport</code>.</p>
+<h3 id="envelope_from_dictdata-dsseenvelope"><code>envelope_from_dict(data) -&gt; DSSEEnvelope</code></h3>
+<p>Reconstruct a <code>DSSEEnvelope</code> from a parsed JSON dict — useful after
+<code>json.loads(envelope_json)</code>.</p>
+<h3 id="dsseenvelopecontent_hash-str"><code>DSSEEnvelope.content_hash() -&gt; str</code></h3>
+<p>SHA-256 hex digest of the serialised envelope.  Use this as a stable
+reference in audit logs so you can prove which exact envelope was issued
+at a given point in time.</p>
+<h3 id="dsseenvelopepayload_json-str"><code>DSSEEnvelope.payload_json() -&gt; str</code></h3>
+<p>Decode the base64url <code>payload</code> field back to the canonical passport JSON
+string without fully deserialising it.</p>
+<hr />
+<h2 id="optional-sigstore-rekor-transparency-log">Optional: Sigstore / Rekor transparency log</h2>
+<p>The offline HMAC variant in this module works without any network access.
+For publicly-verifiable signatures (no key distribution required), the
+DSSE envelope payload is directly compatible with Sigstore:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>pip<span class="w"> </span>install<span class="w"> </span>sigstore
 </code></pre></div>
-<p>The stub judge generates deterministic synthetic variants — useful for
-verifying pipeline logic without incurring API costs.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1"># Submit the envelope payload to the Rekor public transparency log.</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="c1"># The resulting log entry is publicly auditable and does not require</span>
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="c1"># distributing the signing key to verifiers.</span>
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="kn">import</span><span class="w"> </span><span class="nn">sigstore</span>
+<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="c1"># See the sigstore-python documentation for the full workflow.</span>
+</code></pre></div>
+<p>Rekor log entries are suitable for PyPI, npm, and Maven supply-chain
+compliance audits and satisfy the SLSA Level 2+ provenance requirements.</p>
+<hr />
+<h2 id="running-the-demo">Running the demo</h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>python<span class="w"> </span>examples/sigstore_dsse_demo.py
+</code></pre></div>
+<p>The demo signs a passport, verifies the DSSE envelope, round-trips through
+JSON, extracts the passport, and prints the full envelope structure.</p>
 
 
 

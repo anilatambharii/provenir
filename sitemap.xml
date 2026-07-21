@@ -2,54 +2,86 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://anilatambharii.github.io/provenir/</loc>
-         <lastmod>2026-07-05</lastmod>
+         <lastmod>2026-07-21</lastmod>
     </url>
     <url>
          <loc>https://anilatambharii.github.io/provenir/api/</loc>
-         <lastmod>2026-07-05</lastmod>
+         <lastmod>2026-07-21</lastmod>
     </url>
     <url>
          <loc>https://anilatambharii.github.io/provenir/changelog/</loc>
-         <lastmod>2026-07-05</lastmod>
+         <lastmod>2026-07-21</lastmod>
     </url>
     <url>
          <loc>https://anilatambharii.github.io/provenir/concepts/</loc>
-         <lastmod>2026-07-05</lastmod>
+         <lastmod>2026-07-21</lastmod>
     </url>
     <url>
          <loc>https://anilatambharii.github.io/provenir/installation/</loc>
-         <lastmod>2026-07-05</lastmod>
+         <lastmod>2026-07-21</lastmod>
     </url>
     <url>
          <loc>https://anilatambharii.github.io/provenir/quickstart/</loc>
-         <lastmod>2026-07-05</lastmod>
+         <lastmod>2026-07-21</lastmod>
+    </url>
+    <url>
+         <loc>https://anilatambharii.github.io/provenir/guides/acquisition-package/</loc>
+         <lastmod>2026-07-21</lastmod>
     </url>
     <url>
          <loc>https://anilatambharii.github.io/provenir/guides/benchmarks/</loc>
-         <lastmod>2026-07-05</lastmod>
+         <lastmod>2026-07-21</lastmod>
+    </url>
+    <url>
+         <loc>https://anilatambharii.github.io/provenir/guides/dsse-signing/</loc>
+         <lastmod>2026-07-21</lastmod>
     </url>
     <url>
          <loc>https://anilatambharii.github.io/provenir/guides/flywheel/</loc>
-         <lastmod>2026-07-05</lastmod>
+         <lastmod>2026-07-21</lastmod>
     </url>
     <url>
          <loc>https://anilatambharii.github.io/provenir/guides/governance/</loc>
-         <lastmod>2026-07-05</lastmod>
+         <lastmod>2026-07-21</lastmod>
+    </url>
+    <url>
+         <loc>https://anilatambharii.github.io/provenir/guides/lineage-signing/</loc>
+         <lastmod>2026-07-21</lastmod>
     </url>
     <url>
          <loc>https://anilatambharii.github.io/provenir/guides/merging/</loc>
-         <lastmod>2026-07-05</lastmod>
+         <lastmod>2026-07-21</lastmod>
     </url>
     <url>
          <loc>https://anilatambharii.github.io/provenir/guides/rag/</loc>
-         <lastmod>2026-07-05</lastmod>
+         <lastmod>2026-07-21</lastmod>
+    </url>
+    <url>
+         <loc>https://anilatambharii.github.io/provenir/guides/regulation-as-code/</loc>
+         <lastmod>2026-07-21</lastmod>
+    </url>
+    <url>
+         <loc>https://anilatambharii.github.io/provenir/guides/reward-validity/</loc>
+         <lastmod>2026-07-21</lastmod>
     </url>
     <url>
          <loc>https://anilatambharii.github.io/provenir/guides/rlaif/</loc>
-         <lastmod>2026-07-05</lastmod>
+         <lastmod>2026-07-21</lastmod>
+    </url>
+    <url>
+         <loc>https://anilatambharii.github.io/provenir/guides/supply-chain-scan/</loc>
+         <lastmod>2026-07-21</lastmod>
+    </url>
+    <url>
+         <loc>https://anilatambharii.github.io/provenir/guides/tim-detection/</loc>
+         <lastmod>2026-07-21</lastmod>
     </url>
     <url>
          <loc>https://anilatambharii.github.io/provenir/guides/trust-layer/</loc>
-         <lastmod>2026-07-05</lastmod>
+         <lastmod>2026-07-21</lastmod>
+    </url>
+    <url>
+         <loc>https://anilatambharii.github.io/provenir/guides/verifier-reliability/</loc>
+         <lastmod>2026-07-21</lastmod>
     </url>
 </urlset>

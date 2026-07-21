@@ -10,13 +10,9 @@
       
       
       
-        <link rel="canonical" href="https://anilatambharii.github.io/provenir/guides/flywheel/">
+        <link rel="canonical" href="https://anilatambharii.github.io/provenir/guides/lineage-signing/">
       
       
-        <link rel="prev" href="../rlaif/">
-      
-      
-        <link rel="next" href="../rag/">
       
       
         
@@ -27,7 +23,7 @@
     
     
       
-        <title>Data Flywheel - Provenir</title>
+        <title>LoRA / Fine-tune Lineage Signing - Provenir</title>
       
     
     
@@ -78,7 +74,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#data-flywheel" class="md-skip">
+        <a href="#lora-fine-tune-lineage-signing" class="md-skip">
           Skip to content
         </a>
       
@@ -112,7 +108,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Data Flywheel
+              LoRA / Fine-tune Lineage Signing
             
           </span>
         </div>
@@ -260,12 +256,10 @@
   
   
   
-    
-  
   
     
     
-      <li class="md-tabs__item md-tabs__item--active">
+      <li class="md-tabs__item">
         <a href="../../concepts/" class="md-tabs__link">
           
   
@@ -507,31 +501,26 @@
       
   
   
-    
   
   
-  
     
     
     
     
-      
-        
-        
       
       
         
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
         
           
-          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
             
   
   
@@ -549,7 +538,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_3">
             <span class="md-nav__icon md-icon"></span>
             
@@ -676,37 +665,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Data Flywheel
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../flywheel/" class="md-nav__link">
         
   
   
@@ -722,98 +684,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#overview" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Overview
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#quick-start" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Quick Start
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#configuration" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Configuration
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Configuration">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#flywheelconfig" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        FlywheelConfig
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#using-with-rlaif" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Using with RLAIF
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#offline-mode-stubjudge" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Offline Mode (StubJudge)
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -1103,10 +973,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#overview" class="md-nav__link">
+  <a href="#the-problem-no-traceability-for-fine-tune-chains" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Overview
+        The problem: no traceability for fine-tune chains
       
     </span>
   </a>
@@ -1114,10 +984,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#quick-start" class="md-nav__link">
+  <a href="#how-parent_passport_hash-works" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Quick Start
+        How parent_passport_hash works
       
     </span>
   </a>
@@ -1125,38 +995,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#configuration" class="md-nav__link">
+  <a href="#calling-link_parent" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Configuration
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Configuration">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#flywheelconfig" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        FlywheelConfig
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#using-with-rlaif" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Using with RLAIF
+        Calling link_parent
       
     </span>
   </a>
@@ -1164,10 +1006,43 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#offline-mode-stubjudge" class="md-nav__link">
+  <a href="#verifying-a-chain" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Offline Mode (StubJudge)
+        Verifying a chain
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#acquisition-readiness-value" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Acquisition-readiness value
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#running-the-demo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Running the demo
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#api-reference" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        API reference
       
     </span>
   </a>
@@ -1194,107 +1069,150 @@
   
 
 
-<h1 id="data-flywheel">Data Flywheel</h1>
-<p>Automatically mine evaluation failures, generate high-quality augmented
-variants, and feed them back into the training set — without human labelling.</p>
-<hr />
-<h2 id="overview">Overview</h2>
-<p>The <code>DataFlywheel</code> closes the loop between evaluation and training:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>training set  ──►  model  ──►  eval predictions
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>                                    │
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>                           score &lt; threshold?
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>                                    │
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>                                    ▼
-<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>                           mine failure records
-<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>                                    │
-<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>                                    ▼
-<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>                           judge: generate variants
-<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>                                    │
-<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>                                    ▼
-<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>                           quality filter
-<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>                                    │
-<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>                                    ▼
-<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>                           augmented training set
+<h1 id="lora-fine-tune-lineage-signing">LoRA / Fine-tune Lineage Signing</h1>
+<h2 id="the-problem-no-traceability-for-fine-tune-chains">The problem: no traceability for fine-tune chains</h2>
+<p>A production model is never directly a base model.  The real chain looks like:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>Llama3-70B → SFT → RLHF → domain-finetune → LoRA-adapter → production
 </code></pre></div>
-<p>Each cycle produces new training examples targeted exactly at the failure modes
-your current model exhibits — no manual annotation required.</p>
+<p>Each arrow is a separate fine-tuning pass, with its own dataset, hyperparameters,
+and code.  When a production model misbehaves — generates harmful content,
+regresses on a benchmark, fails a regulatory audit — nobody can answer:</p>
+<ul>
+<li><em>Which step introduced the regression?</em></li>
+<li><em>Which training dataset was used at step 3?</em></li>
+<li><em>Was the SFT checkpoint the same one that was audited?</em></li>
+</ul>
+<p>Provenir's Lineage Signing module closes this gap.</p>
 <hr />
-<h2 id="quick-start">Quick Start</h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">provenir.data.flywheel</span><span class="w"> </span><span class="kn">import</span> <span class="n">DataFlywheel</span><span class="p">,</span> <span class="n">FlywheelConfig</span>
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">provenir.eval.judge</span><span class="w"> </span><span class="kn">import</span> <span class="n">AnthropicJudge</span>
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="kn">from</span><span class="w"> </span><span class="nn">provenir.data.dataset</span><span class="w"> </span><span class="kn">import</span> <span class="n">JsonlDataset</span>
-<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>
-<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="n">flywheel</span> <span class="o">=</span> <span class="n">DataFlywheel</span><span class="p">(</span>
-<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>    <span class="n">config</span><span class="o">=</span><span class="n">FlywheelConfig</span><span class="p">(</span>
-<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>        <span class="n">min_score_threshold</span><span class="o">=</span><span class="mf">0.7</span><span class="p">,</span>       <span class="c1"># mine predictions scoring below this</span>
-<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>        <span class="n">max_variants_per_failure</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>    <span class="c1"># generate N variants per failure</span>
-<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>        <span class="n">quality_filter_threshold</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>  <span class="c1"># keep variants scoring above this</span>
-<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>    <span class="p">),</span>
-<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>    <span class="n">judge</span><span class="o">=</span><span class="n">AnthropicJudge</span><span class="p">(),</span>
-<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="p">)</span>
-<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a>
-<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="n">train_ds</span> <span class="o">=</span> <span class="n">JsonlDataset</span><span class="o">.</span><span class="n">from_jsonl</span><span class="p">(</span><span class="s2">&quot;data/train.jsonl&quot;</span><span class="p">)</span>
-<a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a><span class="n">eval_ds</span>  <span class="o">=</span> <span class="n">JsonlDataset</span><span class="o">.</span><span class="n">from_jsonl</span><span class="p">(</span><span class="s2">&quot;data/eval.jsonl&quot;</span><span class="p">)</span>
-<a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a>
-<a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a><span class="n">augmented</span> <span class="o">=</span> <span class="n">flywheel</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">train_ds</span><span class="p">,</span> <span class="n">eval_ds</span><span class="p">)</span>
-<a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a><span class="n">augmented</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">&quot;data/train_augmented.jsonl&quot;</span><span class="p">)</span>
-<a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a>
-<a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Original:  </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">train_ds</span><span class="o">.</span><span class="n">records</span><span class="p">)</span><span class="si">}</span><span class="s2"> records&quot;</span><span class="p">)</span>
-<a id="__codelineno-1-21" name="__codelineno-1-21" href="#__codelineno-1-21"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Augmented: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">augmented</span><span class="o">.</span><span class="n">records</span><span class="p">)</span><span class="si">}</span><span class="s2"> records&quot;</span><span class="p">)</span>
+<h2 id="how-parent_passport_hash-works">How <code>parent_passport_hash</code> works</h2>
+<p>Every <code>ModelBOM</code> has an optional field:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="n">parent_passport_hash</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
 </code></pre></div>
+<p>For a base model this is <code>None</code>.  For every fine-tuned checkpoint it is the
+<strong>SHA-256 content hash of the parent BOM</strong> — the exact <code>ModelBOM.content_hash()</code>
+of the BOM that was signed into the parent's <code>ModelPassport</code>.</p>
+<p>Because <code>parent_passport_hash</code> is part of <code>ModelBOM.canonical_json()</code> (the
+signed payload), the chain is <strong>tamper-evident</strong>:</p>
+<ul>
+<li>Modify any ancestor's BOM → its <code>content_hash()</code> changes.</li>
+<li>Every descendant's <code>parent_passport_hash</code> now points to a hash that no longer
+  exists in the known-good passport registry.</li>
+<li>The tamper is immediately detected by <code>LineageVerifier.verify_hashes()</code>.</li>
+</ul>
 <hr />
-<h2 id="configuration">Configuration</h2>
-<h3 id="flywheelconfig">FlywheelConfig</h3>
+<h2 id="calling-link_parent">Calling <code>link_parent</code></h2>
+<p>Use <code>link_parent</code> to wire a child BOM to its parent passport before signing:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">provenir.governance.lineage</span><span class="w"> </span><span class="kn">import</span> <span class="n">link_parent</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">provenir.governance.passport</span><span class="w"> </span><span class="kn">import</span> <span class="n">PassportSigner</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="n">signer</span> <span class="o">=</span> <span class="n">PassportSigner</span><span class="p">(</span><span class="n">signing_key</span><span class="p">,</span> <span class="n">key_id</span><span class="o">=</span><span class="s2">&quot;ci-pipeline&quot;</span><span class="p">)</span>
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="c1"># 1. Sign the base model</span>
+<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="n">base_passport</span> <span class="o">=</span> <span class="n">signer</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">base_bom</span><span class="p">)</span>
+<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>
+<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="c1"># 2. Build the SFT BOM and link it to the base passport</span>
+<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a><span class="n">sft_bom</span> <span class="o">=</span> <span class="n">link_parent</span><span class="p">(</span><span class="n">sft_bom_draft</span><span class="p">,</span> <span class="n">base_passport</span><span class="p">)</span>
+<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="c1"># sft_bom.parent_passport_hash == base_passport.bom.content_hash()</span>
+<a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a><span class="n">sft_passport</span> <span class="o">=</span> <span class="n">signer</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">sft_bom</span><span class="p">)</span>
+<a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a>
+<a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a><span class="c1"># 3. Build the RLHF BOM and link it to the SFT passport</span>
+<a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a><span class="n">rlhf_bom</span> <span class="o">=</span> <span class="n">link_parent</span><span class="p">(</span><span class="n">rlhf_bom_draft</span><span class="p">,</span> <span class="n">sft_passport</span><span class="p">)</span>
+<a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a><span class="n">rlhf_passport</span> <span class="o">=</span> <span class="n">signer</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">rlhf_bom</span><span class="p">)</span>
+</code></pre></div>
+<p><code>link_parent</code> returns a <strong>new</strong> frozen <code>ModelBOM</code> (uses <code>dataclasses.replace</code>)
+so the original draft is never mutated.</p>
+<hr />
+<h2 id="verifying-a-chain">Verifying a chain</h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">provenir.governance.lineage</span><span class="w"> </span><span class="kn">import</span> <span class="n">LineageVerifier</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="n">verifier</span> <span class="o">=</span> <span class="n">LineageVerifier</span><span class="p">()</span>
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="c1"># Build and validate the chain from an unordered list of passports</span>
+<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="n">chain</span> <span class="o">=</span> <span class="n">verifier</span><span class="o">.</span><span class="n">build_chain</span><span class="p">([</span><span class="n">base_passport</span><span class="p">,</span> <span class="n">sft_passport</span><span class="p">,</span> <span class="n">rlhf_passport</span><span class="p">])</span>
+<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="k">assert</span> <span class="n">chain</span><span class="o">.</span><span class="n">valid</span><span class="p">,</span> <span class="n">chain</span><span class="o">.</span><span class="n">error</span>
+<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>
+<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="c1"># Cross-check that every declared parent hash resolves correctly</span>
+<a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="k">assert</span> <span class="n">verifier</span><span class="o">.</span><span class="n">verify_hashes</span><span class="p">([</span><span class="n">base_passport</span><span class="p">,</span> <span class="n">sft_passport</span><span class="p">,</span> <span class="n">rlhf_passport</span><span class="p">])</span>
+<a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a>
+<a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a><span class="c1"># Render the ASCII tree for audits / logs</span>
+<a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a><span class="nb">print</span><span class="p">(</span><span class="n">chain</span><span class="o">.</span><span class="n">to_ascii_tree</span><span class="p">())</span>
+<a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a><span class="c1"># [base] llama3-70b-base (run: run-base) hash: a1b2c3d4...</span>
+<a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a><span class="c1">#   └─ [ft:1] sft-llama3 (run: run-sft) hash: e5f6a7b8...</span>
+<a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a><span class="c1">#        └─ [ft:2] rlhf-llama3 (run: run-rlhf) hash: c9d0e1f2...</span>
+</code></pre></div>
+<p><code>build_chain</code> validates:
+- Exactly one root (passport with <code>parent_passport_hash=None</code>).
+- No broken links (every declared parent hash resolves to a passport in the list).
+- No cycles.
+- No disconnected / forked passports.</p>
+<hr />
+<h2 id="acquisition-readiness-value">Acquisition-readiness value</h2>
+<p>During due diligence, acquirers routinely demand:</p>
+<blockquote>
+<p>"Show us the exact training data and code for every step that produced your
+production model."</p>
+</blockquote>
+<p>With Provenir lineage signing you can:</p>
+<ol>
+<li>Hand the acquirer the ordered chain of <code>ModelPassport</code> JSON files.</li>
+<li>They call <code>LineageVerifier.build_chain()</code> and <code>verify_hashes()</code> — both pass
+   iff the chain is intact and untampered.</li>
+<li>Each passport's BOM records the exact dataset content hashes, git SHA, and
+   framework version for that step.</li>
+</ol>
+<p>The chain is cryptographically bound: a corrupt or missing step breaks
+<code>verify_hashes</code>, making fabrication detectable.</p>
+<hr />
+<h2 id="running-the-demo">Running the demo</h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>python<span class="w"> </span>examples/lineage_demo.py
+</code></pre></div>
+<p>The demo builds a three-step chain (base → SFT → RLHF), signs each passport,
+verifies the chain, prints the ASCII tree, and then demonstrates tamper detection
+by mutating the SFT BOM's hyperparameters and re-running <code>verify_hashes</code>.</p>
+<hr />
+<h2 id="api-reference">API reference</h2>
 <table>
 <thead>
 <tr>
-<th>Field</th>
-<th>Default</th>
+<th>Symbol</th>
 <th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><code>min_score_threshold</code></td>
-<td><code>0.7</code></td>
-<td>Eval predictions below this score are treated as failures</td>
+<td><code>link_parent(child_bom, parent_passport)</code></td>
+<td>Wire a child BOM to its parent passport; returns a new frozen BOM.</td>
 </tr>
 <tr>
-<td><code>max_variants_per_failure</code></td>
-<td><code>3</code></td>
-<td>Number of augmented variants to generate per failure</td>
+<td><code>LineageVerifier.build_chain(passports)</code></td>
+<td>Build a validated <code>LineageChain</code> from an unordered list of passports.</td>
 </tr>
 <tr>
-<td><code>quality_filter_threshold</code></td>
-<td><code>0.5</code></td>
-<td>Generated variants must score above this to be included</td>
+<td><code>LineageVerifier.verify_hashes(passports)</code></td>
+<td>Cross-check all <code>parent_passport_hash</code> values against actual BOM hashes.</td>
+</tr>
+<tr>
+<td><code>LineageChain.to_ascii_tree()</code></td>
+<td>Render the chain as a human-readable ASCII tree.</td>
+</tr>
+<tr>
+<td><code>LineageChain.depth()</code></td>
+<td>Number of fine-tuning steps (0 for a single base model).</td>
+</tr>
+<tr>
+<td><code>LineageChain.root()</code></td>
+<td>First node (the base model).</td>
+</tr>
+<tr>
+<td><code>LineageChain.tip()</code></td>
+<td>Last node (the production model).</td>
+</tr>
+<tr>
+<td><code>LineageNode.to_dict()</code></td>
+<td>Serialisable representation of one chain node.</td>
 </tr>
 </tbody>
 </table>
-<hr />
-<h2 id="using-with-rlaif">Using with RLAIF</h2>
-<p>The flywheel pairs naturally with the RLAIF pipeline. Run the flywheel first
-to enrich the training set, then run RLAIF to fine-tune on both original and
-augmented data:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1"># Step 1: Augment</span>
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="n">augmented</span> <span class="o">=</span> <span class="n">DataFlywheel</span><span class="p">(</span><span class="n">config</span><span class="o">=</span><span class="n">FlywheelConfig</span><span class="p">(),</span> <span class="n">judge</span><span class="o">=</span><span class="n">judge</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">train_ds</span><span class="p">,</span> <span class="n">eval_ds</span><span class="p">)</span>
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>
-<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="c1"># Step 2: RLAIF on augmented set</span>
-<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="n">pipeline</span> <span class="o">=</span> <span class="n">RLAIFPipeline</span><span class="p">(</span><span class="n">judge</span><span class="o">=</span><span class="n">judge</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="n">backend</span><span class="p">,</span> <span class="n">base_config</span><span class="o">=</span><span class="n">config</span><span class="p">)</span>
-<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="n">iterations</span> <span class="o">=</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">augmented</span><span class="p">,</span> <span class="n">eval_ds</span><span class="p">)</span>
-</code></pre></div>
-<hr />
-<h2 id="offline-mode-stubjudge">Offline Mode (StubJudge)</h2>
-<p>For CI and testing, use <code>StubJudge</code> to run the flywheel without any API calls:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">provenir.eval.judge</span><span class="w"> </span><span class="kn">import</span> <span class="n">StubJudge</span>
-<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>
-<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="n">flywheel</span> <span class="o">=</span> <span class="n">DataFlywheel</span><span class="p">(</span>
-<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>    <span class="n">config</span><span class="o">=</span><span class="n">FlywheelConfig</span><span class="p">(</span><span class="n">max_variants_per_failure</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
-<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>    <span class="n">judge</span><span class="o">=</span><span class="n">StubJudge</span><span class="p">(),</span>
-<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="p">)</span>
-</code></pre></div>
-<p>The stub judge generates deterministic synthetic variants — useful for
-verifying pipeline logic without incurring API costs.</p>
 
 
 

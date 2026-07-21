@@ -10,13 +10,9 @@
       
       
       
-        <link rel="canonical" href="https://anilatambharii.github.io/provenir/guides/flywheel/">
+        <link rel="canonical" href="https://anilatambharii.github.io/provenir/guides/tim-detection/">
       
       
-        <link rel="prev" href="../rlaif/">
-      
-      
-        <link rel="next" href="../rag/">
       
       
         
@@ -27,7 +23,7 @@
     
     
       
-        <title>Data Flywheel - Provenir</title>
+        <title>Training-Inference Mismatch (TIM) Detection - Provenir</title>
       
     
     
@@ -78,7 +74,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#data-flywheel" class="md-skip">
+        <a href="#training-inference-mismatch-tim-detection" class="md-skip">
           Skip to content
         </a>
       
@@ -112,7 +108,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Data Flywheel
+              Training-Inference Mismatch (TIM) Detection
             
           </span>
         </div>
@@ -260,12 +256,10 @@
   
   
   
-    
-  
   
     
     
-      <li class="md-tabs__item md-tabs__item--active">
+      <li class="md-tabs__item">
         <a href="../../concepts/" class="md-tabs__link">
           
   
@@ -507,31 +501,26 @@
       
   
   
-    
   
   
-  
     
     
     
     
-      
-        
-        
       
       
         
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
         
           
-          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
             
   
   
@@ -549,7 +538,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_3">
             <span class="md-nav__icon md-icon"></span>
             
@@ -676,37 +665,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Data Flywheel
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../flywheel/" class="md-nav__link">
         
   
   
@@ -722,98 +684,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#overview" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Overview
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#quick-start" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Quick Start
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#configuration" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Configuration
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Configuration">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#flywheelconfig" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        FlywheelConfig
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#using-with-rlaif" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Using with RLAIF
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#offline-mode-stubjudge" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Offline Mode (StubJudge)
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -1103,10 +973,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#overview" class="md-nav__link">
+  <a href="#the-problem" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Overview
+        The Problem
       
     </span>
   </a>
@@ -1114,33 +984,22 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#quick-start" class="md-nav__link">
+  <a href="#how-the-harness-works" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Quick Start
+        How the Harness Works
       
     </span>
   </a>
   
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#configuration" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Configuration
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Configuration">
+    <nav class="md-nav" aria-label="How the Harness Works">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#flywheelconfig" class="md-nav__link">
+  <a href="#numerical-stability" class="md-nav__link">
     <span class="md-ellipsis">
       
-        FlywheelConfig
+        Numerical Stability
       
     </span>
   </a>
@@ -1153,10 +1012,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#using-with-rlaif" class="md-nav__link">
+  <a href="#the-timprobefn-contract" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Using with RLAIF
+        The TIMProbeFn Contract
       
     </span>
   </a>
@@ -1164,10 +1023,71 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#offline-mode-stubjudge" class="md-nav__link">
+  <a href="#running-the-detector" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Offline Mode (StubJudge)
+        Running the Detector
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Running the Detector">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#timreport-fields" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        TIMReport fields
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#signing-into-a-passport" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Signing into a Passport
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-gate_tim-promotion-gate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The gate_tim Promotion Gate
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#wiring-to-rlorchestrator-rollout-log-probs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Wiring to RLOrchestrator Rollout Log-Probs
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#references" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        References
       
     </span>
   </a>
@@ -1194,107 +1114,177 @@
   
 
 
-<h1 id="data-flywheel">Data Flywheel</h1>
-<p>Automatically mine evaluation failures, generate high-quality augmented
-variants, and feed them back into the training set — without human labelling.</p>
-<hr />
-<h2 id="overview">Overview</h2>
-<p>The <code>DataFlywheel</code> closes the loop between evaluation and training:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>training set  ──►  model  ──►  eval predictions
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>                                    │
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>                           score &lt; threshold?
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>                                    │
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>                                    ▼
-<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>                           mine failure records
-<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>                                    │
-<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>                                    ▼
-<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>                           judge: generate variants
-<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>                                    │
-<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>                                    ▼
-<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>                           quality filter
-<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>                                    │
-<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>                                    ▼
-<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>                           augmented training set
+<h1 id="training-inference-mismatch-tim-detection">Training-Inference Mismatch (TIM) Detection</h1>
+<h2 id="the-problem">The Problem</h2>
+<p>After RLVR (Reinforcement Learning from Verifiable Rewards) training, a model's
+learned policy may diverge from its inference-time behaviour. This divergence is
+called a <strong>Training-Inference Mismatch (TIM)</strong> and was characterised by Zhong et
+al. (2026) in the context of OpenRLHF (issue #1108).</p>
+<p>Common causes include:</p>
+<ul>
+<li><strong>Different sampling strategies</strong>: the training rollout uses sampling with
+  temperature <em>T</em> while inference uses greedy decoding or a different temperature.</li>
+<li><strong>Batching artefacts</strong>: per-sample normalisation during training (e.g. per-group
+  advantage normalisation in GRPO) introduces a batch-size dependency that
+  disappears at inference time.</li>
+<li><strong>Context length handling</strong>: a long prompt that is truncated during training but
+  not at inference (or vice versa) shifts the token-level distribution.</li>
+<li><strong>KV-cache behaviour</strong>: cached states during multi-turn inference may not match
+  the fresh-context rollouts used during training.</li>
+</ul>
+<p>When TIM is present, benchmark gains measured during training may not transfer to
+production: the model optimised a subtly different objective than the one it will
+encounter at deployment.</p>
+<h2 id="how-the-harness-works">How the Harness Works</h2>
+<p>Provenir's TIM detector measures the <strong>KL divergence</strong> between the training-time
+and inference-time token-level probability distributions on a held-out probe set.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>KL(train || inference) = Σ_i  p_train(i) · log( p_train(i) / p_inf(i) )
 </code></pre></div>
-<p>Each cycle produces new training examples targeted exactly at the failure modes
-your current model exhibits — no manual annotation required.</p>
-<hr />
-<h2 id="quick-start">Quick Start</h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">provenir.data.flywheel</span><span class="w"> </span><span class="kn">import</span> <span class="n">DataFlywheel</span><span class="p">,</span> <span class="n">FlywheelConfig</span>
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">provenir.eval.judge</span><span class="w"> </span><span class="kn">import</span> <span class="n">AnthropicJudge</span>
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="kn">from</span><span class="w"> </span><span class="nn">provenir.data.dataset</span><span class="w"> </span><span class="kn">import</span> <span class="n">JsonlDataset</span>
-<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>
-<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="n">flywheel</span> <span class="o">=</span> <span class="n">DataFlywheel</span><span class="p">(</span>
-<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>    <span class="n">config</span><span class="o">=</span><span class="n">FlywheelConfig</span><span class="p">(</span>
-<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>        <span class="n">min_score_threshold</span><span class="o">=</span><span class="mf">0.7</span><span class="p">,</span>       <span class="c1"># mine predictions scoring below this</span>
-<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>        <span class="n">max_variants_per_failure</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>    <span class="c1"># generate N variants per failure</span>
-<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>        <span class="n">quality_filter_threshold</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>  <span class="c1"># keep variants scoring above this</span>
-<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>    <span class="p">),</span>
-<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>    <span class="n">judge</span><span class="o">=</span><span class="n">AnthropicJudge</span><span class="p">(),</span>
-<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="p">)</span>
-<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a>
-<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="n">train_ds</span> <span class="o">=</span> <span class="n">JsonlDataset</span><span class="o">.</span><span class="n">from_jsonl</span><span class="p">(</span><span class="s2">&quot;data/train.jsonl&quot;</span><span class="p">)</span>
-<a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a><span class="n">eval_ds</span>  <span class="o">=</span> <span class="n">JsonlDataset</span><span class="o">.</span><span class="n">from_jsonl</span><span class="p">(</span><span class="s2">&quot;data/eval.jsonl&quot;</span><span class="p">)</span>
-<a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a>
-<a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a><span class="n">augmented</span> <span class="o">=</span> <span class="n">flywheel</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">train_ds</span><span class="p">,</span> <span class="n">eval_ds</span><span class="p">)</span>
-<a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a><span class="n">augmented</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">&quot;data/train_augmented.jsonl&quot;</span><span class="p">)</span>
-<a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a>
-<a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Original:  </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">train_ds</span><span class="o">.</span><span class="n">records</span><span class="p">)</span><span class="si">}</span><span class="s2"> records&quot;</span><span class="p">)</span>
-<a id="__codelineno-1-21" name="__codelineno-1-21" href="#__codelineno-1-21"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Augmented: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">augmented</span><span class="o">.</span><span class="n">records</span><span class="p">)</span><span class="si">}</span><span class="s2"> records&quot;</span><span class="p">)</span>
+<p>A value near zero means the two distributions are essentially the same; a large
+value means the model has learned a policy that does not faithfully reproduce
+itself at inference time.</p>
+<p>The detector is <strong>backend-agnostic</strong>: Provenir defines only the measurement
+methodology and the data structures. You wire your own training rollout and
+inference server via the <code>TIMProbeFn</code> contract — no dependency on any particular
+training framework.</p>
+<h3 id="numerical-stability">Numerical Stability</h3>
+<p>Raw log-probabilities are converted to probability distributions via
+<strong>log-sum-exp normalisation</strong> (softmax in log-space), which avoids overflow or
+underflow when logits have large magnitude. Every probability is then clamped to
+a configurable <code>min_prob</code> floor (default <code>1e-9</code>) to prevent <code>log(0)</code> crashes when
+one distribution assigns zero mass to a token that the other does not.</p>
+<h2 id="the-timprobefn-contract">The <code>TIMProbeFn</code> Contract</h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">provenir.environments.tim</span><span class="w"> </span><span class="kn">import</span> <span class="n">TIMProbeFn</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="k">def</span><span class="w"> </span><span class="nf">my_probe_fn</span><span class="p">(</span><span class="n">prompt</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]]:</span>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="sd">    Given a prompt, return:</span>
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="sd">      - train_log_probs: per-token log-probabilities from the training rollout</span>
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="sd">      - inf_log_probs:   per-token log-probabilities from the inference server</span>
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>
+<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="sd">    Both lists must cover the *same* token sequence and should be the same</span>
+<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="sd">    length.  If they differ, the detector truncates to the shorter list.</span>
+<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="sd">    &quot;&quot;&quot;</span>
+<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a>    <span class="n">train_log_probs</span> <span class="o">=</span> <span class="p">[</span><span class="o">...</span><span class="p">]</span>  <span class="c1"># from your training engine</span>
+<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a>    <span class="n">inf_log_probs</span>   <span class="o">=</span> <span class="p">[</span><span class="o">...</span><span class="p">]</span>  <span class="c1"># from your inference server</span>
+<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a>    <span class="k">return</span> <span class="n">train_log_probs</span><span class="p">,</span> <span class="n">inf_log_probs</span>
 </code></pre></div>
-<hr />
-<h2 id="configuration">Configuration</h2>
-<h3 id="flywheelconfig">FlywheelConfig</h3>
+<p>Key invariants:
+- The lists represent <strong>the same prompt completion</strong> decoded by both the training
+  rollout and the inference server.
+- Log-probabilities are natural-log (i.e. <code>log_prob = log P(token | context)</code>).
+- Lists need not be normalised; the detector applies softmax normalisation
+  internally.</p>
+<h2 id="running-the-detector">Running the Detector</h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">provenir.environments.tim</span><span class="w"> </span><span class="kn">import</span> <span class="n">TIMDetector</span><span class="p">,</span> <span class="n">gate_tim</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="n">detector</span> <span class="o">=</span> <span class="n">TIMDetector</span><span class="p">(</span>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>    <span class="n">threshold</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>   <span class="c1"># per-probe KL above which a probe is a mismatch</span>
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>    <span class="n">min_prob</span><span class="o">=</span><span class="mf">1e-9</span><span class="p">,</span>   <span class="c1"># probability floor for numerical stability</span>
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="p">)</span>
+<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>
+<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="n">probes</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Summarise this paper.&quot;</span><span class="p">,</span> <span class="s2">&quot;Solve: 2+2=?&quot;</span><span class="p">,</span> <span class="s2">&quot;Translate to French.&quot;</span><span class="p">]</span>
+<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="n">report</span> <span class="o">=</span> <span class="n">detector</span><span class="o">.</span><span class="n">detect</span><span class="p">(</span><span class="n">my_probe_fn</span><span class="p">,</span> <span class="n">probes</span><span class="p">)</span>
+<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>
+<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="nb">print</span><span class="p">(</span><span class="n">report</span><span class="o">.</span><span class="n">summary</span><span class="p">())</span>
+<a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a><span class="c1"># TIM [ok]: probes=3 mean_kl=0.0012 max_kl=0.0015 mismatch_rate=0.000</span>
+<a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a>
+<a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a><span class="c1"># Gate: blocks promotion to production if mismatch detected.</span>
+<a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a><span class="n">gate_tim</span><span class="p">(</span><span class="n">report</span><span class="p">,</span> <span class="s2">&quot;production&quot;</span><span class="p">)</span>
+</code></pre></div>
+<h3 id="timreport-fields"><code>TIMReport</code> fields</h3>
 <table>
 <thead>
 <tr>
 <th>Field</th>
-<th>Default</th>
-<th>Description</th>
+<th>Type</th>
+<th>Meaning</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><code>min_score_threshold</code></td>
-<td><code>0.7</code></td>
-<td>Eval predictions below this score are treated as failures</td>
+<td><code>probe_count</code></td>
+<td><code>int</code></td>
+<td>Number of prompts evaluated</td>
 </tr>
 <tr>
-<td><code>max_variants_per_failure</code></td>
-<td><code>3</code></td>
-<td>Number of augmented variants to generate per failure</td>
+<td><code>mean_kl</code></td>
+<td><code>float</code></td>
+<td>Mean KL divergence across all probes</td>
 </tr>
 <tr>
-<td><code>quality_filter_threshold</code></td>
-<td><code>0.5</code></td>
-<td>Generated variants must score above this to be included</td>
+<td><code>max_kl</code></td>
+<td><code>float</code></td>
+<td>Maximum per-probe KL</td>
+</tr>
+<tr>
+<td><code>mismatch_rate</code></td>
+<td><code>float</code></td>
+<td>Fraction of probes with KL &gt; threshold</td>
+</tr>
+<tr>
+<td><code>mismatch_detected</code></td>
+<td><code>bool</code></td>
+<td><code>True</code> when <code>mean_kl &gt; threshold</code></td>
+</tr>
+<tr>
+<td><code>results</code></td>
+<td><code>list[TIMResult]</code></td>
+<td>Per-probe breakdown</td>
 </tr>
 </tbody>
 </table>
-<hr />
-<h2 id="using-with-rlaif">Using with RLAIF</h2>
-<p>The flywheel pairs naturally with the RLAIF pipeline. Run the flywheel first
-to enrich the training set, then run RLAIF to fine-tune on both original and
-augmented data:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1"># Step 1: Augment</span>
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="n">augmented</span> <span class="o">=</span> <span class="n">DataFlywheel</span><span class="p">(</span><span class="n">config</span><span class="o">=</span><span class="n">FlywheelConfig</span><span class="p">(),</span> <span class="n">judge</span><span class="o">=</span><span class="n">judge</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">train_ds</span><span class="p">,</span> <span class="n">eval_ds</span><span class="p">)</span>
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>
-<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="c1"># Step 2: RLAIF on augmented set</span>
-<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="n">pipeline</span> <span class="o">=</span> <span class="n">RLAIFPipeline</span><span class="p">(</span><span class="n">judge</span><span class="o">=</span><span class="n">judge</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="n">backend</span><span class="p">,</span> <span class="n">base_config</span><span class="o">=</span><span class="n">config</span><span class="p">)</span>
-<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="n">iterations</span> <span class="o">=</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">augmented</span><span class="p">,</span> <span class="n">eval_ds</span><span class="p">)</span>
+<h3 id="signing-into-a-passport">Signing into a Passport</h3>
+<p><code>TIMReport.content_hash()</code> returns a SHA-256 hex digest of the report's
+canonical JSON serialisation. This can be embedded in a Provenir Passport to
+provide a tamper-evident audit trail.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="n">passport_entry</span> <span class="o">=</span> <span class="p">{</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>    <span class="s2">&quot;tim_hash&quot;</span><span class="p">:</span> <span class="n">report</span><span class="o">.</span><span class="n">content_hash</span><span class="p">(),</span>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>    <span class="s2">&quot;tim_report&quot;</span><span class="p">:</span> <span class="n">report</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(),</span>
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="p">}</span>
 </code></pre></div>
-<hr />
-<h2 id="offline-mode-stubjudge">Offline Mode (StubJudge)</h2>
-<p>For CI and testing, use <code>StubJudge</code> to run the flywheel without any API calls:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">provenir.eval.judge</span><span class="w"> </span><span class="kn">import</span> <span class="n">StubJudge</span>
-<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>
-<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="n">flywheel</span> <span class="o">=</span> <span class="n">DataFlywheel</span><span class="p">(</span>
-<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>    <span class="n">config</span><span class="o">=</span><span class="n">FlywheelConfig</span><span class="p">(</span><span class="n">max_variants_per_failure</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
-<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>    <span class="n">judge</span><span class="o">=</span><span class="n">StubJudge</span><span class="p">(),</span>
-<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="p">)</span>
+<h2 id="the-gate_tim-promotion-gate">The <code>gate_tim</code> Promotion Gate</h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="n">gate_tim</span><span class="p">(</span><span class="n">report</span><span class="p">,</span> <span class="s2">&quot;staging&quot;</span><span class="p">)</span>                        <span class="c1"># never blocks</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="n">gate_tim</span><span class="p">(</span><span class="n">report</span><span class="p">,</span> <span class="s2">&quot;production&quot;</span><span class="p">)</span>                     <span class="c1"># blocks if mismatch_detected</span>
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="n">gate_tim</span><span class="p">(</span><span class="n">report</span><span class="p">,</span> <span class="s2">&quot;release&quot;</span><span class="p">,</span> <span class="n">max_mean_kl</span><span class="o">=</span><span class="mf">0.05</span><span class="p">)</span>      <span class="c1"># also enforces a KL ceiling</span>
 </code></pre></div>
-<p>The stub judge generates deterministic synthetic variants — useful for
-verifying pipeline logic without incurring API costs.</p>
+<ul>
+<li><strong>Non-protected stages</strong> (e.g. <code>"staging"</code>, <code>"dev"</code>) are never blocked.</li>
+<li><strong>Protected stages</strong> (<code>"production"</code>, <code>"prod"</code>, <code>"release"</code>) are blocked when
+  <code>report.mismatch_detected is True</code>.</li>
+<li>The optional <code>max_mean_kl</code> parameter adds a hard ceiling on <code>mean_kl</code>
+  regardless of the threshold-based <code>mismatch_detected</code> flag.</li>
+</ul>
+<p><code>TIMBlocked</code> (a <code>RuntimeError</code> subclass) is raised with a descriptive message
+when promotion is blocked.</p>
+<h2 id="wiring-to-rlorchestrator-rollout-log-probs">Wiring to <code>RLOrchestrator</code> Rollout Log-Probs</h2>
+<p>In a typical OpenRLHF-style pipeline the training rollout stores per-token
+log-probs in the experience buffer. To wire these into the TIM detector:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">functools</span>
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">provenir.environments.tim</span><span class="w"> </span><span class="kn">import</span> <span class="n">TIMDetector</span><span class="p">,</span> <span class="n">gate_tim</span>
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="k">def</span><span class="w"> </span><span class="nf">make_probe_fn</span><span class="p">(</span><span class="n">orchestrator</span><span class="p">,</span> <span class="n">inference_engine</span><span class="p">):</span>
+<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Closure that queries both the rollout buffer and the inference server.&quot;&quot;&quot;</span>
+<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">probe_fn</span><span class="p">(</span><span class="n">prompt</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]]:</span>
+<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a>        <span class="c1"># 1. Get log-probs from the most-recent training rollout for this prompt.</span>
+<a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a>        <span class="n">train_lp</span> <span class="o">=</span> <span class="n">orchestrator</span><span class="o">.</span><span class="n">get_rollout_log_probs</span><span class="p">(</span><span class="n">prompt</span><span class="p">)</span>
+<a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a>        <span class="c1"># 2. Get log-probs from the live inference server (greedy or sampled).</span>
+<a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a>        <span class="n">inf_lp</span> <span class="o">=</span> <span class="n">inference_engine</span><span class="o">.</span><span class="n">get_log_probs</span><span class="p">(</span><span class="n">prompt</span><span class="p">)</span>
+<a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a>        <span class="k">return</span> <span class="n">train_lp</span><span class="p">,</span> <span class="n">inf_lp</span>
+<a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a>    <span class="k">return</span> <span class="n">probe_fn</span>
+<a id="__codelineno-5-13" name="__codelineno-5-13" href="#__codelineno-5-13"></a>
+<a id="__codelineno-5-14" name="__codelineno-5-14" href="#__codelineno-5-14"></a><span class="n">detector</span> <span class="o">=</span> <span class="n">TIMDetector</span><span class="p">(</span><span class="n">threshold</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
+<a id="__codelineno-5-15" name="__codelineno-5-15" href="#__codelineno-5-15"></a><span class="n">report</span> <span class="o">=</span> <span class="n">detector</span><span class="o">.</span><span class="n">detect</span><span class="p">(</span>
+<a id="__codelineno-5-16" name="__codelineno-5-16" href="#__codelineno-5-16"></a>    <span class="n">make_probe_fn</span><span class="p">(</span><span class="n">my_orchestrator</span><span class="p">,</span> <span class="n">my_inference_engine</span><span class="p">),</span>
+<a id="__codelineno-5-17" name="__codelineno-5-17" href="#__codelineno-5-17"></a>    <span class="n">held_out_prompts</span><span class="p">,</span>
+<a id="__codelineno-5-18" name="__codelineno-5-18" href="#__codelineno-5-18"></a><span class="p">)</span>
+<a id="__codelineno-5-19" name="__codelineno-5-19" href="#__codelineno-5-19"></a><span class="n">gate_tim</span><span class="p">(</span><span class="n">report</span><span class="p">,</span> <span class="n">stage</span><span class="o">=</span><span class="s2">&quot;production&quot;</span><span class="p">)</span>
+</code></pre></div>
+<h2 id="references">References</h2>
+<ul>
+<li>Zhong et al. (2026). <em>Training-Inference Mismatch in RLVR</em>. OpenRLHF issue #1108.</li>
+<li>Shao et al. (2026). <em>Spurious Rewards: Rethinking Training Signals for Informal Mathematical Reasoning</em>. arXiv:2506.10947.</li>
+</ul>
 
 
 
